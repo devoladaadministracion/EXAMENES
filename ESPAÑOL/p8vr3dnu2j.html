@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Español Tema 8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 480px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--danger); position: relative;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Español";
+const EXAM_TEMA      = "3.3.2.1 Interpretación de ideas, 3.3.2.2 Inferencia de ideas y 3.3.2.3 Intención comunicativa";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1f8FDPFBkTWv61r_czaycZEPT-Sz5Kgej";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. Lee el siguiente fragmento:<br><br><em>«En las últimas décadas, las ciudades han ampliado sus superficies pavimentadas para facilitar el tránsito vehicular. Sin embargo, estas superficies dificultan la infiltración del agua de lluvia y pueden incrementar los escurrimientos. Por ello, incorporar áreas verdes y superficies permeables constituye una alternativa para mejorar la gestión del agua urbana».</em><br><br>¿Cuál es la idea principal del fragmento?",
+    "opts": [
+      "La pavimentación urbana facilita el tránsito vehicular.",
+      "Las superficies pavimentadas impiden por completo la infiltración del agua.",
+      "Las áreas verdes deben sustituir todas las calles de las ciudades.",
+      "El uso de superficies permeables y áreas verdes puede mejorar la gestión del agua urbana."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La idea principal es la propuesta de incorporar áreas verdes y superficies permeables para mejorar la gestión del agua. Las demás opciones presentan información parcial o afirmaciones que el texto no sostiene."
+  },
+  {
+    "q": "2. Lee el siguiente fragmento:<br><br><em>«El informe señala que la cantidad de residuos electrónicos aumenta cada año. Muchos de estos dispositivos contienen materiales que pueden recuperarse mediante procesos especializados, pero también sustancias que requieren un manejo adecuado. Por esta razón, desecharlos junto con la basura doméstica representa un problema ambiental que puede reducirse mediante sistemas de recolección y reciclaje».</em><br><br>¿Cuál es la interpretación más precisa del texto?",
+    "opts": [
+      "Todos los residuos electrónicos son peligrosos y deben destruirse inmediatamente.",
+      "La gestión adecuada de los residuos electrónicos permite recuperar materiales y disminuir riesgos ambientales.",
+      "El reciclaje de dispositivos electrónicos elimina cualquier impacto ambiental.",
+      "La basura doméstica es la única fuente de contaminación por residuos electrónicos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El fragmento presenta dos aspectos de los residuos electrónicos: contienen materiales recuperables y pueden incluir sustancias que requieren manejo especializado. La conclusión es que una gestión adecuada puede reducir sus efectos ambientales."
+  },
+  {
+    "q": "3. Lee el siguiente fragmento:<br><br><em>«Cuando la profesora anunció que el equipo debía presentar nuevamente su proyecto, Diego guardó silencio. Después revisó las observaciones escritas en la hoja, consultó sus apuntes y pidió a sus compañeros organizar una reunión para corregir los errores».</em><br><br>¿Qué puede inferirse sobre la actitud de Diego?",
+    "opts": [
+      "Considera que las observaciones carecen de utilidad.",
+      "Busca evitar que sus compañeros participen en el proyecto.",
+      "Está dispuesto a revisar los errores y trabajar para mejorar el resultado.",
+      "Está convencido de que el proyecto no puede corregirse."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Revisar las observaciones, consultar los apuntes y proponer una reunión son acciones que sugieren disposición para identificar errores y mejorar el trabajo colectivo."
+  },
+  {
+    "q": "4. Lee el siguiente fragmento:<br><br><em>«Una investigación registró que los estudiantes que dormían regularmente entre siete y nueve horas obtenían, en promedio, mejores resultados en una prueba de atención que quienes dormían menos. Sin embargo, los investigadores advirtieron que el rendimiento también puede depender de factores como el estrés, la alimentación y los hábitos de estudio».</em><br><br>¿Cuál es la inferencia mejor sustentada?",
+    "opts": [
+      "Dormir entre siete y nueve horas garantiza una calificación alta en cualquier examen.",
+      "La duración del sueño es el único factor que determina la atención.",
+      "Dormir menos siempre provoca dificultades de aprendizaje en todos los estudiantes.",
+      "Existe una asociación entre la duración del sueño y el rendimiento en la prueba, pero no se demuestra que el sueño sea su única causa."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los resultados muestran una asociación entre el tiempo de sueño y el desempeño observado. Como el propio texto menciona otros factores, no es válido concluir que el sueño sea la única causa ni que garantice determinados resultados."
+  },
+  {
+    "q": "5. Lee el siguiente anuncio:<br><br><em>«¿Quieres aprovechar mejor tu tiempo de estudio? Organiza tus actividades, establece metas semanales y evita dejar todas tus tareas para el último momento. ¡Empieza hoy y descubre cuánto puedes avanzar!».</em><br><br>¿Cuál es la intención comunicativa predominante?",
+    "opts": [
+      "Persuadir al lector para que adopte hábitos de organización del estudio.",
+      "Narrar la experiencia de un estudiante durante un examen.",
+      "Describir las características físicas de un espacio de estudio.",
+      "Explicar científicamente las fases del sueño."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El anuncio utiliza preguntas, recomendaciones y expresiones exhortativas para motivar al lector a modificar sus hábitos. Su intención predominante es persuadir e impulsar una acción."
+  },
+  {
+    "q": "6. Lee el siguiente fragmento:<br><br><em>«Aunque algunos consideran que las evaluaciones estandarizadas permiten comparar resultados entre escuelas, sus calificaciones no reflejan por sí solas todas las habilidades de los estudiantes. La creatividad, la colaboración y la resolución de problemas requieren instrumentos complementarios para ser valoradas adecuadamente».</em><br><br>¿Qué postura adopta el autor?",
+    "opts": [
+      "Las evaluaciones estandarizadas deben ser el único criterio de valoración académica.",
+      "Las evaluaciones estandarizadas pueden ser útiles, pero necesitan complementarse con otros instrumentos.",
+      "Las habilidades de colaboración no pueden evaluarse dentro de una escuela.",
+      "Las calificaciones carecen de cualquier utilidad para conocer el aprendizaje."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El autor reconoce la utilidad de las evaluaciones estandarizadas para comparar resultados, pero señala sus limitaciones. Por ello, defiende complementar sus resultados con otros instrumentos de evaluación."
+  },
+  {
+    "q": "7. Lee el siguiente fragmento:<br><br><em>«El mercado municipal permaneció cerrado durante dos semanas debido a las reparaciones del edificio. Cuando volvió a abrir, varios comerciantes notaron que algunos clientes acudían a los puestos instalados en las calles cercanas».</em><br><br>¿Qué puede inferirse del fragmento?",
+    "opts": [
+      "Todos los comerciantes abandonaron definitivamente el mercado.",
+      "Las reparaciones provocaron la desaparición de los clientes habituales.",
+      "Parte de los compradores pudo acostumbrarse a adquirir productos en puestos alternativos durante el cierre.",
+      "Los puestos callejeros ofrecían necesariamente productos de mejor calidad."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La presencia de clientes en puestos cercanos después del cierre permite inferir que algunos pudieron recurrir a alternativas de compra. El texto no permite afirmar que todos los comerciantes abandonaron el mercado ni que los productos alternativos fueran mejores."
+  },
+  {
+    "q": "8. Lee el siguiente fragmento:<br><br><em>«La campaña propone reducir el consumo de agua en los hogares mediante acciones sencillas, como reparar fugas, cerrar la llave al cepillarse los dientes y reutilizar agua cuando sea posible. De acuerdo con el mensaje, la participación cotidiana de las familias puede contribuir a disminuir el desperdicio».</em><br><br>¿Cuál es la relación entre la intención comunicativa y los recursos empleados?",
+    "opts": [
+      "Busca narrar una experiencia personal mediante una secuencia cronológica.",
+      "Pretende describir un hogar mediante detalles físicos y sensoriales.",
+      "Intenta informar sobre la historia de los sistemas de abastecimiento.",
+      "Busca promover cambios de conducta mediante recomendaciones concretas y una apelación a la responsabilidad familiar."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La campaña propone acciones específicas y destaca la contribución de las familias. Estos recursos buscan motivar la participación y modificar hábitos de consumo de agua."
+  },
+  {
+    "q": "9. Lee el siguiente fragmento:<br><br><em>«El investigador repitió tres veces el procedimiento y obtuvo resultados semejantes. Después comparó sus mediciones con las de otros equipos antes de formular una conclusión».</em><br><br>¿Qué puede inferirse sobre el propósito de estas acciones?",
+    "opts": [
+      "Busca comprobar la consistencia de los resultados antes de establecer una conclusión.",
+      "Pretende evitar que otros investigadores conozcan su trabajo.",
+      "Desea modificar los resultados para confirmar una idea preconcebida.",
+      "Considera innecesario comparar sus mediciones con otros datos."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Repetir el procedimiento y comparar resultados ayuda a evaluar su consistencia. Estas acciones respaldan una conclusión basada en observaciones y no únicamente en una medición aislada."
+  },
+  {
+    "q": "10. Lee el siguiente fragmento:<br><br><em>«El editorial sostiene que las bibliotecas públicas deben contar con servicios digitales. Argumenta que estos permiten consultar catálogos y materiales sin necesidad de acudir físicamente al edificio. Reconoce, sin embargo, que algunas personas carecen de conexión a internet o de dispositivos adecuados, por lo que propone mantener también servicios presenciales».</em><br><br>¿Cuál es la inferencia más precisa sobre la postura del editorial?",
+    "opts": [
+      "Los servicios presenciales deben eliminarse porque la tecnología siempre es más accesible.",
+      "La incorporación de servicios digitales debe ampliar el acceso sin excluir a quienes necesitan atención presencial.",
+      "Las bibliotecas públicas deben dejar de adquirir materiales impresos.",
+      "Los servicios digitales son inútiles cuando una biblioteca tiene instalaciones físicas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El editorial defiende los servicios digitales por su capacidad para ampliar el acceso, pero reconoce las limitaciones tecnológicas de algunos usuarios. De ello se infiere que propone complementar los servicios, no sustituirlos por completo."
+  },
+  {
+    "q": "11. Lee el siguiente fragmento:<br><br><em>«El cielo se oscureció y comenzaron a caer las primeras gotas. Los vendedores cubrieron sus mercancías, mientras los transeúntes aceleraban el paso para buscar refugio».</em><br><br>¿Cuál es la inferencia más razonable?",
+    "opts": [
+      "Los vendedores habían decidido cerrar sus negocios desde la mañana.",
+      "Los transeúntes buscaban llegar a una reunión programada.",
+      "La lluvia sorprendió a quienes se encontraban en la calle y modificó su comportamiento.",
+      "Los vendedores estaban seguros de que la lluvia duraría varios días."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Cubrir las mercancías y acelerar el paso son reacciones compatibles con la llegada de la lluvia. El fragmento no ofrece información suficiente para determinar cuánto durará ni por qué los transeúntes se encontraban allí."
+  },
+  {
+    "q": "12. Lee el siguiente fragmento:<br><br><em>«Una empresa afirma que su nuevo envase es completamente ecológico porque utiliza menos plástico que el modelo anterior. Sin embargo, el anuncio no presenta información sobre su reciclabilidad, su proceso de fabricación ni los materiales adicionales empleados».</em><br><br>¿Cuál es la evaluación crítica más adecuada de la afirmación?",
+    "opts": [
+      "Es verdadera porque cualquier reducción de plástico garantiza que un producto sea ecológico.",
+      "Es falsa porque todos los envases fabricados con plástico contaminan en la misma medida.",
+      "Es suficiente porque la publicidad no necesita proporcionar información verificable.",
+      "La evidencia presentada es insuficiente para demostrar que el envase sea completamente ecológico."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Utilizar menos plástico puede representar una mejora, pero no basta para evaluar el impacto ambiental total del envase. Se necesitaría información adicional sobre materiales, fabricación, uso y disposición final."
+  },
+  {
+    "q": "13. Lee el siguiente fragmento:<br><br><em>«El museo anunció que abriría sus puertas gratuitamente el último domingo de cada mes. La dirección explicó que la medida busca acercar las colecciones a personas que no suelen visitarlo por razones económicas».</em><br><br>¿Cuál es la intención comunicativa predominante del anuncio?",
+    "opts": [
+      "Informar sobre una medida de acceso gratuito y explicar su propósito.",
+      "Convencer a los visitantes de que abandonen otros espacios culturales.",
+      "Narrar la historia de la fundación del museo.",
+      "Criticar a las personas que no visitan exposiciones."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El texto comunica una medida concreta y explica el objetivo que persigue. Aunque puede favorecer la asistencia, su intención explícita predominante es informar sobre la apertura gratuita y su propósito."
+  },
+  {
+    "q": "14. Lee el siguiente fragmento:<br><br><em>«En su artículo, la autora afirma que el teletrabajo puede reducir el tiempo dedicado a los traslados. No obstante, advierte que trabajar desde casa también puede dificultar la separación entre la vida laboral y personal cuando no existen horarios definidos. Por ello, recomienda establecer límites claros y periodos de descanso».</em><br><br>¿Cuál es la interpretación más adecuada del punto de vista de la autora?",
+    "opts": [
+      "El teletrabajo siempre mejora la calidad de vida de todos los trabajadores.",
+      "El teletrabajo ofrece ventajas, pero requiere límites organizativos para evitar posibles dificultades.",
+      "El teletrabajo debe prohibirse porque elimina toda interacción social.",
+      "La reducción del tiempo de traslado carece de importancia para los trabajadores."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La autora reconoce una ventaja del teletrabajo y señala una posible dificultad relacionada con los límites entre trabajo y vida personal. Su recomendación busca aprovechar los beneficios y atender los riesgos."
+  },
+  {
+    "q": "15. Lee el siguiente fragmento:<br><br><em>«A pesar de que el camino era más largo, Laura eligió la ruta que atravesaba el parque. Allí podía caminar bajo los árboles y evitar el ruido constante de la avenida principal».</em><br><br>¿Qué motivo explica mejor la decisión de Laura?",
+    "opts": [
+      "Deseaba llegar más tarde a su destino.",
+      "Necesitaba comprar productos en los puestos del parque.",
+      "Prefería un recorrido más tranquilo y agradable, aunque fuera más largo.",
+      "Desconocía la existencia de la avenida principal."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Laura elige la ruta por las condiciones que ofrece: sombra y menor ruido. Esto permite inferir que prioriza la comodidad del recorrido sobre la rapidez."
+  },
+  {
+    "q": "16. Lee el siguiente fragmento:<br><br><em>«Un reporte indica que las ventas de una tienda aumentaron después de que comenzó a utilizar publicidad en redes sociales. Durante el mismo periodo, la tienda también amplió su horario y ofreció descuentos. El administrador atribuye todo el crecimiento a la publicidad digital».</em><br><br>¿Cuál es la conclusión mejor sustentada?",
+    "opts": [
+      "La publicidad digital no tuvo ninguna relación con las ventas.",
+      "La ampliación del horario fue necesariamente la única causa del crecimiento.",
+      "Los descuentos provocaron una disminución de las ventas.",
+      "Las ventas aumentaron después de varias modificaciones, por lo que no puede atribuirse todo el crecimiento exclusivamente a la publicidad."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El aumento ocurrió mientras se aplicaban tres cambios. Sin información adicional que permita aislar sus efectos, no es posible concluir que la publicidad digital explique por sí sola el crecimiento de las ventas."
+  },
+  {
+    "q": "17. Lee el siguiente fragmento:<br><br><em>«La directora comunicó que el presupuesto para actividades culturales sería menor este semestre. Algunos estudiantes propusieron organizar una feria de libros usados para reunir fondos y mantener las actividades previstas».</em><br><br>¿Cuál es la idea que se infiere de la propuesta de los estudiantes?",
+    "opts": [
+      "Los estudiantes buscan una alternativa para obtener recursos y conservar las actividades culturales.",
+      "Los estudiantes consideran que las actividades culturales deben cancelarse.",
+      "La directora se comprometió a aumentar el presupuesto inmediatamente.",
+      "La feria de libros usados sustituirá definitivamente todas las actividades escolares."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La propuesta de reunir fondos surge como respuesta a la reducción presupuestaria. Esto permite inferir que los estudiantes intentan conseguir recursos para mantener las actividades, no que pretendan cancelarlas."
+  },
+  {
+    "q": "18. Lee el siguiente fragmento:<br><br><em>«La campaña municipal utiliza imágenes de calles limpias y espacios públicos cuidados. El mensaje invita a separar los residuos y depositarlos en los contenedores correspondientes. Al final, afirma que mantener la ciudad limpia es una responsabilidad compartida».</em><br><br>¿Cuál es la intención comunicativa predominante y qué recurso la refuerza?",
+    "opts": [
+      "Narrar un acontecimiento pasado mediante una secuencia de acciones.",
+      "Describir las características físicas de los contenedores mediante detalles técnicos.",
+      "Persuadir a los ciudadanos para que adopten prácticas responsables, apelando a la responsabilidad colectiva.",
+      "Exponer una clasificación científica de los residuos sin promover conductas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las instrucciones y la apelación a la responsabilidad compartida buscan influir en el comportamiento de los ciudadanos. Las imágenes positivas refuerzan el mensaje al asociar las prácticas propuestas con espacios públicos cuidados."
+  },
+  {
+    "q": "19. Lee el siguiente fragmento:<br><br><em>«Cuando recibió el correo de aceptación, Fernanda lo leyó dos veces y llamó inmediatamente a su madre. Durante la conversación, su voz se volvió más animada y comenzó a hablar sobre los preparativos para el siguiente semestre».</em><br><br>¿Qué sentimiento puede inferirse de la reacción de Fernanda?",
+    "opts": [
+      "Desconfianza ante la información recibida.",
+      "Entusiasmo y alegría por la noticia.",
+      "Indiferencia respecto a su futuro académico.",
+      "Decepción por no haber obtenido una respuesta."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Leer nuevamente el mensaje, compartirlo de inmediato y hablar con entusiasmo sobre los preparativos son indicios de una reacción positiva ante la aceptación."
+  },
+  {
+    "q": "20. Lee el siguiente fragmento:<br><br><em>«El autor sostiene que la difusión de información científica en medios digitales debe acompañarse de criterios rigurosos de verificación. Explica que la rapidez de publicación permite comunicar descubrimientos oportunamente, pero también puede facilitar la circulación de datos incorrectos cuando no se revisan las fuentes. Por ello, recomienda contrastar la información antes de compartirla».</em><br><br>¿Cuál es la intención comunicativa predominante del autor?",
+    "opts": [
+      "Narrar cómo se publicó un descubrimiento científico específico.",
+      "Describir los componentes técnicos de las plataformas digitales.",
+      "Informar que toda publicación digital contiene datos falsos.",
+      "Argumentar a favor de verificar la información científica antes de difundirla y promover esa práctica."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El autor presenta una postura sobre la verificación de la información, la justifica mediante una ventaja y un riesgo de los medios digitales y termina con una recomendación. Su intención es argumentar a favor de una práctica responsable y promoverla."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 8";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>" + EXAM_TEMA + "</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 8";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> " + EXAM_TEMA + "<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: EXAM_TEMA,
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — " + EXAM_TEMA,
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

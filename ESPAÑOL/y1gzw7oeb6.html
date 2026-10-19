@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Español Tema 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 480px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--danger); position: relative;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Español";
+const EXAM_TEMA      = "3.3 Textos informativos (expositivos y argumentativos). 3.3.1 Configuración, estructura y organización textual";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1f8FDPFBkTWv61r_czaycZEPT-Sz5Kgej";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál es la función principal de la introducción en un texto expositivo?",
+    "opts": [
+      "Presentar el tema y proporcionar un contexto inicial para comprenderlo.",
+      "Desarrollar exhaustivamente todos los argumentos del texto.",
+      "Resumir exclusivamente los resultados obtenidos al finalizar la investigación.",
+      "Contradecir las ideas expuestas en el desarrollo."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La introducción presenta el tema, delimita su alcance y proporciona información inicial para orientar al lector. El desarrollo amplía y explica las ideas, mientras que la conclusión recupera los aspectos centrales."
+  },
+  {
+    "q": "2. Lee el siguiente texto:<br><br>I. <em>La contaminación del aire representa un problema importante en las grandes ciudades.</em><br>II. <em>Entre sus principales fuentes se encuentran las emisiones vehiculares y algunas actividades industriales. Estas liberan contaminantes que deterioran la calidad del aire.</em><br>III. <em>Por ello, reducir las emisiones y fortalecer el monitoreo ambiental son medidas necesarias para disminuir este problema.</em><br><br>¿Qué función cumple el párrafo II dentro de la estructura del texto?",
+    "opts": [
+      "Presenta el tema sin aportar información complementaria.",
+      "Introduce una conclusión independiente del tema inicial.",
+      "Desarrolla el tema mediante la explicación de sus causas y características.",
+      "Presenta una objeción que invalida la idea principal."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El segundo párrafo amplía la información presentada al inicio, identifica fuentes de contaminación y explica sus efectos. Por ello, corresponde al desarrollo del texto."
+  },
+  {
+    "q": "3. ¿Cuál de las siguientes características distingue principalmente a un texto argumentativo de uno expositivo?",
+    "opts": [
+      "La presencia obligatoria de personajes y acontecimientos.",
+      "La exposición exclusiva de definiciones y clasificaciones.",
+      "El uso constante de expresiones en primera persona.",
+      "La defensa de una tesis mediante argumentos que buscan justificar una postura."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El texto argumentativo presenta una postura o tesis y la respalda mediante razones, evidencias o ejemplos. El expositivo tiene como propósito principal explicar o informar sobre un tema."
+  },
+  {
+    "q": "4. Lee el siguiente fragmento:<br><br><em>«El uso de bicicletas como medio de transporte debe promoverse en las ciudades. En primer lugar, disminuye la dependencia de los automóviles para trayectos cortos. Además, contribuye a reducir las emisiones contaminantes. En consecuencia, ampliar la infraestructura ciclista constituye una medida conveniente».</em><br><br>¿Cuál es la organización lógica predominante del fragmento?",
+    "opts": [
+      "Secuencia cronológica de acontecimientos.",
+      "Presentación de una tesis, argumentos de apoyo y conclusión.",
+      "Comparación de dos personajes con características opuestas.",
+      "Enumeración de conceptos sin establecer relaciones entre ellos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El fragmento presenta una tesis inicial, incorpora dos argumentos que la respaldan y termina con una conclusión derivada de ellos. Esta organización es característica de un texto argumentativo."
+  },
+  {
+    "q": "5. ¿Cuál es la función principal del desarrollo en un texto expositivo?",
+    "opts": [
+      "Introducir un tema sin explicar sus características.",
+      "Despedir al lector mediante una reflexión final.",
+      "Ampliar el tema con explicaciones, datos, ejemplos y relaciones entre ideas.",
+      "Presentar únicamente la opinión personal del autor."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El desarrollo constituye la parte central del texto. En él se organiza y amplía la información para explicar el tema de manera comprensible."
+  },
+  {
+    "q": "6. Lee el siguiente fragmento:<br><br><em>«La deserción escolar puede relacionarse con diversos factores. Algunos estudiantes abandonan sus estudios por dificultades económicas; otros enfrentan problemas de transporte o necesitan incorporarse tempranamente al trabajo. Por esta razón, las estrategias para reducir la deserción deben considerar las condiciones particulares de cada comunidad».</em><br><br>¿Qué relación lógica predomina en la organización de la información?",
+    "opts": [
+      "Causa y efecto, seguida de una conclusión derivada del análisis de los factores.",
+      "Secuencia temporal de acontecimientos de un personaje.",
+      "Comparación entre dos conceptos sin establecer una conclusión.",
+      "Contradicción entre una tesis y una antítesis sin resolución."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El texto identifica factores que pueden contribuir a la deserción escolar y deriva de ellos una propuesta general. La relación causal permite vincular las condiciones mencionadas con el abandono de los estudios."
+  },
+  {
+    "q": "7. ¿Qué característica corresponde a la conclusión de un texto expositivo?",
+    "opts": [
+      "Introducir un tema completamente ajeno al desarrollado.",
+      "Presentar por primera vez todas las definiciones fundamentales.",
+      "Enumerar argumentos sin relacionarlos con el contenido anterior.",
+      "Recuperar las ideas centrales y cerrar la explicación del tema."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La conclusión sintetiza los aspectos más relevantes del texto y proporciona un cierre coherente. No debe introducir información que rompa la unidad temática."
+  },
+  {
+    "q": "8. Lee el siguiente fragmento:<br><br><em>«El agua potable es indispensable para la salud. La falta de acceso a ella dificulta la higiene y puede favorecer la propagación de enfermedades. Por tanto, garantizar su disponibilidad requiere proteger las fuentes de abastecimiento y mantener sistemas adecuados de distribución».</em><br><br>¿Cuál es la función de la expresión «Por tanto»?",
+    "opts": [
+      "Introducir un ejemplo que ilustra una definición.",
+      "Señalar una conclusión que se deriva de la información anterior.",
+      "Introducir una objeción contra la importancia del agua potable.",
+      "Establecer una secuencia cronológica de acciones."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "«Por tanto» es un conector consecutivo que introduce una conclusión derivada de las ideas anteriores. En este caso, la necesidad de garantizar el acceso al agua se relaciona con su importancia para la salud."
+  },
+  {
+    "q": "9. ¿Cuál de las siguientes opciones presenta una relación de comparación y contraste?",
+    "opts": [
+      "El aumento de temperatura provocó que el hielo comenzara a derretirse.",
+      "Primero se recolectaron las muestras y después se analizaron en el laboratorio.",
+      "A diferencia de la energía solar, que depende de la radiación disponible, la energía geotérmica aprovecha el calor interno de la Tierra.",
+      "La fotosíntesis es un proceso mediante el cual las plantas producen compuestos orgánicos."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La expresión «A diferencia de» establece un contraste entre dos fuentes de energía a partir de sus características. Las otras opciones presentan relaciones de causa y efecto, secuencia temporal y definición."
+  },
+  {
+    "q": "10. Lee el siguiente fragmento:<br><br><em>«Algunas personas sostienen que los uniformes escolares limitan la expresión individual. Sin embargo, sus defensores argumentan que pueden reducir la presión relacionada con las diferencias de vestimenta. Aunque su efecto depende del contexto de cada institución, cualquier decisión sobre su uso debería considerar tanto la convivencia escolar como las necesidades de los estudiantes».</em><br><br>¿Cuál es la estrategia de organización argumentativa predominante?",
+    "opts": [
+      "Presentación de una definición seguida de una clasificación.",
+      "Descripción de las características físicas de un uniforme.",
+      "Narración de los acontecimientos que llevaron a establecer una norma.",
+      "Contraste de posturas y consideración de diferentes factores antes de formular una conclusión."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El fragmento presenta dos perspectivas sobre el uniforme escolar y reconoce que su efecto depende del contexto. Esta organización permite examinar posiciones distintas antes de formular una consideración general."
+  },
+  {
+    "q": "11. ¿Cuál es la finalidad principal de utilizar ejemplos en el desarrollo de un texto expositivo?",
+    "opts": [
+      "Sustituir por completo las ideas principales.",
+      "Facilitar la comprensión de una idea general mediante casos concretos.",
+      "Introducir necesariamente una opinión contraria a la del autor.",
+      "Evitar que exista una relación lógica entre los párrafos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Los ejemplos ilustran conceptos o explicaciones generales mediante situaciones concretas. Ayudan al lector a comprender cómo se manifiesta una idea en casos particulares."
+  },
+  {
+    "q": "12. Lee el siguiente texto:<br><br>I. <em>La energía eólica se obtiene aprovechando el movimiento del aire.</em><br>II. <em>Los aerogeneradores transforman parte de la energía cinética del viento en energía eléctrica.</em><br>III. <em>Por ejemplo, un parque eólico puede integrar numerosos aerogeneradores conectados a una red eléctrica.</em><br>IV. <em>Su producción depende de las condiciones del viento y de las características de las instalaciones.</em><br><br>¿Cuál es el orden más adecuado para organizar los párrafos en un texto expositivo coherente?",
+    "opts": [
+      "I, II, III, IV.",
+      "III, IV, I, II.",
+      "II, IV, III, I.",
+      "IV, III, II, I."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El orden comienza con la presentación del tema, continúa con la explicación de su funcionamiento, incorpora un ejemplo y termina con una consideración sobre las condiciones de producción. Así se conserva una progresión lógica de lo general a lo particular y después a una característica complementaria."
+  },
+  {
+    "q": "13. ¿Cuál de las siguientes opciones contiene una tesis argumentativa?",
+    "opts": [
+      "El ciclo del agua comprende procesos como la evaporación, la condensación y la precipitación.",
+      "Las bibliotecas públicas ofrecen libros, revistas y espacios de consulta.",
+      "Las ciudades deben ampliar sus áreas verdes porque estas contribuyen al bienestar ambiental y social.",
+      "El sistema solar está formado por el Sol y los cuerpos celestes que orbitan a su alrededor."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La opción C expresa una postura que puede defenderse mediante argumentos. Las demás opciones presentan información descriptiva o expositiva sin formular una tesis que deba justificarse."
+  },
+  {
+    "q": "14. Lee el siguiente fragmento:<br><br><em>«La lectura frecuente contribuye al desarrollo del vocabulario. Por ejemplo, quienes leen textos de diferentes géneros encuentran palabras y expresiones utilizadas en contextos diversos. Además, la lectura favorece la comprensión de estructuras lingüísticas complejas».</em><br><br>¿Qué relación existe entre la primera y la segunda oración?",
+    "opts": [
+      "La segunda contradice la afirmación de la primera.",
+      "La segunda presenta una causa que invalida la afirmación inicial.",
+      "La segunda introduce una conclusión opuesta a la primera.",
+      "La segunda ejemplifica la idea general planteada en la primera."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La primera oración formula una idea general sobre el vocabulario y la lectura. La segunda, introducida por «Por ejemplo», presenta una situación concreta que ilustra esa idea."
+  },
+  {
+    "q": "15. ¿Cuál es la función de los conectores discursivos en la organización textual?",
+    "opts": [
+      "Establecer relaciones lógicas entre las ideas y facilitar la continuidad del texto.",
+      "Sustituir todos los argumentos por opiniones personales.",
+      "Eliminar la necesidad de organizar los párrafos.",
+      "Convertir cualquier texto expositivo en un texto narrativo."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los conectores expresan relaciones como adición, contraste, causa, consecuencia y ejemplificación. Su uso adecuado ayuda a que el lector comprenda cómo se relacionan las ideas."
+  },
+  {
+    "q": "16. Lee el siguiente fragmento:<br><br><em>«El transporte público puede reducir la cantidad de automóviles que circulan en una ciudad. Cuando ofrece rutas accesibles, frecuencias adecuadas y condiciones seguras, más personas pueden elegirlo para sus desplazamientos. En cambio, un servicio irregular puede desincentivar su uso».</em><br><br>¿Cuál es la relación lógica que organiza principalmente las dos últimas oraciones?",
+    "opts": [
+      "Secuencia temporal de los cambios en una ciudad.",
+      "Contraste entre condiciones que favorecen o dificultan el uso del transporte público.",
+      "Enumeración de ejemplos sin relación con la idea principal.",
+      "Definición de dos conceptos equivalentes."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las expresiones «Cuando» y «En cambio» permiten contrastar dos escenarios: uno en el que ciertas condiciones favorecen el uso del transporte y otro en el que la irregularidad lo desincentiva."
+  },
+  {
+    "q": "17. ¿Qué elemento permite distinguir una conclusión argumentativa de una conclusión meramente expositiva?",
+    "opts": [
+      "La conclusión argumentativa siempre incorpora personajes ficticios.",
+      "La conclusión expositiva necesariamente contradice el desarrollo.",
+      "La conclusión argumentativa reafirma o deriva una postura respaldada por razones previas.",
+      "La conclusión expositiva siempre contiene una pregunta dirigida al lector."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En un texto argumentativo, la conclusión suele recuperar la tesis o derivar una postura de los argumentos presentados. En uno expositivo, generalmente sintetiza o cierra la explicación del tema."
+  },
+  {
+    "q": "18. Lee el siguiente fragmento:<br><br><em>«La implementación de huertos escolares puede favorecer el aprendizaje práctico de las ciencias. Los estudiantes observan el crecimiento de las plantas, registran cambios y comparan los efectos de distintas condiciones ambientales. Estas actividades vinculan los conceptos estudiados en clase con situaciones observables».</em><br><br>¿Cuál es la organización predominante de las ideas?",
+    "opts": [
+      "Presentación de una tesis, refutación de una postura contraria y conclusión.",
+      "Secuencia cronológica de la historia de un huerto escolar.",
+      "Contraste entre dos instituciones educativas sin establecer una relación temática.",
+      "Presentación de una idea general, explicación mediante ejemplos y relación con una consecuencia educativa."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El fragmento introduce una idea general sobre los beneficios de los huertos, explica actividades concretas que la sustentan y establece su relación con el aprendizaje práctico."
+  },
+  {
+    "q": "19. ¿Cuál es la función principal de la relación de causa y efecto en un texto informativo?",
+    "opts": [
+      "Explicar cómo un acontecimiento o fenómeno puede producir determinadas consecuencias.",
+      "Presentar dos ideas sin establecer ninguna conexión entre ellas.",
+      "Ordenar exclusivamente las características físicas de un objeto.",
+      "Defender una postura sin aportar razones que la respalden."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La relación de causa y efecto permite explicar por qué ocurre un fenómeno o cuáles son sus consecuencias. Es útil para organizar información y mostrar vínculos entre acontecimientos o procesos."
+  },
+  {
+    "q": "20. Lee el siguiente texto:<br><br><em>«La instalación de paneles solares en edificios públicos requiere una inversión inicial. No obstante, estos sistemas pueden reducir el consumo de electricidad proveniente de la red y disminuir ciertos costos operativos a largo plazo. Aunque el ahorro depende de factores como la radiación solar, el consumo y el mantenimiento, evaluar su viabilidad puede ayudar a determinar en qué edificios conviene instalarlos».</em><br><br>¿Cuál es la interpretación más precisa de la organización argumentativa del texto?",
+    "opts": [
+      "El texto rechaza los paneles solares porque cualquier inversión inicial impide obtener beneficios posteriores.",
+      "El texto presenta una ventaja, reconoce una condición que limita sus resultados y propone evaluar la viabilidad de la instalación.",
+      "El texto describe exclusivamente las características físicas de los paneles sin formular una consideración sobre su uso.",
+      "El texto demuestra que todos los edificios públicos recuperarán necesariamente la inversión en el mismo plazo."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El fragmento reconoce una posible ventaja económica, considera factores que condicionan el ahorro y concluye que es necesario evaluar cada caso. No asegura que todos los edificios obtengan idénticos resultados."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 6";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>" + EXAM_TEMA + "</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 6";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> " + EXAM_TEMA + "<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: EXAM_TEMA,
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — " + EXAM_TEMA,
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>
