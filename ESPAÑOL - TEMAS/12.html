@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Español Tema 12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 480px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--danger); position: relative;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Español";
+const EXAM_TEMA      = "4. Gramática 4.1 Oración 4.1.1 Uso del sujeto 4.1.2 Uso del predicado";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1f8FDPFBkTWv61r_czaycZEPT-Sz5Kgej";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. Identifica el sujeto de la siguiente oración:<br><br><em>Los estudiantes de medicina prepararon una exposición sobre el sistema respiratorio.</em>",
+    "opts": [
+      "Prepararon una exposición.",
+      "Una exposición sobre el sistema respiratorio.",
+      "Los estudiantes de medicina.",
+      "Sobre el sistema respiratorio."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El sujeto es aquello de lo que se afirma algo. En este caso, el núcleo es estudiantes, acompañado por los modificadores los y de medicina."
+  },
+  {
+    "q": "2. Lee la siguiente oración:<br><br><em>Durante la madrugada, los bomberos de la estación central controlaron el incendio.</em><br><br>¿Cuál opción identifica correctamente el sujeto, su núcleo y el predicado?",
+    "opts": [
+      "Sujeto: los bomberos de la estación central; núcleo: bomberos; predicado: controlaron el incendio.",
+      "Sujeto: durante la madrugada; núcleo: madrugada; predicado: los bomberos controlaron el incendio.",
+      "Sujeto: el incendio; núcleo: incendio; predicado: los bomberos de la estación central controlaron.",
+      "Sujeto: los bomberos; núcleo: estación; predicado: durante la madrugada controlaron el incendio."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El sujeto completo es los bomberos de la estación central, cuyo núcleo es el sustantivo bomberos. El predicado expresa lo que hicieron: controlaron el incendio."
+  },
+  {
+    "q": "3. ¿Cuál de las siguientes oraciones tiene sujeto tácito?",
+    "opts": [
+      "Mi hermana estudia arquitectura.",
+      "Los vecinos organizaron una reunión.",
+      "El director anunció los resultados.",
+      "Llegamos temprano a la universidad."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "En Llegamos temprano a la universidad, el sujeto no aparece escrito, pero se reconoce por la terminación verbal: nosotros o nosotras."
+  },
+  {
+    "q": "4. Analiza la oración:<br><br><em>La revisión de los documentos y la firma del contrato quedaron pendientes.</em><br><br>¿Cuál es el sujeto de la oración?",
+    "opts": [
+      "La firma del contrato.",
+      "La revisión de los documentos y la firma del contrato.",
+      "Los documentos y el contrato.",
+      "Quedaron pendientes."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El sujeto es compuesto porque contiene dos núcleos coordinados: revisión y firma. El predicado es quedaron pendientes."
+  },
+  {
+    "q": "5. Identifica el predicado de la oración:<br><br><em>El equipo de investigación publicó sus resultados en una revista científica.</em>",
+    "opts": [
+      "El equipo de investigación.",
+      "Sus resultados en una revista científica.",
+      "Publicó sus resultados en una revista científica.",
+      "Una revista científica."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El predicado es lo que se afirma del sujeto. Su núcleo verbal es publicó y sus complementos son sus resultados y en una revista científica."
+  },
+  {
+    "q": "6. Selecciona la oración en la que el verbo concuerda correctamente con un sujeto compuesto.",
+    "opts": [
+      "La directora y los profesores organizaron el evento.",
+      "La directora y los profesores organizó el evento.",
+      "La directora y los profesores organizaba el evento.",
+      "La directora y los profesores organiza el evento."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El sujeto compuesto la directora y los profesores se refiere a varias personas, por lo que el verbo debe concordar en plural: organizaron."
+  },
+  {
+    "q": "7. ¿Cuál es el núcleo del sujeto en la siguiente oración?<br><br><em>Las antiguas construcciones del centro histórico atraen a numerosos turistas.</em>",
+    "opts": [
+      "Antiguas.",
+      "Construcciones.",
+      "Centro.",
+      "Turistas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El núcleo del sujeto es construcciones, que es el sustantivo principal del grupo las antiguas construcciones del centro histórico."
+  },
+  {
+    "q": "8. Lee la oración:<br><br><em>En el laboratorio de química, los alumnos analizaron cuidadosamente las muestras.</em><br><br>¿Cuál afirmación es correcta?",
+    "opts": [
+      "El sujeto es el laboratorio de química y el predicado es los alumnos analizaron las muestras.",
+      "El sujeto es las muestras y el predicado es en el laboratorio de química los alumnos analizaron cuidadosamente.",
+      "El sujeto es tácito y corresponde a ellos.",
+      "El sujeto es los alumnos y el predicado incluye el verbo, sus complementos y los modificadores que lo acompañan."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El sujeto expreso es los alumnos. El predicado es analizaron cuidadosamente las muestras; el complemento circunstancial en el laboratorio de química también forma parte del predicado en el análisis de la oración completa."
+  },
+  {
+    "q": "9. ¿Cuál de las siguientes oraciones presenta un sujeto tácito que corresponde a la segunda persona del singular?",
+    "opts": [
+      "Estudias para el examen de admisión.",
+      "Estudio para el examen de admisión.",
+      "Estudia para el examen de admisión.",
+      "Estudian para el examen de admisión."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La forma verbal estudias corresponde a tú. Como el pronombre no aparece escrito, el sujeto es tácito."
+  },
+  {
+    "q": "10. Analiza la oración:<br><br><em>Los resultados del experimento sorprendieron a los investigadores.</em><br><br>¿Cuál opción identifica correctamente el núcleo del sujeto y el núcleo del predicado?",
+    "opts": [
+      "Sujeto: experimento; predicado: investigadores.",
+      "Sujeto: resultados del experimento; predicado: investigadores.",
+      "Sujeto: resultados; predicado: sorprendieron.",
+      "Sujeto: investigadores; predicado: sorprendieron."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El núcleo del sujeto es resultados, sustantivo del que se afirma algo. El núcleo del predicado es sorprendieron, verbo que expresa la acción."
+  },
+  {
+    "q": "11. ¿Cuál oración tiene un predicado nominal?",
+    "opts": [
+      "Los médicos revisaron los expedientes.",
+      "El paciente permaneció tranquilo durante la consulta.",
+      "La enfermera preparó el material.",
+      "Los estudiantes resolvieron el cuestionario."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "En el análisis escolar tradicional, permaneció tranquilo constituye un predicado nominal o atributivo: el verbo copulativo o semicopulativo permaneció se relaciona con el atributo tranquilo, que expresa un estado del sujeto."
+  },
+  {
+    "q": "12. Considera la oración:<br><br><em>El informe fue elaborado por el comité académico.</em><br><br>¿Cuál opción describe correctamente la estructura del sujeto y del predicado?",
+    "opts": [
+      "El sujeto es el comité académico y el predicado es fue elaborado por el informe.",
+      "El sujeto es tácito y el predicado es fue elaborado por el comité académico.",
+      "El sujeto es elaborado y el predicado es el informe fue por el comité académico.",
+      "El sujeto es el informe y el predicado es fue elaborado por el comité académico."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La oración está en voz pasiva. El informe es el sujeto paciente, pues recibe la acción; fue elaborado por el comité académico es el predicado."
+  },
+  {
+    "q": "13. Identifica la oración impersonal.",
+    "opts": [
+      "Los niños jugaron en el patio.",
+      "Mi padre preparó la cena.",
+      "Hubo varios problemas durante la reunión.",
+      "Nosotros llegamos después del almuerzo."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El verbo haber, cuando expresa existencia, se utiliza de forma impersonal en este sentido. En Hubo varios problemas, no existe un sujeto gramatical; varios problemas es el complemento directo."
+  },
+  {
+    "q": "14. Selecciona la opción en la que el sujeto y el verbo concuerdan correctamente.",
+    "opts": [
+      "La mayoría de los participantes respondió el cuestionario.",
+      "La mayoría de los participantes respondieron el cuestionario, aunque en esta construcción el verbo debe concordar obligatoriamente con participantes.",
+      "La mayoría de los participantes respondieron el cuestionario porque mayoría siempre exige plural.",
+      "La mayoría de los participantes responden el cuestionario ayer."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En esta construcción, el núcleo del sujeto es mayoría, sustantivo singular; por ello, la concordancia en singular (respondió) es correcta. En ciertos contextos también puede admitirse la concordancia en plural por sentido, pero la opción A es inequívocamente correcta y evita esa ambigüedad."
+  },
+  {
+    "q": "15. ¿Cuál es el núcleo del predicado en la oración <em>Los investigadores analizaron los resultados cuidadosamente</em>?",
+    "opts": [
+      "Investigadores.",
+      "Resultados.",
+      "Cuidadosamente.",
+      "Analizaron."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El núcleo del predicado es el verbo conjugado analizaron, que expresa la acción realizada por el sujeto."
+  },
+  {
+    "q": "16. Lee la siguiente oración:<br><br><em>Aunque el camino estaba inundado, los conductores avanzaron con precaución.</em><br><br>¿Cuál es el sujeto de la oración principal?",
+    "opts": [
+      "El camino.",
+      "Los conductores.",
+      "Con precaución.",
+      "Aunque el camino estaba inundado."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La oración principal es los conductores avanzaron con precaución. Su sujeto es los conductores. La secuencia aunque el camino estaba inundado es una subordinada concesiva."
+  },
+  {
+    "q": "17. ¿Cuál oración presenta un sujeto compuesto?",
+    "opts": [
+      "La lluvia comenzó al anochecer.",
+      "Mi hermano estudia en la biblioteca.",
+      "El profesor y sus alumnos visitaron el museo.",
+      "Llegaron temprano a la estación."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El sujeto compuesto el profesor y sus alumnos contiene dos núcleos coordinados: profesor y alumnos."
+  },
+  {
+    "q": "18. Analiza la oración:<br><br><em>A los investigadores les interesan los resultados del estudio.</em><br><br>¿Cuál opción identifica correctamente el sujeto gramatical?",
+    "opts": [
+      "Los resultados del estudio.",
+      "A los investigadores.",
+      "Les interesan.",
+      "Los investigadores y los resultados."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El sujeto es los resultados del estudio, cuyo núcleo es resultados. El verbo interesan concuerda en plural con ese sujeto; a los investigadores es un complemento indirecto duplicado por el pronombre les."
+  },
+  {
+    "q": "19. ¿Cuál es el predicado de la oración <em>Mi mejor amiga parece cansada después del entrenamiento</em>?",
+    "opts": [
+      "Mi mejor amiga.",
+      "Cansada después del entrenamiento.",
+      "Después del entrenamiento.",
+      "Parece cansada después del entrenamiento."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El predicado expresa lo que se afirma del sujeto. Su núcleo verbal es parece y el atributo es cansada, acompañado del complemento circunstancial después del entrenamiento."
+  },
+  {
+    "q": "20. Lee el siguiente enunciado:<br><br><em>Se publicaron los resultados del concurso durante la mañana.</em><br><br>¿Cuál es el análisis sintáctico correcto?",
+    "opts": [
+      "Es una oración impersonal con verbo en singular.",
+      "El sujeto es tácito y corresponde a ellos.",
+      "El sujeto paciente es los resultados del concurso y el verbo concuerda con él en plural.",
+      "El sujeto es durante la mañana y el predicado es se publicaron los resultados del concurso."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Se trata de una oración pasiva refleja. Los resultados del concurso funciona como sujeto paciente y concuerda con el verbo en plural: se publicaron."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 12";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>" + EXAM_TEMA + "</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 12";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> " + EXAM_TEMA + "<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: EXAM_TEMA,
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — " + EXAM_TEMA,
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>
