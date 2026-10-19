@@ -1,36 +1,94 @@
-
-    <h1>Exámenes de Español</h1>
-    <p>Selecciona el examen que quieras resolver</p>
+html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Exámenes</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f3f6fb;
+      color: #1e293b;
+    }
+    header {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    header h1 { margin: 0; font-size: 2rem; }
+    main { max-width: 1000px; margin: 0 auto 40px; padding: 0 20px; }
+    section { margin-top: 32px; }
+    section h2 {
+      font-size: 1.4rem;
+      border-bottom: 3px solid #2563eb;
+      display: inline-block;
+      padding-bottom: 4px;
+      margin: 0 0 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 24px 12px;
+      text-align: center;
+      text-decoration: none;
+      color: #1e293b;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+      color: #2563eb;
+    }
+    .card .num { display: block; font-size: 2rem; font-weight: bold; }
+    .card .label { font-size: 0.9rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Exámenes</h1>
   </header>
   <main>
-    <div class="grid">
-      <a class="card" href="ESPA%C3%91OL/k7x2qf9m4t.html"><span class="num">1</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/r3bw8hzn1d.html"><span class="num">2</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/e6pl0ycs5g.html"><span class="num">3</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/t9ujm2vaq7.html"><span class="num">4</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/h4nd8xfk3r.html"><span class="num">5</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/y1gzw7oeb6.html"><span class="num">6</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/c5iqs0ltmh.html"><span class="num">7</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/p8vr3dnu2j.html"><span class="num">8</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/m2kxa6ztwy.html"><span class="num">9</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/b0fjg9rhc4.html"><span class="num">10</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/q7ld5esoin.html"><span class="num">11</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/w3yt1mkbpa.html"><span class="num">12</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/z9hcu8xgv2.html"><span class="num">13</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/f6sa4nrjqo.html"><span class="num">14</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/j1oe7wbl9k.html"><span class="num">15</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/n4tmx0dhyc.html"><span class="num">16</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/s8qz2pfug5.html"><span class="num">17</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/d5kvi6ena3.html"><span class="num">18</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/l0bgr3wtsx.html"><span class="num">19</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/g7xm9ojhq1.html"><span class="num">20</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/u2ycp4ald8.html"><span class="num">21</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/o9nzf1kvte.html"><span class="num">22</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/i3wsb8qmr6.html"><span class="num">23</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/a6lhd5gxu0.html"><span class="num">24</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/v8tej2fyon.html"><span class="num">25</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/x4rqk7cpzb.html"><span class="num">26</span><span class="label">Examen</span></a>
-      <a class="card" href="ESPA%C3%91OL/5dmwn9ujhe.html"><span class="num">27</span><span class="label">Examen</span></a>
-    </div>
-  </main>
-  <footer>Plataforma de exámenes</footer>
+
+    <section>
+      <h2>Español</h2>
+      <div class="grid">
+        <a class="card" href="ESPA%C3%91OL/k7x2qf9m4t.html"><span class="num">1</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/r3bw8hzn1d.html"><span class="num">2</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/e6pl0ycs5g.html"><span class="num">3</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/t9ujm2vaq7.html"><span class="num">4</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/h4nd8xfk3r.html"><span class="num">5</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/y1gzw7oeb6.html"><span class="num">6</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/c5iqs0ltmh.html"><span class="num">7</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/p8vr3dnu2j.html"><span class="num">8</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/m2kxa6ztwy.html"><span class="num">9</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/b0fjg9rhc4.html"><span class="num">10</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/q7ld5esoin.html"><span class="num">11</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/w3yt1mkbpa.html"><span class="num">12</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/z9hcu8xgv2.html"><span class="num">13</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/f6sa4nrjqo.html"><span class="num">14</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/j1oe7wbl9k.html"><span class="num">15</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/n4tmx0dhyc.html"><span class="num">16</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/s8qz2pfug5.html"><span class="num">17</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/d5kvi6ena3.html"><span class="num">18</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/l0bgr3wtsx.html"><span class="num">19</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/g7xm9ojhq1.html"><span class="num">20</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/u2ycp4ald8.html"><span class="num">21</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/o9nzf1kvte.html"><span class="num">22</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/i3wsb8qmr6.html"><span class="num">23</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/a6lhd5gxu0.html"><span class="num">24</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/v8tej2fyon.html"><span class="num">25</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/x4rqk7cpzb.html"><span class="num">26</span><span class="label">Examen</span></a>
+        <a class="card" href="ESPA%C3%91OL/5dmwn9ujhe.html"><span class="num">27</span><span class="label">Examen</span></a>
+      </div>
+    </section>
