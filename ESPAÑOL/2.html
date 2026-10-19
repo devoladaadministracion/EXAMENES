@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Español Tema 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 480px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--danger); position: relative;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Español";
+const EXAM_TEMA      = "2. Formas del discurso (descriptivo, narrativo y argumentativo)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1f8FDPFBkTWv61r_czaycZEPT-Sz5Kgej";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (TEMA 2 CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál es la forma del discurso que presenta las características físicas, psicológicas o ambientales de una persona, un objeto o un lugar?",
+    "opts": [
+      "Narrativa",
+      "Argumentativa",
+      "Descriptiva",
+      "Expositiva"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La descripción presenta las características y cualidades de personas, objetos, lugares o situaciones. Su finalidad principal es permitir que el receptor identifique cómo son."
+  },
+  {
+    "q": "2. Lee el siguiente fragmento:<br><br><em>«El laboratorio era amplio y luminoso. Las paredes blancas reflejaban la luz de las lámparas, mientras que los estantes metálicos, ordenados por tamaño, ocupaban todo el muro del fondo».</em><br><br>¿Qué recurso predomina en el fragmento y qué efecto produce?",
+    "opts": [
+      "La narración, porque presenta una sucesión cronológica de acontecimientos.",
+      "La descripción, porque caracteriza el espacio mediante cualidades y relaciones espaciales.",
+      "La argumentación, porque defiende una postura sobre las condiciones del laboratorio.",
+      "La exposición, porque explica el funcionamiento de los materiales científicos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Predomina la descripción porque se mencionan características visuales y se establece la ubicación de los elementos en el espacio, sin desarrollar una secuencia de acontecimientos ni defender una tesis."
+  },
+  {
+    "q": "3. ¿Cuál de los siguientes fragmentos presenta una forma del discurso predominantemente narrativa?",
+    "opts": [
+      "El edificio tenía tres pisos, ventanas estrechas y una fachada de piedra.",
+      "La lectura frecuente fortalece el vocabulario y mejora la comprensión de textos.",
+      "El agua es una sustancia compuesta por hidrógeno y oxígeno.",
+      "Cuando terminó la clase, Mariana guardó sus apuntes, salió del salón y tomó el autobús."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La narración presenta acontecimientos que ocurren en una secuencia temporal. En el inciso D, las acciones de Mariana se suceden desde el final de la clase hasta que toma el autobús."
+  },
+  {
+    "q": "4. Lee el siguiente fragmento:<br><br><em>«El investigador revisó los resultados, detectó una inconsistencia y repitió el experimento. Al día siguiente, comparó los nuevos datos con los anteriores y corrigió su informe».</em><br><br>¿Cuál es el elemento que permite identificar principalmente la forma narrativa?",
+    "opts": [
+      "La presencia de adjetivos que caracterizan al investigador.",
+      "La exposición de una opinión sobre la investigación científica.",
+      "La explicación de las propiedades de los datos experimentales.",
+      "La sucesión temporal de acciones realizadas por un personaje."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La narración organiza acciones y acontecimientos en el tiempo. Los verbos «revisó», «detectó», «repitió», «comparó» y «corrigió» muestran una secuencia de hechos relacionados."
+  },
+  {
+    "q": "5. ¿Cuál es la finalidad principal de la forma argumentativa del discurso?",
+    "opts": [
+      "Representar detalladamente las características de un objeto.",
+      "Relatar acontecimientos reales o ficticios en una secuencia temporal.",
+      "Defender una postura mediante razones y evidencias para convencer o persuadir al receptor.",
+      "Enumerar información sin establecer relaciones entre las ideas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La argumentación busca justificar una tesis mediante argumentos, evidencias y razonamientos que permitan obtener la adhesión del receptor o demostrar la validez de una postura."
+  },
+  {
+    "q": "6. Lee el siguiente fragmento:<br><br><em>«Las escuelas deberían ampliar sus bibliotecas digitales, ya que estas permiten consultar materiales actualizados sin depender de la disponibilidad de ejemplares impresos. Además, un estudio institucional sobre hábitos de lectura podría ayudar a determinar cuáles recursos necesitan los estudiantes».</em><br><br>¿Cuál es la tesis principal del fragmento?",
+    "opts": [
+      "Las bibliotecas impresas han dejado de ser necesarias en todas las escuelas.",
+      "Las escuelas deberían ampliar sus bibliotecas digitales.",
+      "Los estudiantes consultan exclusivamente materiales impresos.",
+      "Los estudios institucionales sustituyen la lectura de los estudiantes."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La tesis es la postura que se busca defender. En el fragmento, la recomendación de ampliar las bibliotecas digitales constituye la idea central, mientras que las demás afirmaciones posibles no corresponden con lo expresado."
+  },
+  {
+    "q": "7. Lee el siguiente fragmento:<br><br><em>«La casa de Elena era pequeña, de muros amarillentos y ventanas de madera oscura. En el patio crecía un limonero cuyas ramas proyectaban sombras sobre las baldosas».</em><br><br>¿Qué característica permite clasificar el fragmento como descriptivo?",
+    "opts": [
+      "Presenta una secuencia de acciones realizadas por Elena.",
+      "Explica las causas del deterioro de una vivienda.",
+      "Defiende la importancia de conservar las casas antiguas.",
+      "Expone cualidades y detalles visuales de un espacio."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El fragmento caracteriza una casa y su patio mediante colores, materiales y elementos espaciales. Estos detalles permiten construir una imagen mental del lugar."
+  },
+  {
+    "q": "8. Lee el siguiente fragmento:<br><br><em>«Elena abrió la puerta y dejó su mochila junto a la escalera. Después escuchó un ruido en el patio, se acercó a la ventana y descubrió que el viento había derribado una maceta».</em><br><br>¿Qué modificación convertiría el fragmento en predominantemente descriptivo sin cambiar el lugar ni los elementos mencionados?",
+    "opts": [
+      "Presentar las características de la puerta, la escalera, la ventana, el patio y la maceta, sin desarrollar una secuencia de acciones.",
+      "Relatar con mayor detalle el orden en que Elena abrió la puerta y escuchó el ruido.",
+      "Defender la idea de que las macetas deben colocarse en lugares protegidos del viento.",
+      "Explicar científicamente cómo se producen las corrientes de aire que derriban objetos."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Para que predomine la descripción, deben destacarse las cualidades y la disposición espacial de los elementos. Las opciones B, C y D corresponden principalmente a la narración, la argumentación y la exposición explicativa, respectivamente."
+  },
+  {
+    "q": "9. Lee el siguiente fragmento:<br><br><em>«El autobús avanzaba lentamente por la avenida. De pronto, un automóvil se atravesó en su camino; el conductor frenó bruscamente y los pasajeros se sujetaron de los asientos».</em><br><br>¿Cuál es la función del conector «De pronto» en el fragmento?",
+    "opts": [
+      "Introducir una justificación de la conducta del conductor.",
+      "Señalar una característica permanente del autobús.",
+      "Indicar un cambio temporal que introduce un acontecimiento inesperado.",
+      "Contraponer dos opiniones sobre el tránsito."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "«De pronto» funciona como un marcador temporal que introduce un suceso inesperado dentro de la secuencia narrativa y modifica el desarrollo de los acontecimientos."
+  },
+  {
+    "q": "10. Lee el siguiente fragmento:<br><br><em>«La reducción del uso de plásticos desechables debe ser una prioridad municipal. Estos materiales pueden permanecer durante largos periodos en el ambiente y fragmentarse en partículas que contaminan el agua y el suelo. Por ello, promover alternativas reutilizables constituye una medida pertinente».</em><br><br>¿Cuál es la relación entre la tesis y los argumentos del fragmento?",
+    "opts": [
+      "La tesis describe el aspecto de los residuos y los argumentos relatan su historia.",
+      "La tesis plantea una postura y los argumentos ofrecen razones que la justifican.",
+      "La tesis presenta un acontecimiento y los argumentos organizan sus etapas cronológicas.",
+      "La tesis formula una pregunta y los argumentos enumeran posibles respuestas sin tomar postura."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La tesis sostiene que reducir los plásticos desechables debe ser una prioridad municipal. Las razones sobre su permanencia y contaminación ambiental respaldan esa postura y justifican la propuesta de alternativas reutilizables."
+  },
+  {
+    "q": "11. ¿Cuál de las siguientes características distingue principalmente al discurso narrativo del descriptivo?",
+    "opts": [
+      "El narrativo organiza acontecimientos, mientras que el descriptivo destaca características y cualidades.",
+      "El narrativo siempre presenta hechos reales, mientras que el descriptivo siempre presenta hechos ficticios.",
+      "El narrativo utiliza únicamente verbos en pasado, mientras que el descriptivo utiliza únicamente verbos en presente.",
+      "El narrativo pretende convencer al receptor, mientras que el descriptivo siempre busca demostrar una tesis."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La diferencia fundamental está en el predominio de la secuencia de acontecimientos en la narración y de las características de seres, objetos o espacios en la descripción. Ninguna de las dos formas está limitada a un solo tiempo verbal o tipo de realidad."
+  },
+  {
+    "q": "12. Lee los siguientes fragmentos:<br>I. «El sendero era estrecho, húmedo y pedregoso; a ambos lados crecían helechos de distintos tamaños».<br>II. «Al amanecer, Lucía tomó su mochila, cruzó el sendero y llegó al refugio antes de que comenzara la lluvia».<br>III. «Conviene conservar los senderos naturales, porque su mantenimiento responsable favorece el turismo sustentable y reduce el deterioro del entorno».<br><br>¿Cuál es la clasificación correcta de los fragmentos I, II y III, respectivamente?",
+    "opts": [
+      "Narrativo, argumentativo y descriptivo.",
+      "Argumentativo, descriptivo y narrativo.",
+      "Descriptivo, argumentativo y narrativo.",
+      "Descriptivo, narrativo y argumentativo."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El fragmento I presenta características del sendero; el II relata acciones sucesivas de Lucía; y el III defiende una recomendación mediante razones. Por ello, corresponden a las formas descriptiva, narrativa y argumentativa."
+  },
+  {
+    "q": "13. ¿Qué elemento caracteriza principalmente al narrador dentro de un texto narrativo?",
+    "opts": [
+      "Es la postura central que se busca demostrar mediante evidencias.",
+      "Es la voz que relata los acontecimientos de la historia.",
+      "Es el conjunto de cualidades físicas y psicológicas de los personajes.",
+      "Es el recurso lingüístico que siempre introduce una conclusión."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El narrador es la voz encargada de contar los acontecimientos. Puede narrar en primera o tercera persona y participar en la historia o mantenerse fuera de ella."
+  },
+  {
+    "q": "14. Lee el siguiente fragmento:<br><br><em>«No debería permitirse el uso de teléfonos celulares durante las evaluaciones, porque facilita el acceso no autorizado a información y dificulta garantizar condiciones iguales para todos. En consecuencia, los centros educativos deben establecer reglas claras sobre su uso».</em><br><br>¿Cuál es la función del conector «En consecuencia»?",
+    "opts": [
+      "Introducir una descripción complementaria de los teléfonos celulares.",
+      "Marcar el inicio cronológico de una serie de acontecimientos.",
+      "Introducir una conclusión o propuesta derivada del razonamiento anterior.",
+      "Presentar una objeción que invalida la postura inicial."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "«En consecuencia» es un conector consecutivo que introduce una conclusión derivada de las razones expuestas. En este caso, la conclusión es la necesidad de establecer reglas claras."
+  },
+  {
+    "q": "15. Lee el siguiente fragmento:<br><br><em>«El anciano tenía el cabello completamente blanco, las manos delgadas y una mirada serena. Su voz, suave y pausada, transmitía una sensación de tranquilidad».</em><br><br>¿Qué tipo de descripción predomina?",
+    "opts": [
+      "Prosopografía, porque se centra exclusivamente en la apariencia física de una persona.",
+      "Etopeya, porque presenta únicamente los rasgos morales y psicológicos de una persona.",
+      "Retrato, porque combina rasgos físicos con características expresivas o psicológicas.",
+      "Topografía, porque caracteriza un espacio geográfico."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El retrato combina rasgos físicos y psicológicos o expresivos. El cabello, las manos y la voz caracterizan al personaje, mientras que la mirada serena y la tranquilidad transmitida aportan elementos de su expresión y personalidad."
+  },
+  {
+    "q": "16. Lee el siguiente fragmento:<br><br><em>«Algunos sostienen que las clases virtuales reducen la interacción entre estudiantes. Sin embargo, cuando incorporan debates, actividades colaborativas y retroalimentación constante, pueden favorecer la participación. Por ello, su eficacia debe evaluarse considerando el diseño pedagógico y no únicamente la modalidad».</em><br><br>¿Cuál es la estrategia argumentativa predominante?",
+    "opts": [
+      "La descripción objetiva de las características físicas de un espacio educativo.",
+      "La narración cronológica del desarrollo de una clase virtual.",
+      "La enumeración de hechos sin establecer una postura frente al tema.",
+      "La consideración de una objeción seguida de una respuesta que matiza la conclusión."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El fragmento reconoce una objeción sobre las clases virtuales y después presenta condiciones bajo las cuales pueden favorecer la participación. Finalmente, sostiene que su eficacia depende del diseño pedagógico, no solo de la modalidad."
+  },
+  {
+    "q": "17. Lee el siguiente fragmento:<br><br><em>«La lluvia golpeaba los cristales mientras las nubes oscuras cubrían el cielo. En la calle, los charcos reflejaban las luces de los automóviles y el pavimento brillaba bajo las farolas».</em><br><br>¿Cuál es el recurso predominante en el fragmento?",
+    "opts": [
+      "La descripción sensorial del ambiente.",
+      "La argumentación mediante datos verificables.",
+      "La narración de acciones sucesivas de un protagonista.",
+      "La exposición de un procedimiento meteorológico."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El fragmento destaca sonidos, colores, reflejos y características del entorno para construir una imagen del ambiente. Aunque incluye verbos de acción, estos sirven principalmente para caracterizar la escena."
+  },
+  {
+    "q": "18. Lee el siguiente fragmento:<br><br><em>«El municipio debe invertir en ciclovías protegidas. En primer lugar, estas pueden separar a los ciclistas del tránsito motorizado; además, una red conectada facilita los desplazamientos cotidianos. Si la infraestructura es continua y segura, más personas podrían considerar la bicicleta como una alternativa de transporte».</em><br><br>¿Cuál es la función de la expresión «En primer lugar» dentro de la argumentación?",
+    "opts": [
+      "Introducir el desenlace de una historia relacionada con el transporte.",
+      "Ordenar la presentación de los argumentos que respaldan la tesis.",
+      "Describir la ubicación espacial de las ciclovías.",
+      "Presentar una conclusión que sustituye la tesis inicial."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "«En primer lugar» es un organizador discursivo que señala el inicio de una secuencia de argumentos. Permite estructurar el razonamiento y distinguir las razones que apoyan la inversión en ciclovías."
+  },
+  {
+    "q": "19. ¿Cuál de los siguientes fragmentos combina predominantemente narración y descripción?",
+    "opts": [
+      "El parque era extenso, tenía árboles centenarios y estaba rodeado de edificios antiguos.",
+      "Es necesario ampliar las áreas verdes porque contribuyen a mejorar la calidad ambiental.",
+      "Cuando llegamos al parque, el aire era fresco y los árboles altos proyectaban sombras sobre los senderos.",
+      "Los parques urbanos son espacios públicos destinados a la recreación y al contacto con la naturaleza."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El fragmento C combina una acción situada en el tiempo («llegamos al parque») con características del ambiente («el aire era fresco» y «los árboles altos»). Por ello, integra recursos narrativos y descriptivos."
+  },
+  {
+    "q": "20. Lee el siguiente fragmento de una clase de Español:<br><br><em>«La lectura de textos literarios debería incorporarse de manera constante en la formación académica. Además de enriquecer el vocabulario, permite reconocer distintas perspectivas culturales y desarrollar habilidades de interpretación. Aunque algunas personas consideran que exige demasiado tiempo, seleccionar obras adecuadas a cada nivel puede facilitar su integración en los programas escolares».</em><br><br>¿Cuál es el análisis más preciso de la estructura argumentativa del fragmento?",
+    "opts": [
+      "Presenta una descripción de los libros, relata una experiencia personal y concluye sin defender una postura.",
+      "Formula una pregunta, enumera características de la lectura y presenta una secuencia cronológica.",
+      "Expone una tesis, pero carece de argumentos y rechaza cualquier postura contraria.",
+      "Formula una tesis, aporta razones para respaldarla y considera una objeción mediante una respuesta que propone una alternativa."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La tesis propone incorporar constantemente la lectura literaria en la formación académica. Los beneficios mencionados funcionan como argumentos a favor, mientras que la objeción sobre el tiempo se responde mediante la selección de obras adecuadas a cada nivel."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — " + EXAM_TEMA;
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>" + EXAM_TEMA + "</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · " + EXAM_TEMA;
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> " + EXAM_TEMA + "<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: EXAM_TEMA,
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — " + EXAM_TEMA,
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

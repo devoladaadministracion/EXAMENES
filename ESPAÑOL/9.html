@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Español Tema 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 480px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--danger); position: relative;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Español";
+const EXAM_TEMA      = "3.4 Configuración del texto; 3.4.1 Estructura textual; 3.4.2 Noticia; 3.4.3 Jerarquización de ideas";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1f8FDPFBkTWv61r_czaycZEPT-Sz5Kgej";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál es la función principal del titular en una noticia?",
+    "opts": [
+      "Presentar los antecedentes históricos del acontecimiento.",
+      "Atraer la atención e identificar el hecho principal de la información.",
+      "Desarrollar detalladamente las causas y consecuencias del suceso.",
+      "Explicar la postura personal del periodista sobre el acontecimiento."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El titular sintetiza el hecho noticioso y permite al lector identificar rápidamente el tema central de la información."
+  },
+  {
+    "q": "2. Lee el siguiente fragmento de una noticia:<br><br><em>Antetítulo:</em> Ante la escasez de agua en la región<br><em>Titular:</em> Inauguran nueva planta de tratamiento<br><em>Subtítulo:</em> La instalación permitirá reutilizar parte del agua residual para actividades industriales.<br><br>¿Qué función cumple el subtítulo en esta estructura?",
+    "opts": [
+      "Sustituye al titular y presenta un tema diferente.",
+      "Introduce una opinión sobre la conveniencia de la obra.",
+      "Amplía el titular con información específica sobre los beneficios de la instalación.",
+      "Presenta los antecedentes completos del problema del agua."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El subtítulo complementa el titular al aportar información adicional que precisa el alcance o la relevancia del acontecimiento."
+  },
+  {
+    "q": "3. ¿Cuál de los siguientes elementos corresponde al lead o entrada de una noticia?",
+    "opts": [
+      "El párrafo inicial que resume los datos más relevantes del acontecimiento.",
+      "La frase final que expresa una conclusión personal del periodista.",
+      "El conjunto de opiniones de los lectores sobre el acontecimiento.",
+      "La lista de fuentes bibliográficas utilizadas para elaborar la noticia."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La entrada concentra los datos esenciales de la noticia y permite conocer lo más importante sin leer todo el cuerpo."
+  },
+  {
+    "q": "4. Lee la siguiente noticia:<br><br><em>«El martes, estudiantes de una preparatoria organizaron una colecta en el patio escolar para comprar materiales destinados al laboratorio de ciencias. La actividad surgió porque el equipo disponible resultaba insuficiente para las prácticas».</em><br><br>¿Cuál opción identifica correctamente el qué, quién, cuándo, dónde y por qué, respectivamente?",
+    "opts": [
+      "Comprar materiales; los docentes; el martes; el laboratorio; por una convocatoria oficial.",
+      "Organizar una colecta; los estudiantes; el miércoles; el patio escolar; por falta de presupuesto.",
+      "Realizar prácticas; los estudiantes; el martes; el laboratorio; por una convocatoria escolar.",
+      "Organizar una colecta; los estudiantes; el martes; el patio escolar; por la insuficiencia de materiales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El qué es la colecta; el quién, los estudiantes; el cuándo, el martes; el dónde, el patio escolar; y el porqué, la insuficiencia de materiales para las prácticas."
+  },
+  {
+    "q": "5. ¿Qué elemento de la estructura de una noticia desarrolla con mayor amplitud los detalles, antecedentes, testimonios y consecuencias del acontecimiento?",
+    "opts": [
+      "El antetítulo.",
+      "El titular.",
+      "El cuerpo.",
+      "El subtítulo."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El cuerpo contiene el desarrollo de la información y amplía los datos que se presentan de manera sintética en el titular y la entrada."
+  },
+  {
+    "q": "6. Lee los siguientes fragmentos de una noticia:<br>I. <em>La medida comenzará a aplicarse el próximo lunes en 25 escuelas de la zona norte.</em><br>II. <em>La Secretaría de Educación anunció un nuevo programa de alimentación escolar.</em><br>III. <em>El programa busca mejorar la nutrición de los estudiantes y reducir el ausentismo.</em><br>IV. <em>La iniciativa incluye menús elaborados por especialistas y evaluaciones trimestrales.</em><br><br>¿Cuál es el orden más adecuado para organizar estos fragmentos como titular, entrada y desarrollo de la noticia?",
+    "opts": [
+      "III, IV, I, II.",
+      "II, III, I, IV.",
+      "I, II, IV, III.",
+      "IV, I, III, II."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El fragmento II presenta el hecho principal; el III amplía su propósito; el I precisa cuándo y dónde se aplicará; y el IV desarrolla sus características."
+  },
+  {
+    "q": "7. ¿Cuál de las siguientes opciones constituye un antetítulo adecuado para una noticia cuyo titular es “Abren convocatoria para becas universitarias”?",
+    "opts": [
+      "Los aspirantes podrán registrarse hasta el 30 de noviembre.",
+      "El programa contempla apoyos para estudiantes de bajos recursos.",
+      "La convocatoria fue difundida este lunes por las autoridades educativas.",
+      "Apoyo económico para estudiantes de educación superior."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El antetítulo introduce el contexto general del tema y prepara al lector para comprender el titular. La opción D funciona como una frase contextual breve."
+  },
+  {
+    "q": "8. Una noticia tiene el siguiente titular: “Suspenden circulación en avenida principal por fuga de gas”. La entrada señala que el cierre comenzó a las 8:00 horas y que los equipos de emergencia trabajan en el lugar.<br><br>¿Cuál dato responde directamente a la pregunta cómo ocurrió o se atendió el acontecimiento?",
+    "opts": [
+      "Mediante el cierre preventivo de la vialidad y la intervención de los equipos de emergencia.",
+      "En la avenida principal de la ciudad.",
+      "A las 8:00 horas del martes.",
+      "Debido a una fuga de gas detectada en la zona."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El cómo describe la manera en que se desarrolla o se atiende un hecho. En este caso, se refiere al cierre preventivo y a la intervención de los equipos de emergencia."
+  },
+  {
+    "q": "9. ¿Cuál es el propósito principal de jerarquizar las ideas en una noticia?",
+    "opts": [
+      "Eliminar todos los datos secundarios, aunque sean relevantes.",
+      "Ordenar la información según su importancia para facilitar la comprensión.",
+      "Presentar primero las opiniones y después los hechos comprobables.",
+      "Aumentar la extensión del texto mediante información repetitiva."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La jerarquización organiza las ideas desde las más importantes hasta las complementarias, lo que facilita identificar el hecho central y comprender la noticia."
+  },
+  {
+    "q": "10. Lee el siguiente fragmento:<br><br><em>«La Universidad Metropolitana inauguró el jueves un centro de investigación ambiental. El edificio se encuentra en el campus sur y cuenta con laboratorios para analizar la calidad del aire y del agua. La institución informó que el proyecto recibió financiamiento público. Durante la ceremonia, también se presentó una exposición de fotografías de la naturaleza».</em><br><br>¿Cuál información debería tener mayor prioridad en la entrada de la noticia?",
+    "opts": [
+      "La exposición fotográfica presentada durante la ceremonia.",
+      "La ubicación del edificio dentro del campus sur.",
+      "La inauguración del centro de investigación ambiental.",
+      "La descripción de las fotografías expuestas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La inauguración constituye el acontecimiento central. La ubicación, el financiamiento y las actividades complementarias son datos secundarios que amplían la información."
+  },
+  {
+    "q": "11. ¿Cuál de las siguientes preguntas periodísticas permite identificar la causa de un acontecimiento?",
+    "opts": [
+      "¿Dónde?",
+      "¿Cuándo?",
+      "¿Quién?",
+      "¿Por qué?"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La pregunta por qué busca conocer las causas o los motivos que explican el acontecimiento noticioso."
+  },
+  {
+    "q": "12. Lee la siguiente entrada:<br><br><em>«Debido al incremento de accidentes en el cruce de las calles Reforma y Juárez, el ayuntamiento instaló semáforos nuevos este miércoles para mejorar la seguridad vial».</em><br><br>¿Cuál opción identifica correctamente el por qué y el para qué de la medida?",
+    "opts": [
+      "Por qué: este miércoles; para qué: instalar semáforos.",
+      "Por qué: mejorar la seguridad vial; para qué: el incremento de accidentes.",
+      "Por qué: el aumento de accidentes; para qué: mejorar la seguridad vial.",
+      "Por qué: el ayuntamiento; para qué: las calles Reforma y Juárez."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El porqué explica la causa de la acción —el incremento de accidentes—, mientras que el para qué expresa su finalidad —mejorar la seguridad vial—."
+  },
+  {
+    "q": "13. ¿Cuál característica distingue principalmente al cuerpo de una noticia de su entrada?",
+    "opts": [
+      "El cuerpo desarrolla y amplía los datos que la entrada presenta de forma sintética.",
+      "El cuerpo contiene exclusivamente el nombre del periodista.",
+      "El cuerpo presenta necesariamente una opinión sobre el hecho.",
+      "El cuerpo debe repetir literalmente el titular."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La entrada resume lo esencial; el cuerpo profundiza en los detalles, antecedentes, declaraciones y demás información relevante."
+  },
+  {
+    "q": "14. Una noticia contiene estos datos:<br>• Una biblioteca municipal reabrió sus puertas.<br>• La reapertura ocurrió el sábado.<br>• El inmueble se localiza en el centro histórico.<br>• La biblioteca permaneció cerrada durante seis meses por remodelación.<br>• El recinto ahora dispone de una sala digital y una zona infantil.<br><br>Si se busca construir una entrada informativa que priorice el acontecimiento principal e incorpore datos esenciales, ¿cuál es la mejor opción?",
+    "opts": [
+      "La biblioteca municipal cuenta con una zona infantil y una sala digital, entre otras instalaciones.",
+      "Tras seis meses de remodelación, la biblioteca municipal reabrió el sábado en el centro histórico con nuevas áreas de servicio.",
+      "El centro histórico tiene distintos edificios públicos, entre ellos una biblioteca municipal.",
+      "El sábado se realizaron diversas actividades en el centro histórico, donde también hay espacios culturales."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La opción B presenta el hecho principal, el cuándo, el dónde y un antecedente relevante, además de mencionar las mejoras sin perder el foco de la noticia."
+  },
+  {
+    "q": "15. ¿Qué opción presenta una jerarquización adecuada de las ideas en una noticia sobre un sismo?",
+    "opts": [
+      "Primero, una descripción extensa de los edificios; después, el número de personas afectadas.",
+      "Primero, los comentarios de usuarios en redes sociales; después, los datos confirmados.",
+      "Primero, una anécdota de un testigo; después, el lugar donde ocurrió el sismo.",
+      "Primero, la magnitud, la ubicación y las afectaciones principales; después, los testimonios y detalles complementarios."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La información esencial sobre el sismo y sus consecuencias debe aparecer antes de los testimonios y los detalles secundarios."
+  },
+  {
+    "q": "16. Lee los siguientes datos sobre una noticia:<br>I. El municipio entregó 120 computadoras a tres bibliotecas comunitarias.<br>II. La entrega se realizó el viernes por la mañana.<br>III. El programa pretende ampliar el acceso a recursos educativos digitales.<br>IV. Las bibliotecas están ubicadas en colonias periféricas.<br><br>¿Cuál es la mejor opción para el titular y la entrada, respectivamente?",
+    "opts": [
+      "Titular: El viernes por la mañana se realizó un acto municipal. Entrada: Las bibliotecas se encuentran en colonias periféricas.",
+      "Titular: Las colonias periféricas requieren más servicios. Entrada: El municipio anunció distintas acciones educativas.",
+      "Titular: Entregan 120 computadoras a bibliotecas comunitarias. Entrada: El municipio realizó la entrega el viernes en tres bibliotecas de colonias periféricas para ampliar el acceso a recursos educativos digitales.",
+      "Titular: Programa de acceso digital. Entrada: Las computadoras son importantes para el aprendizaje y el desarrollo tecnológico."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El titular comunica el acontecimiento principal con precisión. La entrada lo amplía con datos sobre cuándo, dónde y para qué se realizó la entrega."
+  },
+  {
+    "q": "17. ¿Cuál de los siguientes elementos suele responder principalmente a la pregunta quién en una noticia?",
+    "opts": [
+      "La institución, persona o grupo que participa en el acontecimiento.",
+      "La fecha en que ocurrió el hecho.",
+      "El lugar donde se desarrolló el suceso.",
+      "La causa que originó el acontecimiento."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El quién identifica a los protagonistas, responsables, afectados o participantes del hecho noticioso."
+  },
+  {
+    "q": "18. Un periodista redacta la siguiente entrada:<br><br><em>«La Secretaría de Salud anunció ayer una campaña de vacunación en 40 centros comunitarios para reducir los casos de influenza durante la temporada invernal».</em><br><br>¿Cuál de los siguientes datos no está expresado de manera directa en la entrada?",
+    "opts": [
+      "Quién anunció la campaña.",
+      "Cuál es el propósito de la campaña.",
+      "En cuántos centros se llevará a cabo.",
+      "Cuántas personas recibirán la vacuna."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La entrada identifica a la institución, el momento del anuncio, los lugares de aplicación y el objetivo, pero no especifica el número de personas que serán vacunadas."
+  },
+  {
+    "q": "19. ¿Cuál es la función principal del subtítulo en una noticia?",
+    "opts": [
+      "Sustituir la información del cuerpo por una conclusión.",
+      "Ampliar o precisar el titular mediante información complementaria.",
+      "Identificar exclusivamente al autor del texto.",
+      "Presentar las referencias consultadas por el periodista."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El subtítulo aporta detalles adicionales que ayudan a comprender mejor el alcance del acontecimiento anunciado en el titular."
+  },
+  {
+    "q": "20. Lee el siguiente texto:<br><br><em>«El gobierno estatal anunció la construcción de un hospital regional. La obra comenzará en enero y estará ubicada al norte de la entidad. Según las autoridades, el hospital atenderá a habitantes de cinco municipios. El proyecto tendrá áreas de urgencias, consulta externa y hospitalización. La inversión será de 450 millones de pesos».</em><br><br>¿Cuál secuencia organiza las ideas desde la más general e importante hasta las más específicas y complementarias?",
+    "opts": [
+      "Inversión económica, áreas del hospital, ubicación, anuncio de construcción.",
+      "Ubicación, inversión económica, anuncio de construcción, servicios médicos.",
+      "Anuncio de construcción del hospital, ubicación y fecha de inicio, población beneficiada, servicios e inversión.",
+      "Servicios médicos, inversión económica, población beneficiada, anuncio de construcción."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La secuencia C comienza con el hecho principal y después incorpora datos que precisan su ejecución, alcance y características."
+  },
+  {
+    "q": "21. ¿Cuál de las siguientes opciones corresponde a un titular informativo y preciso?",
+    "opts": [
+      "Una decisión que cambiará muchas cosas en la ciudad.",
+      "Lo que nadie esperaba que sucediera en el transporte.",
+      "Una jornada llena de sorpresas para los habitantes.",
+      "Amplían el horario del transporte público durante los fines de semana."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Un titular informativo identifica claramente el acontecimiento. La opción D comunica la acción y el servicio afectado sin recurrir a expresiones vagas."
+  },
+  {
+    "q": "22. Lee la siguiente noticia:<br><br><em>«Una tormenta provocó inundaciones en tres colonias de la ciudad durante la noche del domingo. Protección Civil informó que 18 viviendas presentaron daños y que se habilitó un refugio temporal en un centro deportivo. Las autoridades atribuyeron las inundaciones a la acumulación de agua y al taponamiento de varias alcantarillas».</em><br><br>¿Cuál afirmación distingue correctamente un dato principal de uno complementario?",
+    "opts": [
+      "La habilitación del refugio es el único dato que debe aparecer en el titular.",
+      "Las inundaciones y los daños constituyen información central; la ubicación del refugio amplía los detalles de la respuesta de emergencia.",
+      "El taponamiento de alcantarillas es un dato irrelevante que no puede incluirse en la noticia.",
+      "La hora exacta de la tormenta debe tener prioridad sobre cualquier afectación."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las inundaciones y sus consecuencias constituyen el núcleo informativo. El refugio y las posibles causas aportan información complementaria importante para comprender la situación."
+  },
+  {
+    "q": "23. ¿Qué pregunta de la estructura noticiosa se responde con la expresión “en el auditorio principal de la universidad”?",
+    "opts": [
+      "¿Dónde?",
+      "¿Cuándo?",
+      "¿Por qué?",
+      "¿Cómo?"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La expresión señala el lugar en el que ocurrió el acontecimiento, por lo que responde a la pregunta dónde."
+  },
+  {
+    "q": "24. Se presentan cinco fragmentos de una noticia sobre una campaña de reforestación:<br>I. La actividad busca recuperar áreas verdes afectadas por incendios.<br>II. Participaron 300 voluntarios de distintas comunidades.<br>III. El sábado se plantaron 2 000 árboles en una zona de reserva ecológica.<br>IV. La organización informó que se dará seguimiento al crecimiento de los árboles durante un año.<br>V. La jornada fue coordinada por una asociación ambiental y las autoridades locales.<br><br>¿Cuál opción propone una organización adecuada desde la entrada hasta el desarrollo?",
+    "opts": [
+      "IV, II, I, V, III.",
+      "II, IV, V, I, III.",
+      "III, I, II, V, IV.",
+      "I, IV, III, II, V."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El fragmento III presenta el hecho principal, el I explica su finalidad, el II incorpora la participación, el V identifica a los organizadores y el IV añade información sobre el seguimiento posterior."
+  },
+  {
+    "q": "25. ¿Cuál es la finalidad de ordenar la información de una noticia mediante una jerarquía de ideas?",
+    "opts": [
+      "Hacer que todos los datos tengan exactamente la misma importancia.",
+      "Dar prioridad a la información esencial y facilitar la lectura selectiva.",
+      "Reservar los datos principales para el último párrafo en todos los casos.",
+      "Evitar que el texto incluya información complementaria."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La jerarquización permite reconocer primero lo más relevante y después acceder a los datos secundarios que amplían o contextualizan el acontecimiento."
+  },
+  {
+    "q": "26. Un periódico publica la siguiente noticia:<br><br><em>«El instituto tecnológico obtuvo el primer lugar en una competencia nacional de robótica. El equipo ganador estuvo integrado por seis estudiantes y dos asesores. La final se realizó el domingo en Guadalajara, donde participaron 18 instituciones. El prototipo ganador automatiza la clasificación de residuos reciclables».</em><br><br>¿Cuál opción integra mejor los datos principales para una entrada periodística?",
+    "opts": [
+      "Dieciocho instituciones participaron en Guadalajara durante una competencia nacional realizada el domingo.",
+      "Un prototipo automatiza la clasificación de residuos reciclables y fue desarrollado por estudiantes con asesoría docente.",
+      "El equipo del instituto tecnológico está integrado por seis estudiantes y dos asesores que trabajan en robótica.",
+      "El instituto tecnológico ganó una competencia nacional de robótica con un prototipo para clasificar residuos reciclables; la final se celebró el domingo en Guadalajara."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La opción D prioriza el resultado principal, incorpora la característica distintiva del proyecto y añade información temporal y geográfica relevante."
+  },
+  {
+    "q": "27. ¿Cuál opción identifica correctamente el cuándo en una noticia?",
+    "opts": [
+      "La conferencia se realizó el jueves a las 10:00 horas.",
+      "La conferencia fue organizada por el comité estudiantil.",
+      "La conferencia tuvo lugar en el auditorio de la facultad.",
+      "La conferencia abordó los efectos de la contaminación."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El cuándo se refiere al momento en que ocurrió el acontecimiento; en la opción A se indica el día y la hora."
+  },
+  {
+    "q": "28. Un editor debe seleccionar el titular de una noticia cuya información principal es que una empresa retiró del mercado 5 000 productos por detectarse un defecto de fabricación que podría afectar su seguridad.<br><br>¿Cuál titular refleja mejor la jerarquía informativa y mantiene un tono objetivo?",
+    "opts": [
+      "Empresa anuncia novedades para sus consumidores.",
+      "Consumidores expresan preocupación por diversos productos.",
+      "Retiran 5 000 productos del mercado por un defecto de fabricación.",
+      "Una compañía enfrenta una situación que podría generar comentarios."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La opción C presenta de forma directa la acción principal, la cantidad afectada y la causa del retiro, sin recurrir a vaguedades ni opiniones."
+  },
+  {
+    "q": "29. ¿Qué elemento de una noticia suele aparecer inmediatamente después del titular y antes del desarrollo completo, con el propósito de resumir los datos esenciales?",
+    "opts": [
+      "El pie de fotografía.",
+      "La entrada o lead.",
+      "La firma del editor.",
+      "La sección de comentarios."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La entrada se coloca al inicio del texto informativo y resume los aspectos esenciales del acontecimiento para orientar al lector."
+  },
+  {
+    "q": "30. Lee el siguiente conjunto de datos:<br>• El miércoles se inauguró un puente peatonal.<br>• La obra se encuentra frente a una escuela primaria.<br>• La construcción fue realizada por el gobierno municipal.<br>• El puente busca reducir el riesgo de accidentes durante la entrada y salida escolar.<br>• La obra tiene una longitud de 25 metros.<br>• La construcción concluyó después de cuatro meses de trabajo.<br><br>¿Cuál opción presenta la mejor jerarquización para redactar la entrada y organizar el desarrollo?",
+    "opts": [
+      "Longitud del puente, duración de la obra, ubicación, inauguración y objetivo.",
+      "Duración de la obra, longitud del puente, dependencia responsable, objetivo e inauguración.",
+      "Ubicación, duración de la obra, longitud, inauguración y detalles de construcción.",
+      "Inauguración del puente y su finalidad de seguridad vial; después, ubicación, responsable, duración de la obra y dimensiones."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La entrada debe destacar la inauguración y su finalidad principal. Los datos de ubicación, responsable, duración y dimensiones complementan el acontecimiento y se desarrollan posteriormente."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 9";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>" + EXAM_TEMA + "</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 9";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> " + EXAM_TEMA + "<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: EXAM_TEMA,
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — " + EXAM_TEMA,
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

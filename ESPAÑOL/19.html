@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Español Tema 19</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 480px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--danger); position: relative;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Español";
+const EXAM_TEMA      = "5.2 Corrección de textos 5.2.1 Uso de gerundio 5.2.2 Uso de conectores 5.2.3 Redacción indirecta";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1f8FDPFBkTWv61r_czaycZEPT-Sz5Kgej";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál de las siguientes oraciones utiliza correctamente el gerundio?",
+    "opts": [
+      "El director firmó el documento, enviándolo ayer por la mañana.",
+      "La estudiante ingresó al salón, saludando al profesor y tomando asiento.",
+      "El investigador publicó un artículo, obteniendo el reconocimiento dos años después.",
+      "El acusado recibió una sentencia, cumpliendo su condena al año siguiente."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "En la opción B, los gerundios «saludando» y «tomando» expresan acciones simultáneas o estrechamente vinculadas con la acción principal. En C y D, el gerundio expresa una consecuencia posterior, uso que suele considerarse inadecuado en la redacción formal."
+  },
+  {
+    "q": "2. Selecciona la oración que presenta un uso incorrecto del gerundio.",
+    "opts": [
+      "El médico revisó al paciente, anotando los síntomas observados.",
+      "La investigadora explicó el procedimiento utilizando una presentación.",
+      "El automóvil chocó contra un poste, provocando daños materiales.",
+      "El acusado fue detenido, siendo condenado tres meses después."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "En D, «siendo condenado» presenta una acción posterior a la detención y no una acción simultánea ni un gerundio con valor explicativo adecuado. Es preferible escribir: «El acusado fue detenido y tres meses después fue condenado»."
+  },
+  {
+    "q": "3. Completa correctamente la oración:<br><br><em>«No comprendo ________ rechazaron la propuesta, pero quisiera conocer el ________ de su decisión».</em>",
+    "opts": [
+      "porque / por qué",
+      "porqué / porque",
+      "por qué / porqué",
+      "por que / porqué"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "«Por qué» se escribe separado y con tilde en las interrogaciones directas o indirectas. «Porqué» es un sustantivo que significa motivo o razón y suele ir acompañado de un determinante."
+  },
+  {
+    "q": "4. ¿Cuál opción completa correctamente el enunciado?<br><br><em>«El comité explicó los motivos ________ se modificó el reglamento y aclaró que la decisión se tomó ________ era necesaria una actualización».</em>",
+    "opts": [
+      "por que / porque",
+      "porque / por qué",
+      "porqué / por que",
+      "por qué / porqué"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En «los motivos por que se modificó», «por que» equivale a «por los cuales». En la segunda parte, «porque» introduce la causa de la actualización."
+  },
+  {
+    "q": "5. Selecciona la opción que utiliza correctamente «con qué».",
+    "opts": [
+      "No sé conque herramienta repararon el equipo.",
+      "No sé con qué herramienta repararon el equipo.",
+      "No sé conqué herramienta repararon el equipo.",
+      "No sé con que herramienta repararon el equipo."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "«Con qué» se escribe separado y con tilde cuando introduce una pregunta directa o indirecta sobre un instrumento o medio. En este caso, se pregunta por la herramienta utilizada."
+  },
+  {
+    "q": "6. Completa correctamente el diálogo:<br><br><em>—El laboratorio no cuenta con el material necesario.<br>—Entonces, debemos conseguirlo, ________ no podremos completar el experimento.</em>",
+    "opts": [
+      "conque",
+      "con qué",
+      "con que",
+      "si no"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "«Si no» introduce una condición negativa: si no conseguimos el material, no podremos completar el experimento. «Conque» expresa consecuencia, mientras que «con qué» pregunta por un instrumento."
+  },
+  {
+    "q": "7. ¿Cuál oración utiliza correctamente «sino»?",
+    "opts": [
+      "No estudió para el examen, sino que se presentó sin preparación.",
+      "Si no entregas el trabajo, perderás puntos.",
+      "No compró un cuaderno, sino una carpeta.",
+      "Si no que estudia, podrá aprobar el examen."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "«Sino» funciona como conjunción adversativa y contrapone dos elementos: no compró un cuaderno, sino una carpeta. «Si no» expresa una condición negativa."
+  },
+  {
+    "q": "8. Lee el enunciado:<br><br><em>«La investigadora no descartó la hipótesis, ________ solicitó nuevas pruebas para comprobarla».</em><br><br>¿Qué opción completa correctamente la oración?",
+    "opts": [
+      "si no",
+      "sino que",
+      "más",
+      "conque"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "«Sino que» introduce una acción que contrasta con la negación anterior y la sustituye: no descartó la hipótesis; por el contrario, solicitó nuevas pruebas."
+  },
+  {
+    "q": "9. Selecciona la oración en la que «mas» está empleado correctamente.",
+    "opts": [
+      "Quería asistir al congreso, mas no consiguió una inscripción.",
+      "Necesito mas tiempo para terminar el proyecto.",
+      "El equipo obtuvo mas puntos que el año pasado.",
+      "Cada vez estudia mas para mejorar sus resultados."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "«Mas», sin tilde, es una conjunción adversativa equivalente a «pero». En las opciones B, C y D debe utilizarse «más», con tilde, porque expresa cantidad o intensidad."
+  },
+  {
+    "q": "10. ¿Cuál oración requiere el uso de «más» con tilde diacrítica?",
+    "opts": [
+      "El resultado fue positivo, mas no definitivo.",
+      "El investigador buscó una explicación, mas no la encontró.",
+      "La estudiante obtuvo más aciertos que sus compañeros.",
+      "Intentó resolver el problema, mas necesitó ayuda."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En C, «más» expresa una cantidad superior de aciertos y lleva tilde. En A, B y D, «mas» equivale a «pero» y se escribe sin tilde."
+  },
+  {
+    "q": "11. ¿Cuál oración está redactada correctamente de manera indirecta, sin reproducir literalmente las palabras de otra persona?",
+    "opts": [
+      "El profesor dijo: «El examen será el lunes».",
+      "El profesor dijo que el examen sería el lunes.",
+      "El profesor dijo que: «El examen será el lunes».",
+      "El profesor dijo el examen será el lunes."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El estilo indirecto integra el contenido del mensaje mediante una oración subordinada introducida por «que». En este caso, el tiempo verbal se ajusta a la estructura de reporte."
+  },
+  {
+    "q": "12. Transforma correctamente a estilo indirecto el siguiente enunciado:<br><br><em>La investigadora afirmó: «He terminado el análisis y presentaré los resultados mañana».</em>",
+    "opts": [
+      "La investigadora afirmó que ha terminado el análisis y presentaré los resultados mañana.",
+      "La investigadora afirmó que había terminado el análisis y presentaría los resultados al día siguiente.",
+      "La investigadora afirmó que terminó el análisis y presentaré los resultados mañana.",
+      "La investigadora afirmó: que había terminado el análisis y presentaría los resultados mañana."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Al trasladar el mensaje a estilo indirecto desde un verbo de reporte en pasado, se ajustan los tiempos verbales y las referencias temporales: «he terminado» pasa a «había terminado» y «mañana» a «al día siguiente»."
+  },
+  {
+    "q": "13. Selecciona la oración que utiliza correctamente el gerundio para expresar una acción simultánea.",
+    "opts": [
+      "El estudiante terminó el examen, entregándolo al día siguiente.",
+      "El estudiante recibió su certificado, consiguiendo empleo un mes después.",
+      "El estudiante caminaba por el pasillo, revisando sus apuntes.",
+      "El estudiante fue seleccionado para la beca, comenzando sus estudios el próximo año."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En C, caminar y revisar los apuntes son acciones que pueden desarrollarse al mismo tiempo. En A, B y D, el gerundio expresa una acción posterior a la principal."
+  },
+  {
+    "q": "14. Identifica la opción que corrige el uso inadecuado del gerundio en la siguiente oración:<br><br><em>«La empresa publicó un comunicado, anunciando nuevas contrataciones al mes siguiente».</em>",
+    "opts": [
+      "La empresa publicó un comunicado, anunciando nuevas contrataciones al mes siguiente.",
+      "La empresa publicó un comunicado y anunció nuevas contrataciones al mes siguiente.",
+      "La empresa publicó un comunicado, anunciado nuevas contrataciones al mes siguiente.",
+      "La empresa publicando un comunicado anunció nuevas contrataciones al mes siguiente."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La expresión «al mes siguiente» indica posterioridad. Por ello, es preferible coordinar las acciones mediante «y anunció», en lugar de utilizar un gerundio que expresa incorrectamente la acción posterior."
+  },
+  {
+    "q": "15. Completa la oración:<br><br><em>«¿______ no participaste en el debate? No lo hice ________ tenía otra actividad académica».</em>",
+    "opts": [
+      "Porqué / por qué",
+      "Porque / por que",
+      "Por que / porqué",
+      "Por qué / porque"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "«Por qué» introduce una pregunta directa sobre la causa. «Porque» introduce la explicación o motivo de la ausencia."
+  },
+  {
+    "q": "16. Selecciona la opción que completa correctamente el enunciado:<br><br><em>«El equipo contaba con los recursos ________ realizar el proyecto; ________, decidió comenzar de inmediato».</em>",
+    "opts": [
+      "conque / con qué",
+      "con que / conque",
+      "con qué / con que",
+      "con que / con qué"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "«Con que» equivale a «con los cuales» y se refiere a los recursos disponibles. «Conque» es una conjunción consecutiva equivalente a «así que», que introduce la decisión de comenzar."
+  },
+  {
+    "q": "17. ¿Cuál oración presenta un uso correcto de «si no»?",
+    "opts": [
+      "No quiero sino que me expliques el procedimiento.",
+      "No solo estudia, si no también trabaja.",
+      "Si no revisas las instrucciones, puedes cometer errores.",
+      "El responsable no fue Juan, si no Pedro."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "«Si no» se escribe separado cuando introduce una condición negativa. En la opción C, la condición es no revisar las instrucciones y la consecuencia posible es cometer errores."
+  },
+  {
+    "q": "18. Lee el siguiente fragmento:<br><br><em>«El informe no solo describe los resultados del estudio, ________ también analiza sus implicaciones clínicas».</em><br><br>¿Cuál opción completa correctamente la estructura correlativa?",
+    "opts": [
+      "sino que",
+      "si no",
+      "mas",
+      "sino"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La construcción «no solo…, sino también…» permite añadir un segundo elemento relacionado con el primero. En esta oración, «sino» enlaza las dos funciones del informe."
+  },
+  {
+    "q": "19. ¿Cuál de las siguientes opciones es la redacción indirecta correcta de la pregunta «¿Dónde dejaste las llaves?», formulada por Ana?",
+    "opts": [
+      "Ana preguntó dónde había dejado las llaves.",
+      "Ana preguntó: «¿Dónde dejaste las llaves?».",
+      "Ana preguntó dónde dejaste las llaves?",
+      "Ana preguntó que dónde había dejado las llaves."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La interrogativa indirecta se integra en la oración principal sin signos de interrogación y conserva la tilde en «dónde». La opción A presenta una estructura adecuada de estilo indirecto."
+  },
+  {
+    "q": "20. Elige la opción que corrige todos los errores de escritura en el siguiente enunciado:<br><br><em>«No se porqué el comité no aceptó la propuesta, mas si no presenta otra alternativa, no podrá participar».</em>",
+    "opts": [
+      "No sé porque el comité no aceptó la propuesta, más sino presenta otra alternativa, no podrá participar.",
+      "No sé por qué el comité no aceptó la propuesta, mas si no presenta otra alternativa, no podrá participar.",
+      "No sé porqué el comité no aceptó la propuesta, más si no presenta otra alternativa, no podrá participar.",
+      "No sé por que el comité no aceptó la propuesta, mas sino presenta otra alternativa, no podrá participar."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "«Sé» lleva tilde por ser una forma del verbo saber; «por qué» introduce una interrogativa indirecta; «mas» equivale a «pero» y no lleva tilde; y «si no» introduce una condición negativa."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 19";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>" + EXAM_TEMA + "</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 19";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> " + EXAM_TEMA + "<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: EXAM_TEMA,
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — " + EXAM_TEMA,
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>
