@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 38</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "9.2 Propiedades físicas del agua (Puntos de ebullición/fusión y capacidad calorífica específica — Tema 38)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. A presión atmosférica de 1 atm, ¿a qué temperatura hierve el agua pura?",
+    "opts": [
+      "0 °C",
+      "50 °C",
+      "100 °C",
+      "273 °C"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "A una presión de 1 atm, el agua pura hierve aproximadamente a 100 °C, temperatura en la que su presión de vapor iguala la presión externa."
+  },
+  {
+    "q": "2. A nivel del mar, el agua hierve cerca de 100 °C. En una localidad de gran altitud, la presión atmosférica es menor. ¿Qué sucede con su punto de ebullición?",
+    "opts": [
+      "Disminuye, porque la presión externa necesaria para igualar la presión de vapor es menor.",
+      "Aumenta, porque las moléculas requieren más energía para moverse.",
+      "Permanece constante, porque depende únicamente de la composición química.",
+      "Se vuelve necesariamente igual a 0 °C."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La ebullición ocurre cuando la presión de vapor iguala la externa; a menor presión atmosférica, dicha igualdad se alcanza a menor temperatura."
+  },
+  {
+    "q": "3. ¿Cuál es el punto de fusión aproximado del agua pura a una presión de 1 atm?",
+    "opts": [
+      "100 °C",
+      "0 °C",
+      "−100 °C",
+      "273 °C"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "A 1 atm de presión, el agua pura se funde a 0 °C, coexistiendo en equilibrio las fases sólida y líquida[cite: 42]."
+  },
+  {
+    "q": "4. Una muestra de agua pura se encuentra en equilibrio entre hielo y líquido a 1 atm. Si el sistema recibe calor mientras ambas fases permanecen presentes, ¿qué sucede con la temperatura durante la fusión?",
+    "opts": [
+      "Aumenta continuamente hasta alcanzar 100 °C.",
+      "Disminuye hasta que desaparece el hielo.",
+      "Permanece cerca de 0 °C mientras ocurre la fusión.",
+      "Se mantiene necesariamente en −273 °C."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Durante el cambio de fase (fusión), el calor absorbido se emplea en romper las interacciones del sólido, manteniendo la temperatura constante a 0 °C[cite: 42]."
+  },
+  {
+    "q": "5. ¿Qué propiedad explica que el agua requiera absorber una cantidad considerable de energía para elevar su temperatura?",
+    "opts": [
+      "Su baja densidad en estado líquido.",
+      "Su capacidad para formar enlaces iónicos.",
+      "Su bajo punto de fusión.",
+      "Su elevada capacidad calorífica específica."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El agua posee una elevada capacidad calorífica específica, requiriendo mucha energía para incrementar su temperatura por unidad de masa[cite: 42]."
+  },
+  {
+    "q": "6. ¿Cuánto calor necesita absorber una muestra de 200 g de agua para aumentar su temperatura de 20 °C a 30 °C? Considera que el calor específico del agua es $4.18\\text{ J/(g·°C)}$.",
+    "opts": [
+      "836 J",
+      "8 360 J",
+      "41 800 J",
+      "83 600 J"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Aplicando $Q = m \\cdot c \\cdot \\Delta T$: $200\\text{ g} \\times 4.18\\text{ J/(g·°C)} \\times (30 - 20)\\text{ °C} = 8\\mathbf{,}360\\text{ J}$[cite: 42]."
+  },
+  {
+    "q": "7. ¿Cuál de las siguientes afirmaciones describe correctamente la capacidad calorífica específica?",
+    "opts": [
+      "Es la energía necesaria para elevar 1 °C la temperatura de una unidad de masa de una sustancia.",
+      "Es la temperatura a la que una sustancia comienza a hervir.",
+      "Es la energía necesaria para convertir cualquier sustancia en gas.",
+      "Es la cantidad de masa que se transforma al absorber calor."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La capacidad calorífica específica mide el calor requerido para elevar en un grado Celsius la temperatura de una unidad de masa de la sustancia[cite: 42]."
+  },
+  {
+    "q": "8. Se suministran $4\\mathbf{,}180\\text{ J}$ a 100 g de agua, inicialmente a 25 °C. Considera que no hay pérdidas de calor y que el calor específico es $4.18\\text{ J/(g·°C)}$. ¿Cuál será su temperatura final?",
+    "opts": [
+      "30 °C",
+      "35 °C",
+      "45 °C",
+      "50 °C"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Calculando el incremento: $\\Delta T = 4180 / (100 \\times 4.18) = 10\\text{ °C}$. La temperatura final es $25 + 10 = 35\\text{ °C}$[cite: 42]."
+  },
+  {
+    "q": "9. ¿Por qué el agua puede moderar los cambios de temperatura en regiones costeras?",
+    "opts": [
+      "Porque no absorbe energía del entorno.",
+      "Porque su temperatura no puede superar los 100 °C.",
+      "Porque su capacidad calorífica específica es elevada y puede absorber o liberar mucha energía con cambios relativamente pequeños de temperatura.",
+      "Porque su punto de fusión es siempre inferior a 0 °C."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Su gran calor específico permite almacenar o liberar grandes cantidades de energía térmica con variaciones de temperatura moderadas[cite: 42]."
+  },
+  {
+    "q": "10. Dos muestras de agua reciben la misma cantidad de calor, sin pérdidas: una tiene una masa de 100 g y la otra de 200 g. Ambas parten de la misma temperatura. ¿Cómo se comparan sus aumentos de temperatura?",
+    "opts": [
+      "La muestra de 200 g aumenta el doble su temperatura.",
+      "La muestra de 100 g aumenta el doble su temperatura.",
+      "Ambas aumentan exactamente la misma temperatura.",
+      "La muestra de 200 g no cambia de temperatura."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El incremento térmico es inversamente proporcional a la masa ($\Delta T = Q/(m \\cdot c)$); la muestra menor (100 g) experimenta el doble de aumento[cite: 42]."
+  },
+  {
+    "q": "11. ¿Qué sucede con la temperatura del agua pura mientras hierve a presión constante de 1 atm, suponiendo que aún hay líquido?",
+    "opts": [
+      "Aumenta continuamente por encima de 100 °C.",
+      "Disminuye gradualmente hasta 0 °C.",
+      "Oscila entre 0 °C y 100 °C.",
+      "Permanece aproximadamente en 100 °C mientras ocurre el cambio de fase."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Durante la ebullición a presión constante, el calor se emplea en la vaporización, manteniendo la temperatura constante en 100 °C[cite: 42]."
+  },
+  {
+    "q": "12. Una olla de presión permite que el agua hierva a una temperatura superior a 100 °C. ¿Cuál es la explicación física correcta?",
+    "opts": [
+      "El recipiente aumenta la capacidad calorífica específica del agua.",
+      "La presión interna reduce el punto de ebullición.",
+      "El aumento de presión eleva la temperatura a la que la presión de vapor del agua iguala la presión externa.",
+      "El agua deja de presentar fuerzas intermoleculares."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Al incrementarse la presión en la olla, se necesita una mayor temperatura para que la presión de vapor iguale la presión externa[cite: 42]."
+  },
+  {
+    "q": "13. ¿Cuál es el valor aproximado de la capacidad calorífica específica del agua líquida en condiciones habituales?",
+    "opts": [
+      "$4.18\\text{ J/(g·°C)}$",
+      "$0.418\\text{ J/(g·°C)}$",
+      "$41.8\\text{ J/(g·°C)}$",
+      "$418\\text{ J/(g·°C)}$"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El calor específico del agua líquida se aproxima a $4.18\\text{ J/(g·°C)}$ a temperatura ambiente[cite: 42]."
+  },
+  {
+    "q": "14. Se desea calentar 250 g de agua de 15 °C a 55 °C. Si su calor específico es de $4.18\\text{ J/(g·°C)}$, ¿qué cantidad de calor debe suministrarse sin pérdidas?",
+    "opts": [
+      "10 450 J",
+      "20 900 J",
+      "41 800 J",
+      "83 600 J"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "$Q = 250\\text{ g} \\times 4.18\\text{ J/(g·°C)} \\times (55 - 15)\\text{ °C} = 41\\mathbf{,}800\\text{ J}$[cite: 42]."
+  },
+  {
+    "q": "15. ¿Cuál comparación entre el agua y una sustancia de menor capacidad calorífica específica es correcta, si ambas tienen la misma masa y reciben la misma cantidad de calor?",
+    "opts": [
+      "El agua siempre alcanza una temperatura mayor.",
+      "El agua experimenta un aumento de temperatura menor.",
+      "Ambas presentan necesariamente el mismo aumento de temperatura.",
+      "La sustancia de menor calor específico no puede calentarse."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "A menor calor específico, mayor es el incremento de temperatura para una misma energía suministrada; por ende, el agua se calienta menos[cite: 42]."
+  },
+  {
+    "q": "16. Se suministran $2\\mathbf{,}090\\text{ J}$ a 50 g de agua. Si su temperatura inicial es de 20 °C y su calor específico es $4.18\\text{ J/(g·°C)}$, ¿cuál es la temperatura final?",
+    "opts": [
+      "25 °C",
+      "35 °C",
+      "30 °C",
+      "40 °C"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "$\\Delta T = 2090 / (50 \\times 4.18) = 10\\text{ °C}$. La temperatura final es $20 + 10 = 30\\text{ °C}$[cite: 42]."
+  },
+  {
+    "q": "17. ¿Cuál afirmación sobre los puntos de fusión y ebullición del agua es correcta?",
+    "opts": [
+      "Son independientes de la presión externa.",
+      "El punto de fusión siempre es mayor que el de ebullición.",
+      "Ambos dependen únicamente de la masa de agua disponible.",
+      "Sus valores de cambio de fase dependen de la presión; los valores habituales de 0 °C y 100 °C corresponden aproximadamente a 1 atm."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los puntos de transición de fase varían según la presión atmosférica; 0 °C y 100 °C aplican a la presión estándar de 1 atm[cite: 42]."
+  },
+  {
+    "q": "18. Una muestra de 300 g de agua absorbe $12\\mathbf{,}540\\text{ J}$ sin cambiar de fase. Si su temperatura inicial es de 18 °C y el calor específico es $4.18\\text{ J/(g·°C)}$, ¿cuál es su temperatura final?",
+    "opts": [
+      "28 °C",
+      "38 °C",
+      "48 °C",
+      "58 °C"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "$\\Delta T = 12540 / (300 \\times 4.18) = 10\\text{ °C}$. Temperatura final: $18 + 10 = 28\\text{ °C}$[cite: 42]."
+  },
+  {
+    "q": "19. Durante la fusión del hielo puro a 1 atm, ¿qué sucede con la energía absorbida?",
+    "opts": [
+      "Se utiliza exclusivamente para aumentar la temperatura del hielo.",
+      "Se emplea principalmente en el cambio de fase, venciendo parte de las interacciones que mantienen la estructura sólida.",
+      "Se transforma por completo en energía eléctrica.",
+      "Disminuye la energía interna del sistema aunque este absorba calor."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El calor absorbido durante la fusión rompe gradualmente el ordenamiento cristalino del hielo sin elevar su temperatura[cite: 42]."
+  },
+  {
+    "q": "20. Se comparan dos muestras de agua líquida a la misma temperatura. La muestra X tiene una masa de 150 g y la muestra Y de 300 g. ¿Cuánto calor adicional necesita la muestra Y, en comparación con X, para elevar ambas 20 °C? ($c = 4.18\\text{ J/(g·°C)}$)",
+    "opts": [
+      "4 180 J",
+      "8 360 J",
+      "12 540 J",
+      "25 080 J"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La diferencia de masa es $150\\text{ g}$. El calor adicional para esta masa extra es $\\Delta Q = 150\\text{ g} \\times 4.18\\text{ J/(g·°C)} \\times 20\\text{ °C} = 12\\mathbf{,}540\\text{ J}$[cite: 42]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 38";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Propiedades físicas del agua: Puntos de ebullición/fusión y capacidad calorífica</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 38";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Propiedades físicas del agua (Puntos de ebullición/fusión y capacidad calorífica)<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Propiedades físicas del agua (Puntos de ebullición/fusión y capacidad calorífica)",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Propiedades físicas del agua",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

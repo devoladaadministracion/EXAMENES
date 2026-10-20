@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 17</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "4.3 Propiedades de los enlaces y las moléculas (Electronegatividad, sustancias, polaridad y puentes de hidrógeno)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál es el tipo de enlace que se espera entre dos átomos cuya diferencia de electronegatividad es muy pequeña y comparten electrones de manera aproximadamente equitativa?",
+    "opts": [
+      "Iónico",
+      "Covalente no polar",
+      "Metálico",
+      "Covalente polar"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Cuando la diferencia de electronegatividad es nula o muy pequeña, los electrones compartidos se distribuyen de manera aproximadamente equitativa y se forma un enlace covalente no polar."
+  },
+  {
+    "q": "2. Dos elementos presentan las siguientes electronegatividades: $X = 3.0$ y $Y = 0.9$. Si la diferencia se calcula como el valor absoluto de la resta, ¿cuál es el resultado y qué tipo de enlace se esperaría de acuerdo con el modelo introductorio de electronegatividad?",
+    "opts": [
+      "2.1; covalente no polar",
+      "1.1; covalente polar",
+      "3.9; metálico",
+      "2.1; predominantemente iónico"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La diferencia es $|3.0 - 0.9| = 2.1$. En el modelo introductorio, una diferencia grande como esta suele asociarse con un enlace predominantemente iónico."
+  },
+  {
+    "q": "3. ¿Cuál de las siguientes sustancias presenta enlaces covalentes polares dentro de sus moléculas?",
+    "opts": [
+      "$\\text{HCl}$",
+      "$\\text{O}_2$",
+      "$\\text{N}_2$",
+      "$\\text{Cl}_2$"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En $\\text{HCl}$, el cloro es más electronegativo, por lo que atrae con mayor fuerza el par de electrones compartido; las moléculas diatómicas homonucleares son no polares[cite: 19]."
+  },
+  {
+    "q": "4. Se tienen los siguientes enlaces y diferencias de electronegatividad aproximadas:\nEnlace A: diferencia de 0.0\nEnlace B: diferencia de 0.8\nEnlace C: diferencia de 2.0\n¿Cuál interpretación es la más adecuada según el modelo introductorio?",
+    "opts": [
+      "A es iónico, B es metálico y C es covalente no polar.",
+      "A es covalente polar, B es iónico y C es metálico.",
+      "A es covalente no polar, B es covalente polar y C tiene carácter predominantemente iónico.",
+      "A es metálico, B es covalente no polar y C es covalente polar."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Una diferencia nula corresponde a covalente no polar; una intermedia a covalente polar; y una grande suele asociarse con carácter predominantemente iónico[cite: 19]."
+  },
+  {
+    "q": "5. ¿Cuál propiedad caracteriza generalmente a los compuestos iónicos?",
+    "opts": [
+      "Son gases a temperatura ambiente y tienen puntos de fusión bajos.",
+      "Conducen electricidad fácilmente en estado sólido porque sus iones se desplazan libremente.",
+      "Están constituidos exclusivamente por moléculas independientes.",
+      "Suelen tener puntos de fusión elevados y conducen electricidad cuando están fundidos o disueltos en agua, si son solubles."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "En los sólidos iónicos, los iones están fijos en una red cristalina; al fundirse o disolverse, los iones móviles transportan carga eléctrica[cite: 19]."
+  },
+  {
+    "q": "6. Una sustancia sólida no conduce electricidad, pero al fundirse sí lo hace. Además, presenta un punto de fusión elevado. ¿Qué estructura explica mejor estas propiedades?",
+    "opts": [
+      "Una red cristalina iónica cuyos iones adquieren movilidad al fundirse.",
+      "Una red molecular formada por moléculas no polares con electrones inmóviles.",
+      "Un conjunto de átomos aislados unidos por fuerzas gravitacionales.",
+      "Una estructura molecular en la que los protones se desplazan libremente."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los sólidos iónicos no conducen en estado sólido por tener iones restringidos, pero en estado fundido adquieren movilidad para transportar carga[cite: 19]."
+  },
+  {
+    "q": "7. ¿Cuál de las siguientes sustancias está formada por moléculas no polares debido a que sus enlaces son entre átomos iguales?",
+    "opts": [
+      "$\\text{H}_2\\text{O}$",
+      "$\\text{HCl}$",
+      "$\\text{O}_2$",
+      "$\\text{NH}_3$"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En $\\text{O}_2$, ambos átomos tienen la misma electronegatividad, por lo que comparten los electrones de manera equitativa y el enlace es no polar[cite: 19]."
+  },
+  {
+    "q": "8. El dióxido de carbono, $\\text{CO}_2$, posee dos enlaces $\\text{C}=\\text{O}$ polares. Sin embargo, la molécula completa es no polar. ¿Cuál es la razón?",
+    "opts": [
+      "Los enlaces $\\text{C}=\\text{O}$ no presentan diferencia de electronegatividad.",
+      "La molécula tiene geometría lineal y los dipolos de enlace se cancelan entre sí.",
+      "El carbono transfiere todos sus electrones al oxígeno.",
+      "Los enlaces covalentes polares siempre producen moléculas no polares."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El $\\text{CO}_2$ tiene geometría lineal; sus dipolos de enlace tienen igual magnitud y sentidos opuestos, por lo que su suma vectorial es cero[cite: 19]."
+  },
+  {
+    "q": "9. ¿Cuál de las siguientes moléculas es polar?",
+    "opts": [
+      "$\\text{CO}_2$",
+      "$\\text{O}_2$",
+      "$\\text{CH}_4$",
+      "$\\text{H}_2\\text{O}$"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El agua tiene geometría angular y enlaces O–H polares cuyos dipolos no se cancelan, presentando un dipolo neto[cite: 19]."
+  },
+  {
+    "q": "10. ¿Cuál comparación entre $\\text{CH}_4$ y $\\text{NH}_3$ es correcta respecto a su polaridad molecular?",
+    "opts": [
+      "Ambas moléculas son polares porque contienen enlaces covalentes.",
+      "$\\text{CH}_4$ es polar y $\\text{NH}_3$ es no polar porque el nitrógeno es más electronegativo.",
+      "$\\text{CH}_4$ es no polar por su geometría tetraédrica simétrica, mientras que $\\text{NH}_3$ es polar por su geometría piramidal trigonal.",
+      "Ambas moléculas son no polares porque contienen hidrógeno."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En $\\text{CH}_4$, la geometría tetraédrica simétrica cancela los dipolos; en $\\text{NH}_3$, la geometría piramidal trigonal produce un dipolo neto[cite: 19]."
+  },
+  {
+    "q": "11. ¿Qué interacción intermolecular se forma cuando el hidrógeno está enlazado covalentemente a un átomo muy electronegativo, como N, O o F, y es atraído por un átomo electronegativo cercano?",
+    "opts": [
+      "Enlace metálico",
+      "Puente de hidrógeno",
+      "Enlace iónico",
+      "Enlace covalente doble"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El puente de hidrógeno es una interacción atractiva fuerte entre un H unido a N, O o F y otro átomo electronegativo con par libre[cite: 19]."
+  },
+  {
+    "q": "12. El agua tiene un punto de ebullición relativamente alto para una molécula de su masa molar. ¿Qué interacción explica principalmente esta propiedad?",
+    "opts": [
+      "La formación de enlaces metálicos entre moléculas de agua.",
+      "La transferencia permanente de electrones entre moléculas.",
+      "La ausencia de fuerzas intermoleculares.",
+      "Los puentes de hidrógeno entre moléculas de agua, que requieren energía para separarse."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los puentes de hidrógeno generan fuertes atracciones intermoleculares que requieren energía significativa para vencerse durante la ebullición[cite: 19]."
+  },
+  {
+    "q": "13. ¿Cuál sustancia puede formar puentes de hidrógeno entre sus moléculas puras?",
+    "opts": [
+      "$\\text{CH}_4$",
+      "$\\text{H}_2\\text{S}$",
+      "$\\text{NH}_3$",
+      "$\\text{CO}_2$"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El amoniaco ($\\text{NH}_3$) posee enlaces N–H y pares libres en el nitrógeno, permitiendo la formación de puentes de hidrógeno[cite: 19]."
+  },
+  {
+    "q": "14. Se comparan $\\text{H}_2\\text{O}$ y $\\text{H}_2\\text{S}$. Aunque ambas moléculas tienen una estructura angular, el agua presenta puentes de hidrógeno mucho más importantes. ¿Cuál es la explicación más adecuada?",
+    "opts": [
+      "El oxígeno es más electronegativo y pequeño que el azufre, lo que favorece interacciones de puente de hidrógeno en el agua.",
+      "El azufre no puede formar ningún enlace covalente.",
+      "El agua es una molécula no polar y el $\\text{H}_2\\text{S}$ es iónico.",
+      "El $\\text{H}_2\\text{S}$ tiene enlaces metálicos que impiden la ebullición."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La alta electronegatividad y pequeño radio del oxígeno generan enlaces O–H muy polares y puentes de hidrógeno intensos, a diferencia del azufre[cite: 19]."
+  },
+  {
+    "q": "15. ¿Cuál propiedad de los metales se explica por la presencia de electrones deslocalizados?",
+    "opts": [
+      "La incapacidad de conducir electricidad.",
+      "La conductividad eléctrica y térmica.",
+      "La formación exclusiva de moléculas discretas.",
+      "La ausencia de interacción entre sus átomos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Los electrones deslocalizados se desplazan libremente a través de la red metálica, facilitando la conducción de electricidad y calor[cite: 19]."
+  },
+  {
+    "q": "16. Un compuesto está formado por moléculas covalentes no polares y presenta un punto de ebullición bajo. ¿Qué fuerzas intermoleculares predominan generalmente entre sus moléculas?",
+    "opts": [
+      "Puentes de hidrógeno fuertes.",
+      "Atracciones iónicas entre cargas completas.",
+      "Enlaces metálicos entre cationes.",
+      "Fuerzas de dispersión de London."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las moléculas no polares experimentan principalmente fuerzas de dispersión de London, que suelen ser débiles en moléculas pequeñas[cite: 19]."
+  },
+  {
+    "q": "17. ¿Cuál de las siguientes sustancias es más probable que sea soluble en agua debido a su carácter iónico?",
+    "opts": [
+      "$\\text{NaCl}$",
+      "$\\text{O}_2$",
+      "$\\text{CH}_4$",
+      "$\\text{CCl}_4$"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El $\\text{NaCl}$ es un compuesto iónico soluble en agua gracias a las interacciones ion-dipolo favorables que estabilizan los iones en solución[cite: 19]."
+  },
+  {
+    "q": "18. Un estudiante afirma: «Toda sustancia con enlaces polares es una molécula polar». ¿Cuál opción evalúa correctamente esa afirmación?",
+    "opts": [
+      "Es correcta porque la polaridad de cada enlace siempre se suma en la misma dirección.",
+      "Es correcta únicamente en sustancias iónicas.",
+      "Es incorrecta porque la geometría molecular puede hacer que los dipolos de enlace se cancelen, como ocurre en $\\text{CO}_2$.",
+      "Es incorrecta porque los enlaces polares no generan dipolos."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La polaridad molecular depende de la geometría; si los dipolos de enlace se simulan y cancelan (como en el $\\text{CO}_2$), la molécula es no polar[cite: 19]."
+  },
+  {
+    "q": "19. ¿Cuál de las siguientes moléculas presenta enlaces polares y un dipolo molecular neto?",
+    "opts": [
+      "$\\text{N}_2$",
+      "$\\text{HCl}$",
+      "$\\text{O}_2$",
+      "$\\text{Cl}_2$"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El $\\text{HCl}$ es una molécula diatómica heteronuclear con diferencia de electronegatividad, por lo que posee un dipolo neto[cite: 19]."
+  },
+  {
+    "q": "20. Se comparan dos sustancias moleculares: X es polar y Y es no polar. Si ambas tienen masas molares y tamaños semejantes, ¿qué afirmación es generalmente razonable?",
+    "opts": [
+      "Y siempre tendrá un punto de ebullición más alto que X.",
+      "X no presenta fuerzas de dispersión de London.",
+      "Ambas tendrán necesariamente el mismo punto de ebullición.",
+      "X puede presentar interacciones dipolo-dipolo adicionales a las fuerzas de dispersión, lo que puede elevar su punto de ebullición."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las moléculas polares poseen atracciones dipolo-dipolo complementarias a las fuerzas de London, lo que suele elevar sus puntos de ebullición comparados con no polares equivalentes[cite: 19]."
+  },
+  {
+    "q": "21. ¿Cuál afirmación describe correctamente el enlace covalente coordinado o dativo?",
+    "opts": [
+      "El par de electrones compartido es aportado inicialmente por un solo átomo.",
+      "Cada átomo aporta obligatoriamente un electrón al enlace.",
+      "Se produce exclusivamente entre metales.",
+      "Se forma mediante la transferencia completa de protones."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En el enlace covalente coordinado, los dos electrones del par compartido provienen inicialmente de un átomo donador[cite: 19]."
+  },
+  {
+    "q": "22. Un enlace A–B presenta una diferencia de electronegatividad de 0.4 y otro enlace C–D tiene una diferencia de 1.7. Sin considerar otros factores, ¿cuál afirmación es la más adecuada?",
+    "opts": [
+      "A–B es necesariamente iónico y C–D es no polar.",
+      "Ambos enlaces son metálicos.",
+      "C–D presenta mayor polaridad de enlace que A–B y podría mostrar un carácter iónico importante según el modelo utilizado.",
+      "La diferencia de electronegatividad no se relaciona con la distribución electrónica."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Una mayor diferencia de electronegatividad se traduce en mayor polaridad de enlace, pudiendo alcanzar carácter iónico significativo según el umbral de análisis[cite: 19]."
+  },
+  {
+    "q": "23. ¿Cuál de las siguientes sustancias presenta una red covalente tridimensional?",
+    "opts": [
+      "$\\text{H}_2\\text{O}$",
+      "$\\text{NaCl}$",
+      "$\\text{CO}_2$",
+      "Diamante"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "En el diamante, cada átomo de carbono se enlaza covalentemente con otros cuatro en una red tridimensional muy extensa y resistente[cite: 19]."
+  },
+  {
+    "q": "24. Una sustancia es muy dura, tiene un punto de fusión muy elevado y no conduce electricidad en condiciones ordinarias. ¿Cuál estructura es compatible con esas propiedades?",
+    "opts": [
+      "Una red covalente como la del diamante.",
+      "Un conjunto de moléculas pequeñas unidas únicamente por fuerzas de dispersión débiles.",
+      "Un gas formado por átomos aislados.",
+      "Una sustancia molecular con interacciones intermoleculares muy débiles."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Las redes covalentes tridimensionales requieren gran energía para alterar sus enlaces, otorgándoles gran dureza, altos puntos de fusión y nula conductividad[cite: 19]."
+  },
+  {
+    "q": "25. ¿Cuál es la principal diferencia entre un enlace químico intramolecular y un puente de hidrógeno intermolecular?",
+    "opts": [
+      "Ambos son siempre enlaces iónicos.",
+      "El enlace intramolecular une átomos dentro de una entidad química, mientras que el puente de hidrógeno puede atraer moléculas entre sí.",
+      "El puente de hidrógeno solo aparece dentro de los metales.",
+      "Los enlaces intramoleculares siempre son más débiles que las fuerzas intermoleculares."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Los enlaces intramoleculares unen átomos dentro de una molécula o ion, mientras que los puentes de hidrógeno son interacciones intermoleculares de atracción[cite: 19]."
+  },
+  {
+    "q": "26. ¿Cuál de las siguientes moléculas puede formar puentes de hidrógeno entre sus moléculas puras y presenta geometría angular?",
+    "opts": [
+      "$\\text{CO}_2$",
+      "$\\text{CH}_4$",
+      "$\\text{H}_2\\text{O}$",
+      "$\\text{HCl}$"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El agua ($\\text{H}_2\\text{O}$) presenta geometría angular y enlaces O–H con pares libres, posibilitando la formación de puentes de hidrógeno[cite: 19]."
+  },
+  {
+    "q": "27. ¿Qué tipo de interacción explica principalmente la atracción entre un ion $\\text{Na}^+$ y el extremo parcialmente negativo de una molécula de agua?",
+    "opts": [
+      "Enlace metálico",
+      "Fuerza de dispersión de London exclusivamente",
+      "Enlace covalente no polar",
+      "Interacción ion-dipolo"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La atracción electrostática entre un ion con carga neta y el dipolo parcial de una molécula polar (como el agua) se denomina interacción ion-dipolo[cite: 19]."
+  },
+  {
+    "q": "28. ¿Cuál afirmación compara correctamente los puntos de ebullición de $\\text{CH}_4$ y $\\text{H}_2\\text{O}$?",
+    "opts": [
+      "El $\\text{H}_2\\text{O}$ tiene un punto de ebullición mucho mayor porque sus moléculas forman puentes de hidrógeno, mientras que en $\\text{CH}_4$ predominan las fuerzas de dispersión de London.",
+      "El $\\text{CH}_4$ tiene un punto de ebullición mayor porque sus enlaces C–H son más polares que los O–H.",
+      "Ambas sustancias tienen puntos de ebullición semejantes porque contienen hidrógeno.",
+      "El $\\text{H}_2\\text{O}$ hierve a menor temperatura porque los puentes de hidrógeno eliminan las fuerzas intermoleculares."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El agua cuenta con una red de puentes de hidrógeno que eleva considerablemente su punto de ebullición frente al metano, sustancia no polar gobernada por fuerzas de London[cite: 19]."
+  },
+  {
+    "q": "29. ¿Cuál afirmación sobre la polaridad de una molécula es correcta?",
+    "opts": [
+      "Depende exclusivamente de la masa molar.",
+      "Depende de la polaridad de los enlaces y de la geometría molecular.",
+      "Toda molécula con más de dos átomos es polar.",
+      "Las moléculas no polares no pueden tener enlaces covalentes."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La polaridad molecular global surge de la contribución vectorial de los dipolos de enlace combinada con la geometría espacial de la molécula[cite: 19]."
+  },
+  {
+    "q": "30. Se comparan tres sustancias:\nX: sólido cristalino, punto de fusión alto y conductor cuando está fundido.\nY: sustancia molecular no polar con punto de ebullición bajo.\nZ: sustancia molecular que forma puentes de hidrógeno entre sus moléculas.\n¿Cuál asociación es la más adecuada?",
+    "opts": [
+      "X: covalente molecular; Y: iónica; Z: metálica.",
+      "X: metálica; Y: iónica; Z: covalente no polar sin interacciones intermoleculares.",
+      "X: iónica; Y: molecular con fuerzas de dispersión predominantes; Z: molecular con puentes de hidrógeno.",
+      "X: molecular no polar; Y: red covalente; Z: sustancia metálica."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "X corresponde a un compuesto iónico, Y a una sustancia molecular no polar con fuerzas de London débiles, y Z a una sustancia molecular con puentes de hidrógeno[cite: 19]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 17";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Propiedades de los enlaces y las moléculas</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 17";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Propiedades de los enlaces y las moléculas<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Propiedades de los enlaces y las moléculas",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Propiedades de los enlaces y las moléculas",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

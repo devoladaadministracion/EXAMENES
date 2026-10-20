@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 50</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "11.5 Reacciones y soluciones ácido-base (Neutralización, hidrólisis y buffer — Tema 50)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál es el producto principal de la reacción entre un ácido fuerte y una base fuerte en cantidades estequiométricas, considerando que ambos son monopróticos o monobásicos?",
+    "opts": [
+      "Una sal y agua.",
+      "Un óxido y agua.",
+      "Un ácido débil y un metal.",
+      "Una base y un gas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En una neutralización entre un ácido fuerte y una base fuerte, los iones $\\text{H}_3\\text{O}^+$ y $\\text{OH}^-$ reaccionan para generar agua, mientras que los iones restantes forman una sal."
+  },
+  {
+    "q": "2. Se mezclan $25\\text{ mL}$ de $\\text{HCl } 0.20\\text{ mol/L}$ con $25\\text{ mL}$ de $\\text{NaOH } 0.20\\text{ mol/L}$. ¿Cuál es el carácter de la disolución final a 25 °C, suponiendo volúmenes aditivos y una neutralización completa?",
+    "opts": [
+      "Ácido, porque el $\\text{HCl}$ es un ácido fuerte.",
+      "Básico, porque se forma $\\text{NaOH}$ en exceso.",
+      "Neutro, porque las cantidades de ácido y base son equivalentes.",
+      "Ácido, porque se forma $\\text{NaCl}$."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Ambos reactivos aportan $0.005\\text{ mol}$ y reaccionan en proporción 1:1 sin excedentes; la sal formada ($\\text{NaCl}$) no sufre hidrólisis relevante, resultando en una disolución neutra."
+  },
+  {
+    "q": "3. ¿Qué nombre recibe el proceso mediante el cual los iones de una sal reaccionan con el agua y pueden modificar el pH de la disolución?",
+    "opts": [
+      "Neutralización.",
+      "Hidrólisis.",
+      "Oxidación.",
+      "Precipitación."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La hidrólisis salina ocurre cuando los iones de una sal interactúan con el agua alterando la concentración de iones $\\text{H}_3\\text{O}^+$ u $\\text{OH}^-."
+  },
+  {
+    "q": "4. ¿Cuál de las siguientes sales produce una disolución básica al disolverse en agua, a una concentración apreciable?",
+    "opts": [
+      "\\text{NaCl}$.",
+      "\\text{KNO}_3$.",
+      "\\text{NH}_4\\text{Cl}$.",
+      "\\text{CH}_3\\text{COONa}$."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El ion acetato ($\\text{CH}_3\\text{COO}^-$) es la base conjugada de un ácido débil y reacciona con el agua produciendo iones $\\text{OH}^-$, tornando la disolución básica."
+  },
+  {
+    "q": "5. ¿Cuál de las siguientes sales genera una disolución ácida por hidrólisis de uno de sus iones?",
+    "opts": [
+      "\\text{NaCl}$.",
+      "\\text{KBr}$.",
+      "\\text{NH}_4\\text{Cl}$.",
+      "\\text{NaNO}_3$"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El ion amonio ($\\text{NH}_4^+$) actúa como ácido conjugado y reacciona con el agua liberando iones $\\text{H}_3\\text{O}^+$, lo que acidifica el medio."
+  },
+  {
+    "q": "6. Se disuelve acetato de sodio en agua. ¿Cuál es la ecuación que representa la hidrólisis del ion acetato?",
+    "opts": [
+      "\\text{CH}_3\\text{COO}^- + \\text{H}_2\\text{O} \\rightleftharpoons \\text{CH}_3\\text{COOH} + \\text{OH}^-$.",
+      "\\text{CH}_3\\text{COO}^- + \\text{H}_2\\text{O} \\rightleftharpoons \\text{CH}_3\\text{COO}^- + \\text{H}_3\\text{O}^+$.",
+      "\\text{Na}^+ + \\text{H}_2\\text{O} \\rightleftharpoons \\text{NaOH} + \\text{H}^+$.",
+      "\\text{CH}_3\\text{COOH} + \\text{OH}^- \\rightarrow \\text{CH}_3\\text{COO}^- + \\text{H}_2\\text{O}$."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El ion acetato capta un protón del agua formando ácido acético y liberando $\\text{OH}^-$."
+  },
+  {
+    "q": "7. ¿Cuál es la función principal de una solución amortiguadora o buffer?",
+    "opts": [
+      "Impedir por completo cualquier cambio de pH.",
+      "Mantener el pH relativamente estable ante pequeñas adiciones de ácido o base.",
+      "Neutralizar cualquier cantidad de ácido fuerte.",
+      "Mantener constante la concentración de todas las especies químicas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Una solución buffer mitiga los cambios bruscos de pH al agregar pequeñas cantidades de ácidos o bases gracias a su par conjugado."
+  },
+  {
+    "q": "8. ¿Cuál de las siguientes mezclas puede formar una solución amortiguadora?",
+    "opts": [
+      "\\text{HCl} y \\text{NaCl}$.",
+      "\\text{NaOH} y \\text{NaCl}$.",
+      "\\text{HNO}_3$ y \\text{KNO}_3$.",
+      "\\text{CH}_3\\text{COOH} y \\text{CH}_3\\text{COONa}$."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Un ácido débil ($\\text{CH}_3\\text{COOH}$) combinado con su sal y base conjugada ($\\text{CH}_3\\text{COONa}$) constituye un sistema amortiguador clásico."
+  },
+  {
+    "q": "9. En una solución amortiguadora formada por ácido acético y acetato de sodio, ¿qué componente reacciona principalmente con una pequeña cantidad de $\\text{HCl}$ añadido?",
+    "opts": [
+      "El ion acetato.",
+      "El ion sodio.",
+      "El agua exclusivamente.",
+      "El ion cloruro."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El ion acetato ($\\text{A}^-$) neutraliza los protones aportados por el $\\text{HCl}$ transformándose en ácido acético, evitando una caída drástica del pH."
+  },
+  {
+    "q": "10. Una solución buffer contiene cantidades comparables de ácido débil y base conjugada. ¿Qué ocurre al añadir una pequeña cantidad de $\\text{NaOH}$?",
+    "opts": [
+      "El pH disminuye considerablemente.",
+      "La base conjugada se transforma completamente en ácido débil.",
+      "Parte del ácido débil reacciona con el $\\text{OH}^-$ y forma su base conjugada y agua.",
+      "El pH permanece exactamente constante, sin importar la cantidad añadida."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Los iones hidróxido añadidos reaccionan con el ácido débil del sistema ($\\text{HA} + \\text{OH}^- \\rightarrow \\text{A}^- + \\text{H}_2\\text{O}$), estabilizando el pH."
+  },
+  {
+    "q": "11. ¿Cuál de las siguientes afirmaciones sobre la hidrólisis de sales es correcta?",
+    "opts": [
+      "Todas las sales producen disoluciones neutras.",
+      "Solo las sales insolubles experimentan hidrólisis.",
+      "La hidrólisis ocurre únicamente cuando se mezclan un ácido fuerte y una base fuerte.",
+      "El pH de una disolución salina depende de la naturaleza ácido-base de sus iones."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El carácter ácido, básico o neutro de una sal disuelta depende directamente de las propiedades ácido-base específicas de los iones que la componen."
+  },
+  {
+    "q": "12. Se prepara una disolución acuosa de $\\text{NH}_4\\text{Cl}$. ¿Qué reacción explica principalmente su carácter ácido?",
+    "opts": [
+      "\\text{Cl}^- + \\text{H}_2\\text{O} \\rightleftharpoons \\text{HCl} + \\text{OH}^-$.",
+      "\\text{NH}_4^+ + \\text{H}_2\\text{O} \\rightleftharpoons \\text{NH}_3 + \\text{H}_3\\text{O}^+$.",
+      "\\text{NH}_4^+ + \\text{OH}^- \\rightarrow \\text{NH}_4\\text{OH}$.",
+      "\\text{NH}_3 + \\text{H}_2\\text{O} \\rightleftharpoons \\text{NH}_4^+ + \\text{OH}^-$."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El ion amonio cede un protón al agua generando iones $\\text{H}_3\\text{O}^+$, mientras que el ion cloruro no experimenta hidrólisis significativa."
+  },
+  {
+    "q": "13. ¿Qué productos se obtienen en la neutralización completa de ácido sulfúrico con hidróxido de sodio?",
+    "opts": [
+      "\\text{NaSO}_4$ y \\text{H}_2$.",
+      "\\text{Na}_2\\text{SO}_3$ y \\text{H}_2\\text{O}$.",
+      "\\text{Na}_2\\text{SO}_4$ y \\text{H}_2\\text{O}$.",
+      "\\text{NaHSO}_4$ y \\text{O}_2$."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La estequiometría requiere dos moles de $\\text{NaOH}$ por cada mol de $\\text{H}_2\\text{SO}_4$, obteniéndose sulfato de sodio y agua ($\\text{Na}_2\\text{SO}_4 + 2\\text{H}_2\\text{O}$)."
+  },
+  {
+    "q": "14. Se mezclan $40\\text{ mL}$ de $\\text{HCl } 0.10\\text{ mol/L}$ con $20\\text{ mL}$ de $\\text{NaOH } 0.10\\text{ mol/L}$. ¿Cuál es el reactivo que queda en exceso y cuántos moles sobran?",
+    "opts": [
+      "\\text{NaOH}; $2.0 \\times 10^{-3}\\text{ mol}$.",
+      "\\text{HCl}; $2.0 \\times 10^{-3}\\text{ mol}$.",
+      "\\text{HCl}; $4.0 \\times 10^{-3}\\text{ mol}$.",
+      "\\text{NaOH}; $4.0 \\times 10^{-3}\\text{ mol}$."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El $\\text{HCl}$ aporta $0.004\\text{ mol}$ y el $\\text{NaOH}$ aporta $0.002\\text{ mol}$. Tras reaccionar en proporción 1:1, quedan $0.002\\text{ mol}$ ($2.0 \\times 10^{-3}\\text{ mol}$) de $\\text{HCl}$ en exceso."
+  },
+  {
+    "q": "15. ¿Cuál de las siguientes combinaciones puede actuar como solución amortiguadora básica?",
+    "opts": [
+      "\\text{HCl} y \\text{NaCl}$.",
+      "\\text{HNO}_3$ y \\text{NaNO}_3$.",
+      "\\text{NaOH} y \\text{KCl}$.",
+      "\\text{NH}_3$ y \\text{NH}_4\\text{Cl}$."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Una base débil ($\\text{NH}_3$) y su ácido conjugado en forma de sal ($\\text{NH}_4\\text{Cl}$) conforman un sistema amortiguador de carácter básico."
+  },
+  {
+    "q": "16. Una solución amortiguadora contiene un ácido débil $\\text{HA}$ y su base conjugada $\\text{A}^-$ en concentraciones iguales. Según Henderson-Hasselbalch, ¿cuál es la relación entre el pH y el $\\text{p}K_a$?",
+    "opts": [
+      "\\text{pH} = \\text{p}K_a$.",
+      "\\text{pH} = \\text{p}K_a + 1$.",
+      "\\text{pH} = \\text{p}K_a - 1$.",
+      "\\text{pH} = 2\\text{p}K_a$."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Dado que $\\log(1) = 0$ cuando las concentraciones son iguales, la ecuación se reduce a $\\text{pH} = \\text{p}K_a$."
+  },
+  {
+    "q": "17. ¿Qué sucede cuando se añade una pequeña cantidad de ácido fuerte a una solución amortiguadora formada por una base débil y su ácido conjugado?",
+    "opts": [
+      "El ácido añadido desaparece sin reaccionar.",
+      "La base débil convierte todo el ácido en una sal insoluble.",
+      "La base débil consume parte del ácido añadido y forma su ácido conjugado.",
+      "El pH aumenta necesariamente de manera considerable."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La base débil capta los protones del ácido fuerte introducido, transformándose en su ácido conjugado y protegiendo al sistema de cambios bruscos de pH."
+  },
+  {
+    "q": "18. Una solución amortiguadora de ácido acético y acetato tiene $\\text{p}K_a = 4.76$. Si la concentración de acetato es diez veces la del ácido acético, ¿cuál es su pH aproximado?",
+    "opts": [
+      "3.76",
+      "4.76",
+      "5.76",
+      "14.00"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Aplicando $\\text{pH} = \\text{p}K_a + \\log([\\text{A}^-] / [\\text{HA}]) = 4.76 + \\log(10) = 4.76 + 1 = 5.76$."
+  },
+  {
+    "q": "19. ¿Cuál de las siguientes situaciones puede disminuir la eficacia de una solución amortiguadora?",
+    "opts": [
+      "Añadir una cantidad pequeña de agua, sin modificar significativamente la proporción entre sus componentes.",
+      "Añadir una cantidad de ácido o base que exceda su capacidad amortiguadora.",
+      "Mantener el sistema a temperatura constante.",
+      "Utilizar un ácido débil junto con su base conjugada."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Si la cantidad de ácido o base agregada supera los límites de la capacidad del buffer, los componentes se agotan y el pH experimenta variaciones drásticas."
+  },
+  {
+    "q": "20. Se mezclan cantidades equimolares de ácido acético y $\\text{NaOH}$. Considerando una neutralización completa, ¿qué especie predomina como producto y qué carácter presenta la solución a 25 °C?",
+    "opts": [
+      "Ácido acético; ácido.",
+      "Acetato; básico.",
+      "Acetato; neutro.",
+      "Hidróxido de sodio; básico."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La reacción consume los reactivos para formar acetato. Como el ion acetato se hidroliza generando iones $\\text{OH}^-$, la disolución resultante es básica."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 50";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Neutralización, hidrólisis y soluciones amortiguadoras</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 50";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Neutralización, hidrólisis y soluciones amortiguadoras<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Neutralización, hidrólisis y soluciones amortiguadoras",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Neutralización, hidrólisis y soluciones amortiguadoras",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

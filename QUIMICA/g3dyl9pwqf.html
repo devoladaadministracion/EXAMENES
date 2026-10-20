@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "2.3 Estructura electrónica y teoría cuántica: Orbitales, configuraciones y Heisenberg";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Qué se entiende por orbital atómico en el modelo mecánico-cuántico?",
+    "opts": [
+      "Una trayectoria circular fija que sigue el electrón alrededor del núcleo.",
+      "Una región del espacio donde existe una probabilidad significativa de encontrar un electrón.",
+      "Una órbita en la que el electrón siempre mantiene la misma velocidad.",
+      "Una región del núcleo donde se concentran los protones y neutrones."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Un orbital atómico es una función de onda que describe el estado de un electrón y permite determinar la distribución de probabilidad de encontrarlo en una región del espacio[cite: 8]. No representa una trayectoria definida[cite: 8]."
+  },
+  {
+    "q": "2. ¿Cuántos orbitales puede contener como máximo el subnivel $3p$ y cuántos electrones puede alojar en total?",
+    "opts": [
+      "1 orbital y 2 electrones.",
+      "3 orbitales y 6 electrones.",
+      "5 orbitales y 10 electrones.",
+      "7 orbitales y 14 electrones."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Todo subnivel $p$ tiene tres orbitales, correspondientes a las orientaciones espaciales posibles[cite: 8]. Cada orbital puede alojar como máximo dos electrones con espines opuestos; por ello, el subnivel $p$ admite seis electrones[cite: 8]."
+  },
+  {
+    "q": "3. ¿Cuál es el número máximo de electrones que puede contener el segundo nivel principal de energía de un átomo?",
+    "opts": [
+      "2",
+      "6",
+      "8",
+      "18"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La capacidad máxima de un nivel principal se calcula mediante la expresión $2n^2$, donde $n$ es el número cuántico principal[cite: 8]. Para $n = 2$: $2(2^2) = 8$ electrones[cite: 8]."
+  },
+  {
+    "q": "4. Un átomo neutro tiene número atómico 17. ¿Cuál es la configuración electrónica en estado fundamental?",
+    "opts": [
+      "$1s^2 2s^2 2p^6 3s^2 3p^5$",
+      "$1s^2 2s^2 2p^6 3s^2 3p^6$",
+      "$1s^2 2s^2 2p^5 3s^2 3p^6$",
+      "$1s^2 2s^2 2p^6 3s^1 3p^6$"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El átomo neutro de cloro tiene 17 electrones[cite: 8]. Al distribuirlos siguiendo el orden de llenado de los subniveles, se obtiene $1s^2 2s^2 2p^6 3s^2 3p^5$[cite: 8]. La suma de los exponentes es 17[cite: 8]."
+  },
+  {
+    "q": "5. ¿Qué principio establece que dos electrones de un mismo átomo no pueden tener los cuatro números cuánticos idénticos?",
+    "opts": [
+      "Principio de máxima multiplicidad de Hund.",
+      "Principio de incertidumbre de Heisenberg.",
+      "Principio de exclusión de Pauli.",
+      "Principio de conservación de la energía."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El principio de exclusión de Pauli establece que no pueden existir dos electrones de un mismo átomo con los cuatro números cuánticos iguales[cite: 8]. Por ello, cada orbital puede contener como máximo dos electrones con espines opuestos[cite: 8]."
+  },
+  {
+    "q": "6. ¿Cuál de las siguientes configuraciones electrónicas corresponde al estado fundamental de un átomo de oxígeno, cuyo número atómico es 8?",
+    "opts": [
+      "$1s^2 2s^2 2p^2$",
+      "$1s^2 2s^2 2p^4$",
+      "$1s^2 2s^2 2p^6$",
+      "$1s^2 2s^1 2p^5$"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El oxígeno neutro tiene ocho electrones[cite: 8]. Los primeros dos ocupan el subnivel $1s$, los siguientes dos el $2s$ y los cuatro restantes el $2p$[cite: 8]. Por tanto, su configuración es $1s^2 2s^2 2p^4$[cite: 8]."
+  },
+  {
+    "q": "7. ¿Cuál es la principal implicación del principio de incertidumbre de Heisenberg para los electrones?",
+    "opts": [
+      "Es imposible determinar simultáneamente y con precisión arbitraria la posición y el momento lineal de un electrón.",
+      "Los electrones no tienen masa ni carga eléctrica.",
+      "Los electrones siempre se encuentran en reposo respecto al núcleo.",
+      "La energía de un electrón puede tomar cualquier valor dentro de un átomo."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El principio de incertidumbre establece que la incertidumbre en la posición y en el momento lineal de una partícula no pueden reducirse simultáneamente sin límite[cite: 8]."
+  },
+  {
+    "q": "8. ¿Cuántos orbitales contiene el subnivel $d$ y cuál es el número máximo de electrones que puede alojar?",
+    "opts": [
+      "3 orbitales y 6 electrones.",
+      "5 orbitales y 10 electrones.",
+      "7 orbitales y 14 electrones.",
+      "1 orbital y 2 electrones."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El subnivel $d$ contiene cinco orbitales[cite: 8]. Como cada orbital admite un máximo de dos electrones, su capacidad total es de diez electrones[cite: 8]."
+  },
+  {
+    "q": "9. De acuerdo con la regla de Hund, ¿cómo se distribuyen inicialmente los electrones en orbitales de igual energía dentro de un mismo subnivel?",
+    "opts": [
+      "Se colocan dos electrones en un orbital antes de ocupar los demás.",
+      "Se distribuyen individualmente en orbitales distintos, con espines paralelos, antes de comenzar el apareamiento.",
+      "Se distribuyen con espines opuestos en todos los orbitales disponibles.",
+      "Se colocan exclusivamente en el orbital de menor orientación espacial."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La regla de Hund establece que los orbitales degenerados se ocupan primero con electrones individuales de espines paralelos[cite: 8]. Posteriormente comienza el apareamiento[cite: 8]."
+  },
+  {
+    "q": "10. Un átomo neutro presenta la configuración electrónica $1s^2 2s^2 2p^6 3s^2 3p^6 4s^2$. ¿Cuál es su número atómico y a qué elemento corresponde?",
+    "opts": [
+      "$Z = 18$, argón.",
+      "$Z = 19$, potasio.",
+      "$Z = 20$, calcio.",
+      "$Z = 22$, titanio."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Al sumar los electrones indicados en los exponentes se obtiene $2 + 2 + 6 + 2 + 6 + 2 = 20$[cite: 8]. En un átomo neutro, el número de electrones es igual al número de protones; por tanto, $Z = 20$ y el elemento es calcio[cite: 8]."
+  },
+  {
+    "q": "11. ¿Qué conjunto de números cuánticos identifica el subnivel $3p$?",
+    "opts": [
+      "$n = 3$, $l = 1$",
+      "$n = 3$, $l = 2$",
+      "$n = 2$, $l = 1$",
+      "$n = 1$, $l = 0$"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El número cuántico principal $n$ indica el nivel de energía y el número cuántico azimutal $l$ identifica el subnivel[cite: 8]. Para los subniveles $s$, $p$, $d$ y $f$, los valores de $l$ son 0, 1, 2 y 3, respectivamente[cite: 8]. Por ello, $3p$ corresponde a $n = 3$ y $l = 1$[cite: 8]."
+  },
+  {
+    "q": "12. ¿Cuál es el número máximo de electrones que puede alojar el nivel principal $n = 3$?",
+    "opts": [
+      "8",
+      "10",
+      "18",
+      "32"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La capacidad máxima de un nivel principal se calcula mediante $2n^2$[cite: 8]. Para $n = 3$, se obtiene $2(3^2) = 18$ electrones[cite: 8]."
+  },
+  {
+    "q": "13. ¿Cuál de las siguientes afirmaciones describe correctamente la diferencia entre una órbita de Bohr y un orbital atómico del modelo cuántico?",
+    "opts": [
+      "La órbita de Bohr representa una región de probabilidad y el orbital una trayectoria fija.",
+      "Ambos conceptos representan exactamente la misma trayectoria electrónica.",
+      "La órbita de Bohr describe una trayectoria permitida, mientras que el orbital representa una distribución de probabilidad.",
+      "El orbital corresponde exclusivamente al núcleo y la órbita a los protones."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En el modelo de Bohr, los electrones se representan en órbitas permitidas con energías definidas[cite: 8]. En el modelo cuántico, los orbitales describen estados electrónicos mediante funciones de onda y distribuciones de probabilidad[cite: 8]."
+  },
+  {
+    "q": "14. Un átomo neutro de hierro tiene número atómico 26. ¿Cuál es su configuración electrónica abreviada en estado fundamental?",
+    "opts": [
+      "[Ar] $3d^8 4s^2$",
+      "[Ar] $3d^6 4s^2$",
+      "[Ar] $3d^5 4s^3$",
+      "[Ne] $3s^2 3p^6 4s^2$"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El hierro tiene 26 electrones[cite: 8]. El núcleo electrónico equivalente al argón representa 18 electrones; los ocho restantes se distribuyen como $4s^2 3d^6$[cite: 8]."
+  },
+  {
+    "q": "15. ¿Cuál es el número máximo de electrones que puede contener un orbital atómico?",
+    "opts": [
+      "1",
+      "2",
+      "6",
+      "10"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Según el principio de exclusión de Pauli, un orbital puede alojar como máximo dos electrones, siempre que tengan espines opuestos[cite: 8]."
+  },
+  {
+    "q": "16. ¿Cuál es la configuración electrónica del ion $\text{Na}^+$, si el sodio neutro tiene número atómico 11?",
+    "opts": [
+      "$1s^2 2s^2 2p^6$",
+      "$1s^2 2s^2 2p^6 3s^1$",
+      "$1s^2 2s^2 2p^5$",
+      "$1s^2 2s^2 2p^6 3s^2$"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El sodio neutro tiene 11 electrones y su configuración es $1s^2 2s^2 2p^6 3s^1$[cite: 8]. Al formar $\text{Na}^+$ pierde un electrón del subnivel $3s$ y queda con diez electrones[cite: 8]."
+  },
+  {
+    "q": "17. ¿Cuál de las siguientes afirmaciones acerca del principio de incertidumbre de Heisenberg es correcta?",
+    "opts": [
+      "Se debe únicamente a errores de los instrumentos de medición.",
+      "Solo se aplica a objetos macroscópicos.",
+      "Establece que la posición y el momento lineal pueden conocerse simultáneamente con precisión ilimitada.",
+      "Es una limitación fundamental de la descripción cuántica, no simplemente un defecto de los instrumentos."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La incertidumbre de Heisenberg es una propiedad fundamental de los sistemas cuánticos[cite: 8]. No se elimina mediante instrumentos más precisos[cite: 8]."
+  },
+  {
+    "q": "18. Un átomo tiene la configuración electrónica $1s^2 2s^2 2p^6 3s^2 3p^3$. ¿Cuántos electrones desapareados presenta en su estado fundamental?",
+    "opts": [
+      "1",
+      "2",
+      "3",
+      "5"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El subnivel $3p$ contiene tres electrones distribuidos en tres orbitales de igual energía[cite: 8]. Según la regla de Hund, cada orbital recibe inicialmente un electrón con espines paralelos[cite: 8]. Por ello, presenta tres electrones desapareados[cite: 8]."
+  },
+  {
+    "q": "19. ¿Cuál es la forma general correcta de representar la capacidad máxima de electrones de un nivel principal de energía?",
+    "opts": [
+      "$n^2$",
+      "$2n^2$",
+      "$2n$",
+      "$n + 2$"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La capacidad máxima de un nivel principal con número cuántico $n$ es $2n^2$[cite: 8]."
+  },
+  {
+    "q": "20. Un estudiante propone la configuración electrónica $1s^2 2s^2 2p^7$ para un átomo en estado fundamental. ¿Cuál es el error principal de esta propuesta?",
+    "opts": [
+      "El subnivel 1s solo puede contener un electrón.",
+      "El subnivel 2s puede alojar hasta cuatro electrones.",
+      "El subnivel 2p admite como máximo seis electrones, por lo que la configuración propuesta es imposible.",
+      "El subnivel 2p debe llenarse antes que el 1s."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Un subnivel $p$ contiene tres orbitales y cada orbital puede alojar como máximo dos electrones[cite: 8]. Por tanto, la capacidad máxima del subnivel $2p$ es de seis electrones[cite: 8]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 7";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>" + EXAM_TEMA + "</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 7";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> " + EXAM_TEMA + "<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: EXAM_TEMA,
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — " + EXAM_TEMA,
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

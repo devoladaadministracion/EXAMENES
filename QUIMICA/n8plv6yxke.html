@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 45</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "11. Ácidos y bases (Teorías ácido-base, ionización y disociación — Tema 45)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. De acuerdo con la teoría de Arrhenius, ¿qué característica presenta un ácido cuando se disuelve en agua?",
+    "opts": [
+      "Aumenta la concentración de iones $\\text{OH}^-$.",
+      "Aumenta la concentración de iones $\\text{H}_3\\text{O}^$.",
+      "Aumenta la concentración de electrones libres.",
+      "Disminuye la concentración de todos los iones presentes."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Según Arrhenius, un ácido incrementa la concentración de iones $\\text{H}^+$ en agua, los cuales se asocian formando $\\text{H}_3\\text{O}^+$[cite: 49]."
+  },
+  {
+    "q": "2. Al disolver $\\text{HCl}$ en agua ocurre la reacción: $\\text{HCl} + \\text{H}_2\\text{O} \\rightarrow \\text{H}_3\\text{O}^+ + \\text{Cl}^-$. ¿Qué proceso experimenta principalmente el $\\text{HCl}$ en esta reacción?",
+    "opts": [
+      "Disociación de un compuesto iónico.",
+      "Sublimación de una sustancia molecular.",
+      "Ionización de una sustancia molecular.",
+      "Formación de un enlace metálico."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El $\\text{HCl}$ es molecular y genera iones al transferir un protón al agua, proceso conocido como ionización[cite: 49]."
+  },
+  {
+    "q": "3. ¿Cuál de las siguientes sustancias experimenta disociación iónica al disolverse en agua?",
+    "opts": [
+      "\\text{NaCl}$.",
+      "\\text{HCl}$",
+      "\\text{CH}_3\\text{COOH}$",
+      "\\text{NH}_3$."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El $\\text{NaCl}$ es un compuesto iónico cuyos iones preexistentes ($\\text{Na}^+$ y $\\text{Cl}^-$) se separan (disocian) al hidratarse[cite: 49]."
+  },
+  {
+    "q": "4. Se disuelven por separado $\\text{HCl}$ y $\\text{NaCl}$ en agua. ¿Cuál afirmación describe correctamente la diferencia entre sus procesos?",
+    "opts": [
+      "Ambos producen iones exclusivamente por disociación.",
+      "El $\\text{HCl}$ se disocia y el $\\text{NaCl}$ se ioniza.",
+      "Ambos producen iones exclusivamente por ionización.",
+      "El $\\text{HCl}$ se ioniza y el $\\text{NaCl}$ se disocia."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El $\\text{HCl}$ (molecular) se ioniza al reaccionar con el agua, mientras que el $\\text{NaCl}$ (iónico) sufre disociación de sus iones ya formados[cite: 49]."
+  },
+  {
+    "q": "5. Según la teoría de Arrhenius, ¿cuál de las siguientes sustancias se comporta como base en agua?",
+    "opts": [
+      "\\text{HNO}_3$",
+      "\\text{HCl}$",
+      "\\text{NaOH}$",
+      "\\text{H}_2\\text{SO}_4$"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El hidróxido de sodio ($\\text{NaOH}$) se disocia en agua liberando iones $\\text{OH}^-$, cumpliendo la definición de base de Arrhenius[cite: 49]."
+  },
+  {
+    "q": "6. ¿Cuál es la ecuación de disociación correcta del hidróxido de calcio en agua?",
+    "opts": [
+      "\\text{Ca(OH)}_2 \\rightarrow \\text{Ca}^{2+} + 2\\text{OH}^-$.",
+      "\\text{Ca(OH)}_2 \\rightarrow \\text{Ca}^+ + \\text{OH}^-$.",
+      "\\text{Ca(OH)}_2 \\rightarrow \\text{Ca}^{2-} + 2\\text{OH}^+$.",
+      "\\text{Ca(OH)}_2 \\rightarrow \\text{Ca}^{2+} + \\text{OH}^-$."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Una unidad de $\\text{Ca(OH)}_2$ se disocia en un catión $\\text{Ca}^{2+}$ y dos aniones $\\text{OH}^-[cite: 49]$."
+  },
+  {
+    "q": "7. De acuerdo con la teoría de Brønsted-Lowry, un ácido es una sustancia que:",
+    "opts": [
+      "Acepta electrones en cualquier reacción química.",
+      "Libera exclusivamente iones $\\text{OH}^-$ en agua.",
+      "Acepta protones de otra sustancia.",
+      "Dona protones a otra sustancia."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Para Brønsted-Lowry, un ácido se define como una especie donadora de protones ($\\text{H}^+$)[cite: 49]."
+  },
+  {
+    "q": "8. En la reacción: $\\text{NH}_3 + \\text{H}_2\\text{O} \\rightleftharpoons \\text{NH}_4^+ + \\text{OH}^-$. Según Brønsted-Lowry, ¿qué especie actúa como base?",
+    "opts": [
+      "\\text{H}_2\\text{O}$.",
+      "\\text{NH}_3$.",
+      "\\text{NH}_4^+$.",
+      "\\text{OH}^-$."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El amoníaco ($\\text{NH}_3$) acepta un protón del agua para convertirse en $\\text{NH}_4^+$, actuando como base de Brønsted-Lowry[cite: 49]."
+  },
+  {
+    "q": "9. En la reacción: $\\text{HCl} + \\text{H}_2\\text{O} \\rightarrow \\text{H}_3\\text{O}^+ + \\text{Cl}^-$. ¿Cuál especie actúa como base de Brønsted-Lowry?",
+    "opts": [
+      "\\text{HCl}$.",
+      "\\text{H}_3\\text{O}^+$.",
+      "\\text{H}_2\\text{O}$.",
+      "\\text{Cl}^-$."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El agua acepta el protón cedido por el $\\text{HCl}$, comportándose como base en esta reacción[cite: 49]."
+  },
+  {
+    "q": "10. En la reacción: $\\text{NH}_3 + \\text{H}_2\\text{O} \\rightleftharpoons \\text{NH}_4^+ + \\text{OH}^-$. ¿Cuál es el ácido conjugado de $\\text{NH}_3$?",
+    "opts": [
+      "\\text{NH}_4^+$.",
+      "\\text{OH}^-$.",
+      "\\text{H}_2\\text{O}$.",
+      "\\text{H}_3\\text{O}^+$."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El ácido conjugado de una base se forma tras aceptar un protón; al aceptar $\\text{H}^+$, el $\\text{NH}_3$ se transforma en $\\text{NH}_4^+[cite: 49]$."
+  },
+  {
+    "q": "11. ¿Cuál afirmación distingue correctamente la ionización de la disociación?",
+    "opts": [
+      "La ionización solo ocurre en sólidos y la disociación solo en gases.",
+      "La ionización genera iones a partir de especies inicialmente neutras, mientras que la disociación separa iones que ya existían en un compuesto iónico.",
+      "La ionización destruye los átomos, mientras que la disociación los transforma en moléculas.",
+      "Ambos procesos consisten exclusivamente en separar moléculas neutras."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La ionización crea iones a partir de moléculas neutras, mientras que la disociación separa los iones ya presentes en una red iónica[cite: 49]."
+  },
+  {
+    "q": "12. El ácido acético se ioniza parcialmente en agua: $\\text{CH}_3\\text{COOH} + \\text{H}_2\\text{O} \\rightleftharpoons \\text{CH}_3\\text{COO}^- + \\text{H}_3\\text{O}^+$. ¿Qué conclusión se obtiene de esta reacción?",
+    "opts": [
+      "El ácido acético se disocia completamente porque es un compuesto iónico.",
+      "El ácido acético no produce iones en agua.",
+      "El agua actúa necesariamente como ácido en esta reacción.",
+      "El ácido acético es un ácido débil porque solo una fracción de sus moléculas se ioniza en agua."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El equilibrio de ionización parcial revela que el ácido acético es un ácido débil en disolución acuosa[cite: 49]."
+  },
+  {
+    "q": "13. ¿Cuál de las siguientes sustancias es un ácido fuerte en disolución acuosa diluida?",
+    "opts": [
+      "\\text{HCl}$.",
+      "\\text{CH}_3\\text{COOH}$.",
+      "\\text{H}_2\\text{CO}_3$.",
+      "\\text{HCN}$."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El $\\text{HCl}$ es un ácido fuerte que se ioniza prácticamente al 100 % en disolución acuosa diluida[cite: 49]."
+  },
+  {
+    "q": "14. Dos sustancias se disuelven en agua a concentraciones iniciales comparables. Una se ioniza prácticamente por completo y la otra solo parcialmente. ¿Cuál afirmación es correcta?",
+    "opts": [
+      "La sustancia que se ioniza parcialmente siempre produce más iones.",
+      "Ambas necesariamente producen la misma concentración de iones.",
+      "La sustancia que se ioniza prácticamente por completo presenta un mayor grado de ionización.",
+      "La sustancia que se ioniza por completo deja de conducir electricidad."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Una ionización casi total refleja un grado de ionización superior en comparación con aquella sustancia que se ioniza parcialmente[cite: 49]."
+  },
+  {
+    "q": "15. ¿Cuál de las siguientes especies puede actuar como ácido o como base de Brønsted-Lowry, según la reacción?",
+    "opts": [
+      "\\text{Na}^+$.",
+      "\\text{H}_2\\text{O}$.",
+      "\\text{Cl}^-$.",
+      "\\text{Ca}^{2+}$."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El agua es una sustancia anfótera; puede donar un protón (actuando como ácido) o aceptarlo (actuando como base)[cite: 49]."
+  },
+  {
+    "q": "16. En la reacción: $\\text{H}_2\\text{O} + \\text{H}_2\\text{O} \\rightleftharpoons \\text{H}_3\\text{O}^+ + \\text{OH}^-$. ¿Cuál afirmación describe correctamente el proceso?",
+    "opts": [
+      "Ambas moléculas de agua donan un protón.",
+      "Ambas moléculas de agua aceptan un protón.",
+      "El agua actúa únicamente como ácido.",
+      "Una molécula de agua dona un protón y la otra lo acepta."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Durante la autoionización del agua, una molécula actúa como ácido (donadora de $\\text{H}^+$) y la otra como base (aceptora)[cite: 49]."
+  },
+  {
+    "q": "17. ¿Qué sucede al disolver $\\text{KBr}$ en agua?",
+    "opts": [
+      "Se forman $\\text{K}^+$ y $\\text{Br}^-$ por separación de los iones presentes en el sólido.",
+      "Se forman $\\text{K}^{2+}$ y $\\text{Br}^{2-}$ por transferencia de electrones al agua.",
+      "El $\\text{KBr}$ se convierte en una molécula covalente neutra.",
+      "Se producen $\\text{H}_3\\text{O}^+$ y $\\text{OH}^-$ como únicos iones de la disolución."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El bromuro de potasio es un sólido iónico que se disocia en iones $\\text{K}^+$ y $\\text{Br}^-$ al ser hidratados por el agua[cite: 49]."
+  },
+  {
+    "q": "18. Se analiza una disolución acuosa diluida de $\\text{HNO}_3$, un ácido fuerte. ¿Cuál representación describe mejor su comportamiento en agua?",
+    "opts": [
+      "\\text{HNO}_3$ permanece exclusivamente como moléculas neutras.",
+      "\\text{HNO}_3 \\rightarrow \\text{H}^+ + \\text{NO}_3^{2-}$.",
+      "\\text{HNO}_3 + \\text{H}_2\\text{O} \\rightarrow \\text{H}_3\\text{O}^+ + \\text{NO}_3^-$.",
+      "\\text{HNO}_3 + \\text{H}_2\\text{O} \\rightarrow \\text{OH}^- + \\text{NO}_2^-$."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El ácido nítrico transfiere su protón al agua originando iones hidronio y nitrato de manera casi completa: $\\text{HNO}_3 + \\text{H}_2\\text{O} \\rightarrow \\text{H}_3\\text{O}^+ + \\text{NO}_3^-[cite: 49]$."
+  },
+  {
+    "q": "19. ¿Cuál de las siguientes afirmaciones corresponde a la teoría ácido-base de Lewis?",
+    "opts": [
+      "Un ácido es toda sustancia que produce $\\text{OH}^-$ en agua.",
+      "Un ácido es una especie que acepta un par de electrones.",
+      "Una base es toda sustancia que libera protones.",
+      "Un ácido es una especie que siempre contiene hidrógeno."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Bajo la óptica de Lewis, un ácido es aceptor de un par electrónico y una base es donadora de dicho par[cite: 49]."
+  },
+  {
+    "q": "20. En la reacción: $\\text{BF}_3 + \\text{NH}_3 \\rightarrow \\text{F}_3\\text{B}\\leftarrow\\text{NH}_3$. ¿Cuál afirmación interpreta correctamente el comportamiento de las especies según Lewis?",
+    "opts": [
+      "\\text{BF}_3$ es la base porque dona un par de electrones.",
+      "\\text{NH}_3$ es el ácido porque acepta un par de electrones.",
+      "Ambas sustancias son ácidos porque contienen enlaces covalentes.",
+      "\\text{BF}_3$ es el ácido y $\\text{NH}_3$ es la base porque el primero acepta el par electrónico que dona el segundo."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El trifluoruro de boro ($\\text{BF}_3$) acepta el par de electrones libres aportados por el amoníaco ($\\text{NH}_3$), actuando como ácido y base de Lewis, respectivamente[cite: 49]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 45";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Ácidos y bases, ionización y disociación</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 45";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Ácidos y bases, ionización y disociación<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Ácidos y bases, ionización y disociación",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Ácidos y bases, ionización y disociación",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

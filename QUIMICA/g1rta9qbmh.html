@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 46</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "11.1.2 a 11.1.4 Teorías de Arrhenius, Brønsted-Lowry y Lewis (Tema 46)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. De acuerdo con la teoría de Arrhenius, ¿qué sucede cuando una base se disuelve en agua?",
+    "opts": [
+      "Aumenta la concentración de iones $\\text{H}_3\\text{O}^$.",
+      "Disminuye la concentración de iones $\\text{OH}^-$.",
+      "Aumenta la concentración de iones $\\text{OH}^-$.",
+      "Produce necesariamente un precipitado insoluble."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Según Arrhenius, una base aumenta la concentración de iones $\\text{OH}^-$ en disolución acuosa, como ocurre cuando el $\\text{NaOH}$ se disocia[cite: 50]."
+  },
+  {
+    "q": "2. Se disuelven $0.02\\text{ mol}$ de $\\text{NaOH}$ en agua hasta obtener $1\\text{ L}$ de disolución. Suponiendo una disociación completa, ¿qué concentración molar de iones $\\text{OH}^-$ se obtiene?",
+    "opts": [
+      "0.01 M",
+      "0.02 M",
+      "0.04 M",
+      "0.20 M"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El $\\text{NaOH}$ se disocia en proporción 1:1, liberando $0.02\\text{ mol}$ de $\\text{OH}^-$ por litro, por lo que $[\\text{OH}^-] = 0.02\\text{ M}[cite: 50]."
+  },
+  {
+    "q": "3. ¿Cuál de las siguientes sustancias se clasifica como ácido de Arrhenius en agua?",
+    "opts": [
+      "\\text{NaOH}$.",
+      "\\text{KOH}$.",
+      "\\text{Ca(OH)}_2$",
+      "\\text{HNO}_3$"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El $\\text{HNO}_3$ aumenta la concentración de $\\text{H}_3\\text{O}^+$ en agua transfiriendo un protón, comportándose como ácido de Arrhenius[cite: 50]."
+  },
+  {
+    "q": "4. Considera la reacción: $\\text{HCl} + \\text{H}_2\\text{O} \\rightarrow \\text{H}_3\\text{O}^+ + \\text{Cl}^-$. ¿Cuál es la interpretación correcta según Arrhenius?",
+    "opts": [
+      "El $\\text{HCl}$ incrementa la concentración de $\\text{H}_3\\text{O}^+$ en agua.",
+      "El $\\text{HCl}$ incrementa la concentración de $\\text{OH}^-$ en agua.",
+      "El $\\text{H}_2\\text{O}$ actúa como una base de Arrhenius al producir $\\text{OH}^-$ exclusivamente.",
+      "El $\\text{Cl}^-$ es el responsable de aumentar la concentración de $\\text{H}_3\\text{O}^+$."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El $\\text{HCl}$ es un ácido de Arrhenius ya que su reacción con el agua produce iones $\\text{H}_3\\text{O}^+$, elevando su concentración[cite: 50]."
+  },
+  {
+    "q": "5. Según Brønsted-Lowry, ¿cómo se define una base?",
+    "opts": [
+      "Como una sustancia que aumenta la concentración de $\\text{OH}^-$ exclusivamente en agua.",
+      "Como una especie que acepta protones.",
+      "Como una especie que dona pares de electrones en cualquier reacción.",
+      "Como una sustancia que siempre contiene oxígeno."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Una base de Brønsted-Lowry se define como una especie aceptora de protones ($\\text{H}^+$)[cite: 50]."
+  },
+  {
+    "q": "6. En la reacción: $\\text{NH}_3 + \\text{H}_2\\text{O} \\rightleftharpoons \\text{NH}_4^+ + \\text{OH}^-$. ¿Qué especie actúa como ácido de Brønsted-Lowry?",
+    "opts": [
+      "\\text{NH}_3$.",
+      "\\text{NH}_4^+$.",
+      "\\text{H}_2\\text{O}$.",
+      "\\text{OH}^-$."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El agua dona un protón al amoníaco y se transforma en $\\text{OH}^-$, actuando como ácido de Brønsted-Lowry[cite: 50]."
+  },
+  {
+    "q": "7. En la reacción: $\\text{H}_2\\text{SO}_4 + \\text{H}_2\\text{O} \\rightarrow \\text{H}_3\\text{O}^+ + \\text{HSO}_4^-$. ¿Cuál es la base conjugada del $\\text{H}_2\\text{SO}_4$?",
+    "opts": [
+      "\\text{H}_3\\text{O}^$.",
+      "\\text{H}_2\\text{O}$.",
+      "\\text{SO}_4^{2-}$.",
+      "\\text{HSO}_4^-$."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La base conjugada resulta de la pérdida de un protón por parte del ácido; al donar $\\text{H}^+$, el $\\text{H}_2\\text{SO}_4$ se convierte en $\\text{HSO}_4^-[cite: 50]."
+  },
+  {
+    "q": "8. En la reacción: $\\text{HCO}_3^- + \\text{H}_2\\text{O} \\rightleftharpoons \\text{H}_2\\text{CO}_3 + \\text{OH}^-$. ¿Cuál es el papel del ion bicarbonato, $\\text{HCO}_3^-$, según Brønsted-Lowry?",
+    "opts": [
+      "Actúa como base al aceptar un protón del agua.",
+      "Actúa como ácido al donar un protón al agua.",
+      "Actúa como ácido de Lewis exclusivamente porque contiene oxígeno.",
+      "No participa en la transferencia de protones."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El ion bicarbonato acepta un protón del agua para formar $\\text{H}_2\\text{CO}_3$, comportándose como base de Brønsted-Lowry[cite: 50]."
+  },
+  {
+    "q": "9. ¿Cuál es una diferencia fundamental entre las teorías de Arrhenius y Brønsted-Lowry?",
+    "opts": [
+      "Arrhenius explica únicamente reacciones gaseosas y Brønsted-Lowry solo reacciones acuosas.",
+      "Arrhenius define los ácidos como aceptores de electrones y Brønsted-Lowry como donadores de electrones.",
+      "Arrhenius restringe su definición a disoluciones acuosas, mientras que Brønsted-Lowry se basa en la transferencia de protones.",
+      "Ambas teorías consideran ácido a cualquier sustancia que contenga hidrógeno."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Arrhenius limita su aplicación a medios acuosos, mientras que Brønsted-Lowry generaliza el concepto mediante la transferencia de protones en diversos medios[cite: 50]."
+  },
+  {
+    "q": "10. Se mezclan $\\text{NH}_3$ y $\\text{BF}_3$ para formar el aducto $\\text{H}_3\\text{N}\\rightarrow\\text{BF}_3$. Según la teoría de Lewis, ¿qué afirmación es correcta?",
+    "opts": [
+      "\\text{NH}_3$ es el ácido porque acepta un par de electrones.",
+      "\\text{BF}_3$ es el ácido porque acepta un par de electrones de $\\text{NH}_3$.",
+      "\\text{BF}_3$ es la base porque dona un par de electrones.",
+      "Ambos son bases porque forman un enlace covalente."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El boro en el $\\text{BF}_3$ acepta el par libre de electrones cedido por el nitrógeno del $\\text{NH}_3$, siendo $\\text{BF}_3$ el ácido y $\\text{NH}_3$ la base de Lewis[cite: 50]."
+  },
+  {
+    "q": "11. Según la teoría de Lewis, un ácido es una especie química que:",
+    "opts": [
+      "Dona protones.",
+      "Produce iones $\\text{OH}^-$ en agua.",
+      "Dona un par de electrones.",
+      "Acepta un par de electrones."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Bajo la definición de Lewis, un ácido es una sustancia capaz de aceptar un par de electrones para formar un enlace covalente coordinado[cite: 50]."
+  },
+  {
+    "q": "12. En la reacción: $\\text{AlCl}_3 + \\text{Cl}^- \\rightarrow \\text{AlCl}_4^-$. ¿Cuál especie actúa como base de Lewis?",
+    "opts": [
+      "\\text{Cl}^-$.",
+      "\\text{AlCl}_3$.",
+      "\\text{AlCl}_4^-$.",
+      "\\text{Al}^{3+}$."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El ion cloruro ($\\text{Cl}^-$) dona un par de electrones al $\\text{AlCl}_3$, actuando como base de Lewis[cite: 50]."
+  },
+  {
+    "q": "13. ¿Cuál de las siguientes reacciones puede interpretarse como una reacción ácido-base de Lewis sin que sea necesaria una transferencia de protones?",
+    "opts": [
+      "\\text{HCl} + \\text{H}_2\\text{O} \\rightarrow \\text{H}_3\\text{O}^+ + \\text{Cl}^-$.",
+      "\\text{NH}_3 + \\text{BF}_3 \\rightarrow \\text{H}_3\\text{N}\\rightarrow\\text{BF}_3$.",
+      "\\text{HNO}_3 + \\text{NaOH} \\rightarrow \\text{NaNO}_3 + \\text{H}_2\\text{O}$.",
+      "\\text{H}_2\\text{SO}_4 + \\text{H}_2\\text{O} \\rightarrow \\text{H}_3\\text{O}^+ + \\text{HSO}_4^-$."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La reacción entre $\\text{NH}_3$ y $\\text{BF}_3$ ilustra un proceso ácido-base de Lewis por compartición de un par electrónico sin involucrar protones[cite: 50]."
+  },
+  {
+    "q": "14. Una sustancia aumenta la concentración de $\\text{OH}^-$ al reaccionar con agua, acepta protones y puede donar un par de electrones a otra especie. ¿Qué afirmación es correcta?",
+    "opts": [
+      "Solo puede clasificarse como base de Arrhenius.",
+      "Solo puede clasificarse como base de Lewis.",
+      "Puede comportarse como base según Arrhenius, Brønsted-Lowry y Lewis, si cumple las condiciones descritas en cada teoría.",
+      "No puede ser una base porque las tres teorías son incompatibles."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las diferentes teorías son complementarias; una misma especie puede cumplir simultáneamente con los criterios de base para Arrhenius, Brønsted-Lowry y Lewis[cite: 50]."
+  },
+  {
+    "q": "15. ¿Cuál de las siguientes especies es anfótera según Brønsted-Lowry?",
+    "opts": [
+      "\\text{Na}^+$.",
+      "\\text{Cl}^-$.",
+      "\\text{Ca}^{2+}$",
+      "\\text{H}_2\\text{O}$"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El agua ($\\text{H}_2\\text{O}$) puede donar un protón (actuando como ácido) o aceptarlo (actuando como base), siendo una especie anfótera[cite: 50]."
+  },
+  {
+    "q": "16. En la reacción: $\\text{H}_2\\text{O} + \\text{H}_2\\text{O} \\rightleftharpoons \\text{H}_3\\text{O}^+ + \\text{OH}^-$. ¿Cuál interpretación es correcta según Brønsted-Lowry?",
+    "opts": [
+      "Una molécula de agua actúa como ácido y la otra como base.",
+      "Ambas moléculas actúan exclusivamente como ácidos.",
+      "Ambas moléculas actúan exclusivamente como bases.",
+      "Ninguna molécula participa en una transferencia de protones."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En la autoionización del agua, una molécula cede un protón (ácido) y la otra lo capta (base)[cite: 50]."
+  },
+  {
+    "q": "17. ¿Cuál afirmación relaciona correctamente las tres teorías ácido-base?",
+    "opts": [
+      "Arrhenius se basa en pares electrónicos; Brønsted-Lowry, en $\\text{OH}^-$; Lewis, en protones.",
+      "Arrhenius se centra en iones en agua; Brønsted-Lowry, en transferencia de protones; Lewis, en transferencia de pares electrónicos.",
+      "Arrhenius y Lewis solo se aplican a sustancias que contienen oxígeno.",
+      "Las tres teorías definen los ácidos y las bases de manera idéntica."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Cada teoría amplía el alcance: Arrhenius se limita a soluciones acuosas, Brønsted-Lowry abarca protones y Lewis generaliza mediante pares electrónicos[cite: 50]."
+  },
+  {
+    "q": "18. El ion $\\text{HCO}_3^-$ participa en las siguientes reacciones:\nI. $\\text{HCO}_3^- + \\text{H}^+ \\rightarrow \\text{H}_2\\text{CO}_3$ \nII. $\\text{HCO}_3^- \\rightarrow \\text{CO}_3^{2-} + \\text{H}^+$\n¿Qué conclusión se obtiene según Brønsted-Lowry?",
+    "opts": [
+      "En ambas reacciones actúa exclusivamente como ácido.",
+      "En ambas reacciones actúa exclusivamente como base.",
+      "Puede actuar como base en I y como ácido en II.",
+      "No puede actuar como ácido ni como base."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El ion bicarbonato acepta protones en la reacción I (base) y los dona en la II (ácido), demostrando su carácter anfiprótico[cite: 50]."
+  },
+  {
+    "q": "19. ¿Por qué la teoría de Lewis se considera más amplia que la de Brønsted-Lowry?",
+    "opts": [
+      "Porque incluye reacciones ácido-base en las que se acepta y dona un par de electrones sin que sea indispensable transferir protones.",
+      "Porque solo considera ácidos fuertes en agua.",
+      "Porque define las bases únicamente como sustancias que producen $\\text{OH}^-$.",
+      "Porque excluye las reacciones entre moléculas neutras."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La teoría de Lewis no depende de la presencia de protones, abarcando un repertorio mucho mayor de interacciones químicas mediante pares electrónicos[cite: 50]."
+  },
+  {
+    "q": "20. En la reacción: $\\text{Ag}^+ + 2\\text{NH}_3 \\rightarrow [\\text{Ag(NH}_3)_2]^+$. ¿Cuál es la interpretación correcta según Lewis?",
+    "opts": [
+      "\\text{Ag}^+$ es la base porque dona pares de electrones al $\\text{NH}_3$.",
+      "\\text{NH}_3$ es el ácido porque acepta electrones de $\\text{Ag}^+$.",
+      "\\text{Ag}^+$ y $\\text{NH}_3$ son ácidos porque forman un complejo.",
+      "\\text{Ag}^+$ actúa como ácido de Lewis y $\\text{NH}_3$ como base de Lewis."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las moléculas de amoníaco donan pares electrónicos (bases de Lewis) al catión plata (ácido de Lewis) para constituir un complejo de coordinación[cite: 50]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 46";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Teorías de Arrhenius, Brønsted-Lowry y Lewis</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 46";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Teorías de Arrhenius, Brønsted-Lowry y Lewis<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Teorías de Arrhenius, Brønsted-Lowry y Lewis",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Teorías de Arrhenius, Brønsted-Lowry y Lewis",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

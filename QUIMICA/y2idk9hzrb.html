@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 73</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "19. Velocidad de reacción y equilibrio químico (Cinética química y teoría de colisiones — Tema 73)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Qué estudia principalmente la cinética química?",
+    "opts": [
+      "La composición de equilibrio de las mezclas químicas.",
+      "La cantidad de energía liberada exclusivamente durante la combustión.",
+      "La velocidad a la que ocurren las reacciones químicas y los factores que la modifican.",
+      "La estructura electrónica de los átomos antes de formar enlaces."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La cinética química se enfoca en medir y explicar la rapidez con la que transcurren las reacciones, así como los factores que las afectan[cite: 32]."
+  },
+  {
+    "q": "2. De acuerdo con la teoría de colisiones, ¿qué condiciones deben cumplirse para que una colisión entre partículas produzca una reacción química?",
+    "opts": [
+      "Las partículas deben chocar a cualquier velocidad y con cualquier orientación.",
+      "Las partículas deben colisionar con energía suficiente para superar la energía de activación y con una orientación adecuada.",
+      "Las partículas deben tener masas iguales y encontrarse a la misma temperatura.",
+      "Las partículas deben permanecer unidas durante un tiempo prolongado, independientemente de su energía."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Una colisión efectiva requiere energía cinética umbral (energía de activación) y la orientación geométrica correcta entre las moléculas reactivas[cite: 32]."
+  },
+  {
+    "q": "3. ¿Qué representa la energía de activación de una reacción química?",
+    "opts": [
+      "La barrera energética que deben superar los reactivos para alcanzar el estado de transición.",
+      "La energía total almacenada en los productos al finalizar la reacción.",
+      "La cantidad de calor liberado durante cualquier reacción exotérmica.",
+      "La diferencia entre la masa de los reactivos y la de los productos."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La energía de activación ($\\Delta G^\\ddagger$ o $E_a$) define la barrera energética mínima que las especies reactivas deben franquear para transformarse[cite: 32]."
+  },
+  {
+    "q": "4. En una reacción química, la concentración de un reactivo disminuye de $0.80\\text{ mol/L}$ a $0.20\\text{ mol/L}$ en 30 segundos. ¿Cuál es la velocidad media de desaparición del reactivo?",
+    "opts": [
+      "0.010 mol/(L·s).",
+      "0.020 mol/(L·s).",
+      "0.030 mol/(L·s).",
+      "0.060 mol/(L·s)."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Calculando la velocidad media de desaparición: $-\\Delta[R]/\\Delta t = -(0.20 - 0.80) / 30 = 0.60 / 30 = 0.020\\text{ mol/(L}\\cdot\\text{s)}[cite: 32]."
+  },
+  {
+    "q": "5. ¿Cuál de los siguientes factores suele aumentar la velocidad de una reacción entre reactivos en fase gaseosa?",
+    "opts": [
+      "Disminuir la concentración de los reactivos.",
+      "Reducir la temperatura del sistema.",
+      "Disminuir la frecuencia de las colisiones efectivas.",
+      "Aumentar la temperatura, manteniendo las demás condiciones comparables."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Elevar la temperatura incrementa la velocidad al dotar a las partículas de mayor energía cinética media, elevando el número de colisiones eficaces[cite: 32]."
+  },
+  {
+    "q": "6. Una reacción se lleva a cabo a dos temperaturas diferentes, siendo la segunda mayor. ¿Cuál explicación justifica que la reacción sea generalmente más rápida?",
+    "opts": [
+      "La energía de activación aumenta necesariamente con la temperatura.",
+      "Todas las colisiones se vuelven efectivas sin importar su energía.",
+      "Una mayor fracción de partículas alcanza o supera la energía de activación.",
+      "La concentración de los reactivos aumenta automáticamente al elevar la temperatura."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "A mayor temperatura, un porcentaje más elevado de moléculas posee la energía de activación requerida, acelerando el proceso[cite: 32]."
+  },
+  {
+    "q": "7. ¿Cuál es la función de un catalizador en una reacción química?",
+    "opts": [
+      "Aumentar la entalpía de los productos para favorecer su formación.",
+      "Modificar la constante de equilibrio para que siempre se formen más productos.",
+      "Disminuir la energía de activación mediante una ruta de reacción alternativa.",
+      "Aumentar la cantidad inicial de reactivos sin modificar el sistema."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Un catalizador disminuye la energía de activación abriendo un camino alternativo de menor barrera energética, sin alterar el equilibrio[cite: 32]."
+  },
+  {
+    "q": "8. Para una reacción con ley de velocidad $v = k[A]^2[B]$, si la concentración de A se duplica y la de B se mantiene constante, ¿cómo cambia la velocidad inicial?",
+    "opts": [
+      "Se duplica.",
+      "Se cuadruplica.",
+      "Se triplica.",
+      "Se mantiene constante."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Al depender cuadráticamente de A ($[A]^2$), duplicar su concentración multiplica la velocidad por $2^2 = 4$[cite: 32]."
+  },
+  {
+    "q": "9. ¿Qué ocurre con la velocidad de una reacción cuando se aumenta la superficie de contacto de un sólido reactivo?",
+    "opts": [
+      "Disminuye porque hay menos partículas disponibles.",
+      "Permanece necesariamente constante.",
+      "La reacción se vuelve espontánea por definición.",
+      "Generalmente aumenta porque queda expuesta una mayor superficie para las colisiones."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Un mayor área superficial expuesta (ej. pulverizando un sólido) propicia más puntos de contacto y colisiones simultáneas[cite: 32]."
+  },
+  {
+    "q": "10. Para una reacción con ley de velocidad $v = k[A][B]^2$, si la concentración de A se triplica y la de B se reduce a la mitad, ¿cuál será la relación entre la nueva velocidad y la inicial?",
+    "opts": [
+      "3/4 de la velocidad inicial.",
+      "3/2 de la velocidad inicial.",
+      "3 veces la velocidad inicial.",
+      "12 veces la velocidad inicial."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Sustituyendo factores: $v_2/v_1 = (3) \\times (1/2)^2 = 3 \\times (1/4) = 3/4$[cite: 32]."
+  },
+  {
+    "q": "11. ¿Cuál afirmación describe correctamente la relación entre la velocidad de reacción y la concentración de los reactivos?",
+    "opts": [
+      "La velocidad siempre es independiente de la concentración.",
+      "La velocidad siempre aumenta linealmente con la concentración, sin importar la reacción.",
+      "La dependencia de la velocidad respecto a la concentración está determinada por la ley de velocidad experimental.",
+      "La concentración solo modifica la velocidad cuando la reacción es exotérmica."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Los órdenes de reacción y la dependencia cuantitativa con las concentraciones se establecen mediante la ley de velocidad experimental[cite: 32]."
+  },
+  {
+    "q": "12. Si al duplicar la concentración de A (manteniendo B constante) la velocidad inicial aumenta cuatro veces, ¿cuál es el orden de reacción respecto a A?",
+    "opts": [
+      "Cero.",
+      "Uno.",
+      "Tres.",
+      "Dos."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Planteando $4 = 2^n$, se deduce que el exponente $n = 2$, por lo que la reacción es de segundo orden respecto a A[cite: 32]."
+  },
+  {
+    "q": "13. ¿Cuál de las siguientes afirmaciones sobre la energía de activación es correcta?",
+    "opts": [
+      "Es idéntica para todas las reacciones químicas.",
+      "Una reacción con menor energía de activación suele ser más rápida a la misma temperatura, si los demás factores son comparables.",
+      "Solo existe en las reacciones endotérmicas.",
+      "Es igual a la entalpía de reacción en todos los casos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "A menor energía de activación, mayor es la fracción de moléculas capaces de reaccionar a una temperatura dada, acelerando el proceso[cite: 32]."
+  },
+  {
+    "q": "14. La constante de velocidad de una reacción aumenta al elevar la temperatura. ¿Qué relación permite explicar este comportamiento?",
+    "opts": [
+      "La ecuación de Arrhenius, que relaciona la constante de velocidad con la temperatura y la energía de activación.",
+      "La ley de conservación de la masa, que determina directamente la velocidad.",
+      "La ley de Boyle, que relaciona la presión y el volumen de un gas a temperatura constante.",
+      "La ley de Hess, que calcula la entalpía global a partir de varias etapas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La ecuación de Arrhenius ($k = A e^{-E_a/RT}$) modela cómo el incremento térmico acrecienta la constante de velocidad $k$[cite: 32]."
+  },
+  {
+    "q": "15. ¿Qué significa que una reacción presente una velocidad inicial elevada?",
+    "opts": [
+      "Que necesariamente alcanzará un rendimiento del 100 %.",
+      "Que su energía de activación es igual a cero.",
+      "Que los reactivos se consumen con rapidez al inicio del experimento.",
+      "Que el sistema se encuentra obligatoriamente en equilibrio químico."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La velocidad inicial elevada denota un consumo veloz de reactivos en los primeros instantes, independiente del rendimiento final de equilibrio[cite: 32]."
+  },
+  {
+    "q": "16. Para una reacción de primer orden con constante $k = 0.035\\text{ s}^{-1}$, ¿cuál es su vida media aproximada ($t_{1/2}$)?",
+    "opts": [
+      "9.9 s.",
+      "35.0 s.",
+      "49.5 s.",
+      "19.8 s."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Aplicando la fórmula de vida media para primer orden: $t_{1/2} = 0.693 / k = 0.693 / 0.035 \\approx 19.8\\text{ s}[cite: 32]."
+  },
+  {
+    "q": "17. ¿Cuál es la diferencia entre un mecanismo de reacción y una ecuación química global?",
+    "opts": [
+      "El mecanismo describe las etapas elementales que ocurren, mientras que la ecuación global resume la transformación neta.",
+      "El mecanismo solo representa los productos y la ecuación global solo los reactivos.",
+      "La ecuación global siempre muestra todos los intermediarios, mientras que el mecanismo los omite.",
+      "Ambos términos describen exclusivamente el cambio de temperatura."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La ecuación global describe el balance estequiométrico neto, mientras que el mecanismo desglosa los pasos elementales moleculares involucrados[cite: 32]."
+  },
+  {
+    "q": "18. En una reacción, la constante de velocidad se duplica cuando la temperatura pasa de 300 K a 310 K. ¿Qué se concluye directamente?",
+    "opts": [
+      "La energía de activación es necesariamente cero.",
+      "La reacción cambia de exotérmica a endotérmica.",
+      "La velocidad de reacción se duplica a 310 K si las concentraciones y los demás factores de la ley de velocidad permanecen constantes.",
+      "La constante de equilibrio se duplica necesariamente."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Si $k$ se duplica a una concentración fija, la velocidad general del proceso también se duplica de acuerdo con la ley de velocidad[cite: 32]."
+  },
+  {
+    "q": "19. ¿Cuál de las siguientes situaciones explica mejor el efecto de un catalizador sobre una reacción?",
+    "opts": [
+      "Impide que los reactivos alcancen el estado de transición.",
+      "Reduce la energía de activación de la reacción sin modificar la variación global de entalpía.",
+      "Aumenta la energía de los productos para que la reacción ocurra más rápido.",
+      "Incrementa la cantidad de productos al modificar permanentemente la composición de equilibrio."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El catalizador facilita una vía con menor energía de activación, dejando intacta la entalpía global y la termodinámica del sistema[cite: 32]."
+  },
+  {
+    "q": "20. Si la ley de velocidad es $v = k[A]^2$ y la concentración de A disminuye de $0.60\\text{ mol/L}$ a $0.30\\text{ mol/L}$, ¿qué fracción de la velocidad inicial se obtiene?",
+    "opts": [
+      "1/2.",
+      "1/3.",
+      "1/8.",
+      "1/4."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Como la velocidad es proporcional a $[A]^2$, al reducir la concentración a la mitad, la velocidad resultante es $(1/2)^2 = 1/4$ de la original[cite: 32]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 73";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Velocidad de reacción y cinética química</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 73";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Velocidad de reacción y cinética química<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Velocidad de reacción y cinética química",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Velocidad de reacción y cinética química",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

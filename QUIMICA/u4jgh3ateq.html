@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 34</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "8.2 Leyes estequiométricas, composición porcentual, fórmulas empírica y molecular (Tema 34)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál enunciado expresa correctamente la ley de conservación de la materia, conocida como ley de Lomonósov-Lavoisier?",
+    "opts": [
+      "La masa de los productos siempre es menor que la de los reactivos.",
+      "La masa total de los reactivos es igual a la masa total de los productos en un sistema cerrado.",
+      "La masa de una sustancia aumenta proporcionalmente con su volumen.",
+      "Los elementos de un compuesto pueden combinarse en cualquier proporción de masa."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "En una reacción química en sistema cerrado, los átomos se reorganizan pero la masa total se conserva (Lomonósov-Lavoisier)[cite: 37]."
+  },
+  {
+    "q": "2. En un recipiente cerrado reaccionan 12 g de carbono con 32 g de oxígeno para formar dióxido de carbono. Si la reacción es completa, ¿qué masa de $\\text{CO}_2$ se obtiene?",
+    "opts": [
+      "20 g",
+      "32 g",
+      "44 g",
+      "48 g"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Por conservación de la materia, la masa del producto es la suma de los reactivos: $12\\text{ g} + 32\\text{ g} = 44\\text{ g}[cite: 37]."
+  },
+  {
+    "q": "3. La ley de las proporciones constantes, propuesta por Proust, establece que:",
+    "opts": [
+      "Un compuesto puro siempre contiene los mismos elementos en proporciones de masa definidas.",
+      "Los elementos se combinan exclusivamente en proporciones de volumen iguales.",
+      "La masa de los productos es independiente de la masa de los reactivos.",
+      "Una sustancia puede cambiar su composición elemental sin dejar de ser el mismo compuesto."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Un compuesto químico puro presenta una composición fija y definida en masa para sus elementos constituyentes (ley de Proust)[cite: 37]."
+  },
+  {
+    "q": "4. Una muestra de 18 g de agua contiene 2 g de hidrógeno y 16 g de oxígeno. ¿Qué masa de oxígeno estará presente en 45 g de agua pura?",
+    "opts": [
+      "20 g",
+      "35 g",
+      "40 g",
+      "43 g"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El oxígeno representa $16/18$ de la masa del agua; por tanto, para 45 g se tiene $(45 \\times 16) / 18 = 40\\text{ g}$ de oxígeno[cite: 37]."
+  },
+  {
+    "q": "5. ¿Qué se entiende por composición porcentual o centesimal de un compuesto?",
+    "opts": [
+      "La cantidad de moles presentes en una reacción.",
+      "La masa total de una muestra expresada en kilogramos.",
+      "La cantidad de átomos de cada elemento en una molécula.",
+      "El porcentaje en masa que aporta cada elemento al compuesto."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La composición porcentual indica el porcentaje en masa de cada elemento respecto al total del compuesto[cite: 37]."
+  },
+  {
+    "q": "6. ¿Cuál es la composición porcentual aproximada de oxígeno en el agua, $\\text{H}_2\\text{O}$? ($\\text{H} = 1$, $\\text{O} = 16\\text{ g/mol}$)",
+    "opts": [
+      "11.1 %",
+      "88.9 %",
+      "50.0 %",
+      "16.0 %"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La masa molar del agua es $18\\text{ g/mol}$, donde 16 g corresponden al oxígeno: $(16 / 18) \\times 100 = 88.9\\%[cite: 37]$."
+  },
+  {
+    "q": "7. ¿Qué representa la fórmula mínima o empírica de un compuesto?",
+    "opts": [
+      "El número exacto de átomos de cada elemento en una molécula.",
+      "La masa molar del compuesto expresada en gramos.",
+      "La proporción entera más sencilla entre los átomos de los elementos.",
+      "El número de moléculas presentes en un mol de sustancia."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La fórmula empírica expresa la relación entera más sencilla entre los átomos de los elementos que constituyen el compuesto[cite: 37]."
+  },
+  {
+    "q": "8. Un compuesto contiene 40.0 % de carbono, 6.7 % de hidrógeno y 53.3 % de oxígeno en masa ($\\text{C} = 12$, $\\text{H} = 1$, $\\text{O} = 16\\text{ g/mol}$). ¿Cuál es su fórmula empírica?",
+    "opts": [
+      "\\text{CH}_2\\text{O}$",
+      "\\text{C}_2\\text{H}_4\\text{O}_2$",
+      "\\text{CHO}$",
+      "\\text{C}_2\\text{H}_2\\text{O}$"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Dividiendo los moles relativos (3.33, 6.7, 3.33) entre el menor, se obtiene la proporción 1:2:1, resultando en $\\text{CH}_2\\text{O}[cite: 37]$."
+  },
+  {
+    "q": "9. ¿Cuál es la diferencia fundamental entre la fórmula empírica y la fórmula molecular?",
+    "opts": [
+      "La fórmula empírica siempre contiene más átomos que la molecular.",
+      "La fórmula molecular expresa la proporción más sencilla de los elementos.",
+      "Ambas fórmulas deben ser necesariamente idénticas.",
+      "La fórmula molecular indica el número real de átomos de cada elemento por molécula, mientras que la empírica expresa su proporción más sencilla."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La fórmula molecular detalla el número exacto de átomos de cada elemento en una molécula, en tanto que la empírica muestra la proporción mínima simplificada[cite: 37]."
+  },
+  {
+    "q": "10. La fórmula empírica de un compuesto es $\\text{CH}_2\\text{O}$ y su masa molar es $180\\text{ g/mol}$ ($\\text{C} = 12$, $\\text{H} = 1$, $\\text{O} = 16\\text{ g/mol}$). ¿Cuál es su fórmula molecular?",
+    "opts": [
+      "\\text{C}_2\\text{H}_4\\text{O}_2$",
+      "\\text{C}_3\\text{H}_6\\text{O}_3$",
+      "\\text{C}_6\\text{H}_{12}\\text{O}_6$",
+      "\\text{C}_5\\text{H}_{10}\\text{O}_5$"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La masa de $\\text{CH}_2\\text{O}$ es $30\\text{ g/mol}$. La razón $180 / 30 = 6$ indica que se multiplican los subíndices por 6, obteniendo $\\text{C}_6\\text{H}_{12}\\text{O}_6[cite: 37]$."
+  },
+  {
+    "q": "11. ¿Cuál de las siguientes afirmaciones corresponde a la ley de las proporciones constantes?",
+    "opts": [
+      "Dos muestras puras de $\\text{NaCl}$ presentan la misma proporción de masa entre sodio y cloro, independientemente de su tamaño.",
+      "Una muestra de $\\text{NaCl}$ siempre contiene el mismo número total de gramos.",
+      "La proporción de sodio y cloro cambia cuando se obtiene $\\text{NaCl}$ en mayor cantidad.",
+      "El cloruro de sodio puede contener cantidades variables de sodio y cloro y seguir siendo el mismo compuesto puro."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Un compuesto puro mantiene siempre la misma proporción en masa de sus elementos constituyentes sin importar el origen o tamaño de la muestra[cite: 37]."
+  },
+  {
+    "q": "12. Una muestra de 10 g de un compuesto contiene 4 g de azufre y 6 g de oxígeno. ¿Cuál es el porcentaje en masa de azufre?",
+    "opts": [
+      "40 %",
+      "60 %",
+      "66.7 %",
+      "25 %"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El porcentaje en masa se calcula como $(4\\text{ g} / 10\\text{ g}) \\times 100 = 40\\%[cite: 37]$."
+  },
+  {
+    "q": "13. Dos muestras de agua pura tienen masas de 20 g y 100 g, respectivamente. De acuerdo con la ley de Proust, ¿qué afirmación es correcta?",
+    "opts": [
+      "La muestra de 100 g contiene cinco veces más porcentaje de oxígeno que la de 20 g.",
+      "La muestra de 20 g tiene mayor proporción de hidrógeno.",
+      "Ambas muestras tienen la misma proporción en masa de hidrógeno y oxígeno.",
+      "La proporción entre hidrógeno y oxígeno depende del volumen de cada muestra."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El agua pura conserva idéntica proporción de masa entre hidrógeno y oxígeno en cualquier cantidad de muestra analizada[cite: 37]."
+  },
+  {
+    "q": "14. Un compuesto tiene una fórmula empírica $\\text{CH}_2$ y una masa molar de $56\\text{ g/mol}$ ($\\text{C} = 12$, $\\text{H} = 1\\text{ g/mol}$). ¿Cuál es su fórmula molecular?",
+    "opts": [
+      "\\text{C}_2\\text{H}_4$",
+      "\\text{C}_3\\text{H}_6$",
+      "\\text{C}_5\\text{H}_{10}$",
+      "\\text{C}_4\\text{H}_8$"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La masa de $\\text{CH}_2$ es $14\\text{ g/mol}$. La razón $56 / 14 = 4$ indica que la fórmula molecular es $\\text{C}_4\\text{H}_8[cite: 37]$."
+  },
+  {
+    "q": "15. Al analizar 100 g de un compuesto se encuentran 52.2 g de carbono, 13.0 g de hidrógeno y 34.8 g de oxígeno. ¿Qué procedimiento permite determinar su fórmula empírica?",
+    "opts": [
+      "Sumar las masas de los elementos y utilizar el resultado como subíndice.",
+      "Convertir las masas de cada elemento a moles y dividir los resultados entre el menor valor.",
+      "Dividir cada masa entre la masa total y usar los porcentajes como subíndices.",
+      "Multiplicar las masas de los elementos por sus números atómicos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Se convierten las masas a moles y se dividen entre el menor número de moles para hallar la relación entera más sencilla[cite: 37]."
+  },
+  {
+    "q": "16. Una muestra de 50 g de un compuesto contiene 20 g de calcio y 30 g de oxígeno. ¿Cuál es la composición porcentual de cada elemento?",
+    "opts": [
+      "\\text{Ca} = 20\\%, \\text{O} = 80\\%$",
+      "\\text{Ca} = 30\\%, \\text{O} = 70\\%$",
+      "\\text{Ca} = 40\\%, \\text{O} = 60\\%$",
+      "\\text{Ca} = 60\\%, \\text{O} = 40\\$"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Cálculo porcentual: $\\text{Ca} = (20/50)\\times 100 = 40\\%$ y $\\text{O} = (30/50)\\times 100 = 60\\%[cite: 37]$."
+  },
+  {
+    "q": "17. ¿Qué principio se aplica cuando se comprueba que la masa total antes y después de una reacción química es la misma?",
+    "opts": [
+      "La ley de las proporciones múltiples.",
+      "La ley de los gases ideales.",
+      "La ley de las proporciones constantes.",
+      "La ley de conservación de la materia."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La constancia de la masa global en un sistema cerrado corrobora la ley de conservación de la materia[cite: 37]."
+  },
+  {
+    "q": "18. Un compuesto tiene una fórmula empírica $\\text{C}_2\\text{H}_5$ y una masa molar aproximada de $58\\text{ g/mol}$ ($\\text{C} = 12$, $\\text{H} = 1\\text{ g/mol}$). ¿Cuál es su fórmula molecular?",
+    "opts": [
+      "\\text{C}_2\\text{H}_5$",
+      "\\text{C}_4\\text{H}_{10}$",
+      "\\text{C}_3\\text{H}_{15}$",
+      "\\text{C}_5\\text{H}_{10}$"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La masa de $\\text{C}_2\\text{H}_5$ es $29\\text{ g/mol}$. La razón $58 / 29 = 2$ indica que la fórmula molecular es $\\text{C}_4\\text{H}_{10}[cite: 37]$."
+  },
+  {
+    "q": "19. ¿Cuál es la composición porcentual aproximada de carbono en el dióxido de carbono, $\\text{CO}_2$? ($\\text{C} = 12$, $\\text{O} = 16\\text{ g/mol}$)",
+    "opts": [
+      "27.3 %",
+      "50.0 %",
+      "72.7 %",
+      "12.0 %"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La masa molar del $\\text{CO}_2$ es $44\\text{ g/mol}$, y el porcentaje de carbono es $(12 / 44) \\times 100 \\approx 27.3\\%[cite: 37]$."
+  },
+  {
+    "q": "20. En una reacción realizada en un recipiente cerrado, 24 g de magnesio reaccionan completamente con 16 g de oxígeno. ¿Qué masa de óxido de magnesio se forma?",
+    "opts": [
+      "8 g",
+      "24 g",
+      "40 g",
+      "48 g"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Por la ley de conservación de la materia, la masa del óxido formado es la suma de los reactivos: $24\\text{ g} + 16\\text{ g} = 40\\text{ g}[cite: 37]$."
+  },
+  {
+    "q": "21. ¿Cuál de las siguientes fórmulas representa correctamente una fórmula empírica que también es fórmula molecular?",
+    "opts": [
+      "\\text{C}_2\\text{H}_4$ para una molécula cuya fórmula empírica es $\\text{CH}_2$.",
+      "\\text{C}_6\\text{H}_{12}\\text{O}_6$ para una molécula cuya fórmula empírica es $\\text{CH}_2\\text{O}$.",
+      "\\text{N}_2\\text{O}_4$ para una molécula cuya fórmula empírica es $\\text{NO}_2$.",
+      "\\text{H}_2\\text{O}$ para una sustancia cuya fórmula empírica es $\\text{H}_2\\text{O}$."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "En la molécula de agua, la proporción 2:1 no puede simplificarse, por lo que $\\text{H}_2\\text{O}$ es fórmula empírica y molecular a la vez[cite: 37]."
+  },
+  {
+    "q": "22. Un compuesto contiene 24 g de carbono y 4 g de hidrógeno ($\\text{C} = 12$, $\\text{H} = 1\\text{ g/mol}$). ¿Cuál es su fórmula empírica?",
+    "opts": [
+      "\\text{CH}_2$",
+      "\\text{CH}$",
+      "\\text{C}_2\\text{H}_4$",
+      "\\text{CH}_4$"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los moles son $2\\text{ mol de C}$ y $4\\text{ mol de H}$, lo que da una relación 1:2 ($\\text{CH}_2$)[cite: 37]."
+  },
+  {
+    "q": "23. Una muestra de 25 g de un compuesto puro contiene 10 g de un elemento y 15 g de otro. ¿Cuál es la composición porcentual del segundo elemento?",
+    "opts": [
+      "40 %",
+      "60 %",
+      "25 %",
+      "75 %"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El porcentaje se obtiene dividiendo la masa del elemento entre la total: $(15 / 25) \\times 100 = 60\\%[cite: 37]$."
+  },
+  {
+    "q": "24. Un compuesto tiene fórmula empírica $\\text{NO}_2$ y masa molar de $92\\text{ g/mol}$ ($\\text{N} = 14$, $\\text{O} = 16\\text{ g/mol}$). ¿Cuál es su fórmula molecular?",
+    "opts": [
+      "\\text{N}_2\\text{O}_4$",
+      "\\text{NO}_2$",
+      "\\text{N}_3\\text{O}_6$",
+      "\\text{N}_4\\text{O}_8$"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La masa de $\\text{NO}_2$ es $46\\text{ g/mol}$. La razón $92 / 46 = 2$ indica que la fórmula molecular es $\\text{N}_2\\text{O}_4[cite: 37]$."
+  },
+  {
+    "q": "25. ¿Cuál de las siguientes afirmaciones sobre la ley de conservación de la materia es correcta?",
+    "opts": [
+      "La materia se destruye parcialmente durante una combustión.",
+      "La masa de los productos siempre supera la masa de los reactivos.",
+      "La masa total se conserva aunque los átomos cambien su distribución en las sustancias.",
+      "La masa total solo se conserva cuando no se forman gases."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Los átomos cambian su distribución al reaccionar, pero la masa total del sistema cerrado permanece invariable[cite: 37]."
+  },
+  {
+    "q": "26. Un compuesto está formado por 70.0 % de hierro y 30.0 % de oxígeno ($\\text{Fe} = 56$, $\\text{O} = 16\\text{ g/mol}$). ¿Cuál es su fórmula empírica?",
+    "opts": [
+      "\\text{FeO}$",
+      "\\text{Fe}_2\\text{O}_3$",
+      "\\text{FeO}_2$",
+      "\\text{Fe}_3\\text{O}_4$"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Los moles son $1.25\\text{ mol de Fe}$ y $1.875\\text{ mol de O}$, dando una relación 1:1.5 que al duplicarla resulta en $\\text{Fe}_2\\text{O}_3[cite: 37]$."
+  },
+  {
+    "q": "27. ¿Qué información se necesita para calcular la fórmula molecular a partir de la fórmula empírica?",
+    "opts": [
+      "La densidad del compuesto y su punto de ebullición.",
+      "El volumen de una muestra y su temperatura.",
+      "La composición porcentual y el número atómico de un solo elemento.",
+      "La fórmula empírica y la masa molar del compuesto."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Se requiere conocer la fórmula empírica para hallar su masa y compararla con la masa molar real del compuesto[cite: 37]."
+  },
+  {
+    "q": "28. Una muestra de 40 g de un compuesto contiene 16 g de azufre y 24 g de oxígeno ($\\text{S} = 32$, $\\text{O} = 16\\text{ g/mol}$). ¿Cuál es la fórmula empírica?",
+    "opts": [
+      "\\text{SO}_2$",
+      "\\text{SO}_3$",
+      "\\text{SO}$",
+      "\\text{S}_2\\text{O}_3$"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Se obtienen $0.5\\text{ mol de S}$ y $1.5\\text{ mol de O}$, lo que representa una relación 1:3 ($\\text{SO}_3$)[cite: 37]."
+  },
+  {
+    "q": "29. Dos muestras de un mismo compuesto puro presentan masas diferentes. ¿Qué propiedad permite afirmar que ambas mantienen la misma composición química?",
+    "opts": [
+      "La ley de las proporciones constantes.",
+      "La ley de conservación de la energía.",
+      "La ley de los gases ideales.",
+      "La ley de los volúmenes de combinación."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La ley de Proust o de las proporciones constantes garantiza que un compuesto puro conserva idéntica proporción de masa en cualquier muestra[cite: 37]."
+  },
+  {
+    "q": "30. Un compuesto tiene fórmula empírica $\\text{CH}$ y masa molar de $78\\text{ g/mol}$ ($\\text{C} = 12$, $\\text{H} = 1\\text{ g/mol}$). ¿Cuál es su fórmula molecular?",
+    "opts": [
+      "\\text{C}_2\\text{H}_2$",
+      "\\text{C}_3\\text{H}_3$",
+      "\\text{C}_6\\text{H}_6$",
+      "\\text{C}_7\\text{H}_7$"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La masa de $\\text{CH}$ es $13\\text{ g/mol}$. La razón $78 / 13 = 6$ determina que la fórmula molecular es $\\text{C}_6\\text{H}_6[cite: 37]$."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 34";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Leyes estequiométricas, composición porcentual y fórmulas empírica/molecular</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 34";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Leyes estequiométricas y fórmulas empírica/molecular<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Leyes estequiométricas y fórmulas empírica/molecular",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Leyes estequiométricas y fórmulas empírica/molecular",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

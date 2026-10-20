@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 47</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "11.2 Clasificación de ácidos y bases (Conductividad y sustancias cotidianas — Tema 47)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál de las siguientes sustancias es un ácido fuerte en disolución acuosa diluida?",
+    "opts": [
+      "Ácido acético ($\\text{CH}_3\\text{COOH}$).",
+      "Ácido carbónico ($\\text{H}_2\\text{CO}_3$).",
+      "Ácido clorhídrico ($\\text{HCl}$).",
+      "Ácido fluorhídrico ($\\text{HF}$)."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El $\\text{HCl}$ es un ácido fuerte porque se ioniza prácticamente por completo en agua diluida[cite: 51]."
+  },
+  {
+    "q": "2. Se preparan disoluciones acuosas de $\\text{HCl}$ y $\\text{CH}_3\\text{COOH}$ con la misma concentración molar y bajo condiciones comparables. ¿Cuál presentará mayor conductividad eléctrica?",
+    "opts": [
+      "La de $\\text{CH}_3\\text{COOH}$, porque permanece principalmente en forma molecular.",
+      "La de $\\text{HCl}$, porque produce una mayor proporción de iones en disolución.",
+      "Ambas tendrán necesariamente la misma conductividad porque tienen igual molaridad.",
+      "Ninguna conducirá electricidad porque son sustancias moleculares."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El $\\text{HCl}$ se ioniza casi por completo, generando muchos iones y una gran conductividad, a diferencia del ácido acético que solo se ioniza parcialmente[cite: 51]."
+  },
+  {
+    "q": "3. ¿Cuál de las siguientes sustancias es una base fuerte en agua?",
+    "opts": [
+      "\\text{NH}_3$.",
+      "\\text{CH}_3\\text{COOH}$.",
+      "\\text{H}_2\\text{CO}_3$.",
+      "\\text{NaOH}$"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El hidróxido de sodio ($\\text{NaOH}$) es una base fuerte que se disocia prácticamente por completo en agua[cite: 51]."
+  },
+  {
+    "q": "4. Dos disoluciones de igual concentración y temperatura contienen, respectivamente, $\\text{HNO}_3$ y $\\text{NH}_3$. ¿Cuál afirmación describe correctamente su comportamiento eléctrico?",
+    "opts": [
+      "La disolución de $\\text{HNO}_3$ suele conducir mejor porque es un ácido fuerte y genera una elevada concentración de iones.",
+      "La disolución de $\\text{NH}_3$ conduce mejor porque todas sus moléculas forman iones.",
+      "Ambas presentan necesariamente la misma conductividad porque contienen nitrógeno.",
+      "Ninguna conduce porque ambas sustancias son moleculares antes de disolverse."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El $\\text{HNO}_3$ es un ácido fuerte altamente ionizado, por lo que su disolución conduce la electricidad de manera eficiente en comparación con la base débil $\\text{NH}_3[cite: 51]$."
+  },
+  {
+    "q": "5. ¿Cuál de las siguientes sustancias de uso cotidiano presenta carácter ácido debido principalmente al ácido acético que contiene?",
+    "opts": [
+      "Lejía doméstica.",
+      "Jabón líquido.",
+      "Vinagre.",
+      "Solución de bicarbonato de sodio."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El vinagre contiene ácido acético, el cual le otorga su carácter ácido característico[cite: 51]."
+  },
+  {
+    "q": "6. Una persona utiliza una solución acuosa de bicarbonato de sodio para neutralizar parcialmente la acidez de una preparación alimentaria. ¿Qué propiedad química explica este efecto?",
+    "opts": [
+      "El bicarbonato es un ácido fuerte que aumenta la concentración de $\\text{H}_3\\text{O}^$.",
+      "El bicarbonato puede aceptar protones y reaccionar con especies ácidas.",
+      "El bicarbonato impide cualquier reacción ácido-base.",
+      "El bicarbonato produce exclusivamente iones $\\text{H}^+$ al disolverse."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El ion bicarbonato ($\\text{HCO}_3^-$) puede aceptar protones y reaccionar con sustancias ácidas, neutralizando parcialmente la acidez[cite: 51]."
+  },
+  {
+    "q": "7. ¿Cuál de las siguientes sustancias se utiliza habitualmente como limpiador doméstico y presenta carácter básico en disolución acuosa?",
+    "opts": [
+      "Jugo de limón.",
+      "Vinagre.",
+      "Refresco de cola.",
+      "Amoniaco doméstico diluido."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El amoniaco doméstico reacciona parcialmente con el agua produciendo iones $\\text{OH}^-$, lo que le confiere un carácter básico[cite: 51]."
+  },
+  {
+    "q": "8. Se comparan disoluciones de $\\text{HCl}$ y $\\text{HF}$ con igual concentración analítica. ¿Cuál afirmación explica mejor la diferencia esperada en su conductividad eléctrica?",
+    "opts": [
+      "El $\\text{HF}$ conduce mejor porque es un ácido débil.",
+      "El $\\text{HCl}$ conduce mejor porque se ioniza prácticamente por completo, mientras que el $\\text{HF}$ lo hace parcialmente.",
+      "Ambos conducen exactamente igual porque contienen hidrógeno y flúor o cloro.",
+      "El $\\text{HF}$ no puede conducir electricidad en ninguna concentración."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El $\\text{HCl}$ es un ácido fuerte totalmente ionizado, mientras que el $\\text{HF}$ es un ácido débil parcialmente ionizado, resultando en menor conductividad para este último[cite: 51]."
+  },
+  {
+    "q": "9. ¿Cuál es el intervalo de pH que caracteriza a una disolución ácida a 25 °C?",
+    "opts": [
+      "pH menor que 7.",
+      "pH igual a 7 exclusivamente.",
+      "pH mayor que 7.",
+      "pH entre 7 y 14."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "A 25 °C, una disolución acuosa es ácida si su pH se encuentra por debajo de 7[cite: 51]."
+  },
+  {
+    "q": "10. A 25 °C, una disolución tiene un pH de 3 y otra un pH de 5. ¿Cuántas veces mayor es la concentración de $\\text{H}_3\\text{O}^+$ de la primera respecto a la segunda?",
+    "opts": [
+      "2 veces.",
+      "10 veces.",
+      "100 veces.",
+      "1 000 veces."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La escala de pH es logarítmica; una diferencia de 2 unidades de pH representa un factor de $10^2 = 100$ veces en la concentración de iones hidronio[cite: 51]."
+  },
+  {
+    "q": "11. ¿Cuál de las siguientes sustancias se utiliza comúnmente para aliviar la acidez estomacal por su capacidad para neutralizar parte del ácido gástrico?",
+    "opts": [
+      "Ácido clorhídrico.",
+      "Hidróxido de magnesio.",
+      "Ácido sulfúrico.",
+      "Ácido nítrico."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El hidróxido de magnesio actúa como base antiácida neutralizando el exceso de ácido clorhídrico en el estómago[cite: 51]."
+  },
+  {
+    "q": "12. Se comparan dos disoluciones de igual concentración molar: una de $\\text{NaOH}$ y otra de $\\text{NH}_3$. ¿Cuál afirmación es correcta respecto a su carácter básico y conductividad?",
+    "opts": [
+      "Ambas son bases fuertes y producen la misma cantidad de iones.",
+      "El $\\text{NH}_3$ es una base fuerte y el $\\text{NaOH}$ es una base débil.",
+      "Ninguna conduce electricidad porque sus moléculas son neutras.",
+      "El $\\text{NaOH}$ se disocia prácticamente por completo, mientras que el $\\text{NH}_3$ reacciona parcialmente con el agua."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El $\\text{NaOH}$ es una base fuerte totalmente disociada, mientras que el $\\text{NH}_3$ es una base débil que establece un equilibrio parcial con el agua[cite: 51]."
+  },
+  {
+    "q": "13. ¿Cuál de las siguientes sustancias presenta carácter ácido por contener ácido cítrico?",
+    "opts": [
+      "Jugo de limón.",
+      "Solución de jabón.",
+      "Lejía doméstica.",
+      "Solución de amoniaco."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El jugo de limón es rico en ácido cítrico, lo que le otorga su acidez característica[cite: 51]."
+  },
+  {
+    "q": "14. Una disolución de ácido acético conduce electricidad, pero menos que una disolución de $\\text{HCl}$ de igual concentración molar y temperatura. ¿Cuál es la explicación más adecuada?",
+    "opts": [
+      "El ácido acético no forma iones en agua.",
+      "El $\\text{HCl}$ es un ácido débil y el ácido acético es fuerte.",
+      "El ácido acético se ioniza parcialmente, mientras que el $\\text{HCl}$ se ioniza prácticamente por completo.",
+      "La conductividad depende exclusivamente del color de la disolución."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La menor conductividad del ácido acético se debe a su ionización parcial, a diferencia del $\\text{HCl}$ que se ioniza por completo[cite: 51]."
+  },
+  {
+    "q": "15. ¿Qué color suele presentar el papel tornasol azul al entrar en contacto con una disolución ácida?",
+    "opts": [
+      "Verde.",
+      "Rojo.",
+      "Azul intenso.",
+      "Amarillo."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El papel tornasol azul vira a color rojo cuando se sumerge en una disolución con carácter ácido[cite: 51]."
+  },
+  {
+    "q": "16. Se tienen dos disoluciones de igual concentración analítica y temperatura: una contiene $\\text{HCl}$ y otra $\\text{CH}_3\\text{COOH}$. ¿Cuál afirmación es científicamente más adecuada sobre su conductividad?",
+    "opts": [
+      "La del ácido acético siempre es mayor porque sus moléculas son más grandes.",
+      "Ambas tienen la misma conductividad porque poseen un átomo de hidrógeno ácido.",
+      "La del ácido acético es cero porque es un ácido débil.",
+      "La del $\\text{HCl}$ suele ser mayor, aunque la conductividad también depende de la concentración y movilidad de los iones."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Aunque el $\\text{HCl}$ conduce más por su alta concentración iónica, la conductividad eléctrica real depende de la movilidad y concentración de los iones presentes[cite: 51]."
+  },
+  {
+    "q": "17. ¿Cuál de las siguientes sustancias es un ejemplo de ácido débil?",
+    "opts": [
+      "\\text{HCl}$.",
+      "\\text{HNO}_3$",
+      "\\text{CH}_3\\text{COOH}$",
+      "\\text{HBr}$"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El ácido acético ($\\text{CH}_3\\text{COOH}$) es un ácido débil que se ioniza de forma parcial en agua[cite: 51]."
+  },
+  {
+    "q": "18. Una disolución de un ácido débil se diluye con agua. ¿Cuál afirmación describe mejor el efecto esperado sobre su ionización?",
+    "opts": [
+      "El grado de ionización generalmente aumenta al diluirse, aunque la concentración total de iones puede disminuir.",
+      "El ácido se transforma necesariamente en un ácido fuerte.",
+      "El grado de ionización siempre disminuye al aumentar el volumen.",
+      "La disolución deja de conducir electricidad de manera inmediata."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Al diluir un ácido débil, su porcentaje o grado de ionización aumenta según la ley de acción de masas, aunque la concentración absoluta de iones por unidad de volumen disminuya[cite: 51]."
+  },
+  {
+    "q": "19. ¿Cuál es una característica de una base débil en agua?",
+    "opts": [
+      "Se disocia siempre por completo en iones.",
+      "No puede reaccionar con el agua.",
+      "Produce exclusivamente iones $\\text{H}_3\\text{O}^+$.",
+      "Reacciona parcialmente con el agua y establece un equilibrio químico."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Una base débil reacciona parcialmente con el agua para generar iones $\\text{OH}^-$, estableciendo un sistema en equilibrio químico[cite: 51]."
+  },
+  {
+    "q": "20. Una muestra de limpiador doméstico presenta pH 11 a 25 °C. ¿Cuál interpretación es correcta?",
+    "opts": [
+      "Es ácida porque su pH es mayor que 7.",
+      "Es básica y su concentración de $\\text{OH}^-$ es mayor que la de $\\text{H}_3\\text{O}^+$.",
+      "Es neutra porque no tiene pH ácido.",
+      "Es necesariamente una base fuerte porque su pH es 11."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "A 25 °C, un pH de 11 denota una disolución básica, lo que implica que la concentración de iones $\\text{OH}^-$ supera a la de $\\text{H}_3\\text{O}^+[cite: 51]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 47";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Clasificación de ácidos y bases por conductividad y sustancias cotidianas</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 47";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Clasificación de ácidos y bases (Conductividad y sustancias cotidianas)<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Clasificación de ácidos y bases (Conductividad y sustancias cotidianas)",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Clasificación de ácidos y bases",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Química Tema 54</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-periodic { background-color: #112240; color: #C89200; border: 2px solid #C89200; margin-bottom: 15px; }
+  .btn-periodic:hover { background-color: #0a192f; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal, .periodic-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content, .periodic-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .periodic-img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #cbd5e1; margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    
+    <button class="btn-periodic" onclick="openPeriodicModal()">⚛️ Ver Tabla Periódica</button>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Modal de Tabla Periódica -->
+<div class="periodic-modal" id="periodicModal">
+  <div class="periodic-modal-content">
+    <h3>⚛️ Tabla Periódica de los Elementos</h3>
+    <img src="https://lh3.googleusercontent.com/d/1RWDkq5xFsNaTUnxFT9AQwyBhfxooZCLC" alt="Tabla Periódica" class="periodic-img">
+    <div class="modal-actions" style="margin-top: 15px;">
+      <button class="btn-secondary" onclick="closePeriodicModal()">Cerrar Tabla Periódica</button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Química";
+const EXAM_TEMA      = "12.4 Contaminación atmosférica (Primarios, secundarios, inversión térmica y lluvia ácida — Tema 54)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1tlfwpV-GYtC3LsFmQQFi57zoOeUs8i-_";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál de los siguientes contaminantes atmosféricos se produce principalmente por la combustión incompleta de combustibles que contienen carbono?",
+    "opts": [
+      "Dióxido de azufre ($\\text{SO}_2$).",
+      "Dióxido de carbono ($\\text{CO}_2$).",
+      "Monóxido de carbono ($\\text{CO}$).",
+      "Ozono troposférico ($\\text{O}_3$)."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El monóxido de carbono se genera cuando el carbono del combustible se oxida de manera incompleta por una cantidad insuficiente de oxígeno[cite: 11]."
+  },
+  {
+    "q": "2. ¿Cuál de las siguientes actividades es una fuente importante de óxidos de nitrógeno ($\\text{NO}_x$) en las zonas urbanas?",
+    "opts": [
+      "La evaporación del agua de los ríos.",
+      "La combustión de gasolina y diésel en motores.",
+      "La fotosíntesis de las plantas.",
+      "La disolución de sales minerales en el agua."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las altas temperaturas dentro de los motores favorecen la formación de óxido nítrico (NO), que puede oxidarse y producir dióxido de nitrógeno ($\\text{NO}_2$)[cite: 11]."
+  },
+  {
+    "q": "3. ¿Qué fenómeno atmosférico ocurre cuando una capa de aire caliente se encuentra sobre una capa de aire frío cercana al suelo, dificultando la dispersión de contaminantes?",
+    "opts": [
+      "Lluvia ácida.",
+      "Efecto invernadero.",
+      "Calentamiento global.",
+      "Inversión térmica."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La inversión térmica limita la mezcla vertical del aire y puede provocar la acumulación de contaminantes cerca de la superficie[cite: 11]."
+  },
+  {
+    "q": "4. ¿Cuál es uno de los principales mecanismos de formación de la lluvia ácida?",
+    "opts": [
+      "La reacción de óxidos de azufre y nitrógeno con el agua y otros componentes atmosféricos.",
+      "La evaporación de agua pura de los océanos.",
+      "La reacción del oxígeno con el nitrógeno para formar exclusivamente amoniaco.",
+      "La condensación del vapor de agua sin intervención de contaminantes."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los óxidos de azufre y nitrógeno pueden transformarse en ácidos sulfúrico y nítrico mediante reacciones atmosféricas que involucran agua y agentes oxidantes[cite: 11]."
+  },
+  {
+    "q": "5. ¿Cuál de los siguientes gases contribuye al efecto invernadero por absorber radiación infrarroja emitida por la superficie terrestre?",
+    "opts": [
+      "Nitrógeno ($\\text{N}_2$).",
+      "Oxígeno ($\\text{O}_2$).",
+      "Dióxido de carbono ($\\text{CO}_2$).",
+      "Argón ($\\text{Ar}$)."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El $\\text{CO}_2$ absorbe parte de la radiación infrarroja terrestre y contribuye al efecto invernadero. El aumento de su concentración por actividades humanas intensifica el calentamiento global[cite: 11]."
+  },
+  {
+    "q": "6. ¿Qué contaminante atmosférico está formado por una mezcla de partículas sólidas y gotas líquidas suspendidas en el aire?",
+    "opts": [
+      "Vapor de agua.",
+      "Partículas suspendidas.",
+      "Oxígeno molecular.",
+      "Nitrógeno molecular."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las partículas suspendidas incluyen polvo, hollín, cenizas y aerosoles líquidos. Sus efectos dependen, entre otros factores, de su composición y tamaño[cite: 11]."
+  },
+  {
+    "q": "7. ¿Cuál es una fuente agrícola importante de emisiones de amoniaco ($\\text{NH}_3$), que puede contribuir a la formación de partículas secundarias en la atmósfera?",
+    "opts": [
+      "La aplicación de fertilizantes nitrogenados y el manejo de estiércol.",
+      "La generación de energía solar.",
+      "La captación de agua de lluvia.",
+      "La reforestación de terrenos degradados."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Algunos fertilizantes nitrogenados y los residuos ganaderos pueden liberar $\\text{NH}_3$. Este gas puede reaccionar con sustancias ácidas presentes en la atmósfera y formar partículas secundarias, como sales de amonio[cite: 11]."
+  },
+  {
+    "q": "8. ¿Cuál de las siguientes medidas contribuye directamente a disminuir las emisiones de contaminantes atmosféricos provenientes del transporte?",
+    "opts": [
+      "Incrementar el uso de combustibles con alto contenido de azufre.",
+      "Eliminar el mantenimiento de los motores.",
+      "Aumentar el número de vehículos particulares por persona.",
+      "Promover el transporte público y mantener los motores en condiciones adecuadas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El transporte público eficiente y el mantenimiento vehicular pueden reducir el consumo de combustible y las emisiones de contaminantes como $\\text{CO}$, $\\text{NO}_x$ e hidrocarburos[cite: 11]."
+  },
+  {
+    "q": "9. ¿Cuál es la diferencia fundamental entre un contaminante primario y uno secundario?",
+    "opts": [
+      "El primario siempre es sólido y el secundario siempre es gaseoso.",
+      "El primario se emite directamente y el secundario se forma mediante reacciones en la atmósfera.",
+      "El primario solo proviene de fuentes naturales y el secundario solo de fuentes industriales.",
+      "El primario no afecta la salud y el secundario siempre es tóxico."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El $\\text{CO}$ y el $\\text{SO}_2$ son ejemplos de contaminantes primarios. El ozono troposférico es secundario porque se forma mediante reacciones fotoquímicas entre precursores como los $\\text{NO}_x$ y los compuestos orgánicos volátiles[cite: 11]."
+  },
+  {
+    "q": "10. ¿Qué consecuencia puede tener la lluvia ácida sobre los ecosistemas acuáticos?",
+    "opts": [
+      "Incrementar siempre la concentración de oxígeno disuelto.",
+      "Neutralizar cualquier sustancia tóxica presente en el agua.",
+      "Disminuir el pH de lagos y arroyos, afectando a organismos sensibles.",
+      "Transformar todos los metales disueltos en sustancias inocuas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La acidificación puede alterar el equilibrio químico del agua, afectar la reproducción y supervivencia de organismos acuáticos y aumentar la disponibilidad de algunos metales tóxicos[cite: 11]."
+  },
+  {
+    "q": "11. En una zona urbana se registra una concentración elevada de $\\text{CO}$ durante las primeras horas de la mañana. Hay tráfico intenso y condiciones de poca ventilación atmosférica. ¿Cuál explicación integra mejor estos factores?",
+    "opts": [
+      "La fotosíntesis vehicular produce $\\text{CO}$ durante las horas de menor iluminación.",
+      "La evaporación del agua transforma el $\\text{CO}_2$ en $\\text{CO}$.",
+      "La combustión completa de los combustibles genera exclusivamente $\\text{CO}$.",
+      "La combustión incompleta en los motores, junto con la escasa dispersión del aire, favorece la acumulación de $\\text{CO}$."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El $\\text{CO}$ se produce por oxidación incompleta de combustibles carbonados. Cuando la ventilación atmosférica es limitada, su dispersión disminuye y puede aumentar su concentración local[cite: 11]."
+  },
+  {
+    "q": "12. En una región industrial se detectan emisiones elevadas de $\\text{SO}_2$. ¿Cuál secuencia explica mejor la posible contribución de estas emisiones a la lluvia ácida?",
+    "opts": [
+      "\\text{SO}_2 \\rightarrow$ oxidación atmosférica $\\rightarrow$ formación de compuestos de azufre más oxidados $\\rightarrow$ formación de ácido sulfúrico.",
+      "\\text{SO}_2 \\rightarrow$ reducción directa a oxígeno $\\rightarrow$ formación de ácido clorhídrico.",
+      "\\text{SO}_2 \\rightarrow$ reacción con nitrógeno $\\rightarrow$ formación exclusiva de amoniaco.",
+      "\\text{SO}_2 \\rightarrow$ evaporación $\\rightarrow$ formación directa de ácido carbónico."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El $\\text{SO}_2$ puede oxidarse en la atmósfera y formar $\\text{SO}_3$ o especies intermedias; posteriormente, la química atmosférica favorece la formación de $\\text{H}_2\\text{SO}_4$, que contribuye a la acidificación de la precipitación[cite: 11]."
+  },
+  {
+    "q": "13. Una estación de monitoreo registra concentraciones elevadas de $\\text{NO}_2$ y compuestos orgánicos volátiles (COV) durante un día soleado. ¿Qué contaminante secundario puede aumentar por las reacciones fotoquímicas de estos precursores?",
+    "opts": [
+      "Dióxido de azufre ($\\text{SO}_2$).",
+      "Ozono troposférico ($\\text{O}_3$).",
+      "Monóxido de carbono ($\\text{CO}$).",
+      "Argón ($\\text{Ar}$)."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "En presencia de radiación solar, los óxidos de nitrógeno ($\\text{NO}_x$) y los COV participan en reacciones fotoquímicas que favorecen la formación de ozono troposférico ($\\text{O}_3$), un componente importante del esmog fotoquímico[cite: 11]."
+  },
+  {
+    "q": "14. Una inversión térmica se presenta en una ciudad rodeada de montañas y con poco viento. ¿Cuál es la consecuencia más probable?",
+    "opts": [
+      "La destrucción inmediata de todos los contaminantes.",
+      "El aumento de la circulación vertical y la dispersión acelerada de partículas.",
+      "La acumulación de contaminantes cerca de la superficie y el deterioro de la calidad del aire.",
+      "La transformación de todos los gases contaminantes en oxígeno."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La capa de aire caliente sobre el aire frío superficial inhibe la convección vertical. La topografía y la escasa ventilación pueden agravar la acumulación de contaminantes[cite: 11]."
+  },
+  {
+    "q": "15. ¿Cuál afirmación distingue correctamente el efecto invernadero natural del calentamiento global actual?",
+    "opts": [
+      "El efecto invernadero es un fenómeno exclusivamente artificial, mientras que el calentamiento global es natural.",
+      "El efecto invernadero impide que la Tierra reciba radiación solar.",
+      "El calentamiento global se debe únicamente a las variaciones diarias de temperatura.",
+      "El efecto invernadero natural ayuda a mantener una temperatura habitable, mientras que su intensificación por actividades humanas contribuye al calentamiento global."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El efecto invernadero natural retiene parte de la energía térmica terrestre. El aumento antropogénico de gases como $\\text{CO}_2$ y $\\text{CH}_4$ intensifica este efecto y provoca un incremento de la temperatura media global[cite: 11]."
+  },
+  {
+    "q": "16. Una industria quema un combustible que contiene azufre. Si no cuenta con sistemas de control de emisiones, ¿qué contaminante primario puede liberarse directamente y contribuir después a la formación de lluvia ácida?",
+    "opts": [
+      "\\text{SO}_2$.",
+      "\\text{H}_2\\text{SO}_4$ exclusivamente en forma de aerosol.",
+      "\\text{NaOH}$.",
+      "\\text{CaCO}_3$."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La oxidación del azufre durante la combustión produce principalmente $\\text{SO}_2$. En la atmósfera, este gas puede oxidarse y participar en la formación de ácido sulfúrico[cite: 11]."
+  },
+  {
+    "q": "17. Una muestra de aire contiene partículas $\\text{PM}_{2.5}$ y $\\text{PM}_{10}$. ¿Cuál interpretación de estas denominaciones es correcta?",
+    "opts": [
+      "Indican la concentración de partículas en partes por millón.",
+      "Indican el porcentaje de carbono de cada partícula.",
+      "Se refieren a partículas con diámetros aerodinámicos de hasta 2.5 μm y 10 μm, respectivamente.",
+      "Indican partículas con diámetros mínimos de 2.5 mm y 10 mm."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "$\\text{PM}_{2.5}$ comprende partículas con diámetro aerodinámico de hasta 2.5 micrómetros, mientras que $\\text{PM}_{10}$ comprende las de hasta 10 micrómetros. Las más pequeñas pueden penetrar profundamente en el sistema respiratorio[cite: 11]."
+  },
+  {
+    "q": "18. Una ciudad busca disminuir simultáneamente las emisiones de $\\text{NO}_x$, $\\text{CO}$ y partículas procedentes del transporte. ¿Cuál estrategia ofrece una respuesta más integral?",
+    "opts": [
+      "Aumentar los límites de emisión permitidos sin modificar el transporte.",
+      "Sustituir el transporte público por automóviles particulares.",
+      "Incrementar el uso de combustibles con alto contenido de azufre.",
+      "Mejorar el transporte público, promover tecnologías vehiculares menos contaminantes y fortalecer el control de emisiones."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La combinación de movilidad colectiva, tecnologías más limpias y verificación de emisiones reduce la cantidad de contaminantes liberados por unidad de transporte y puede disminuir la exposición urbana[cite: 11]."
+  },
+  {
+    "q": "19. ¿Cuál actividad humana contribuye de manera directa al incremento de la concentración atmosférica de $\\text{CO}_2$ y, por tanto, al calentamiento global?",
+    "opts": [
+      "La combustión de carbón, petróleo y gas natural.",
+      "La condensación del vapor de agua en las nubes.",
+      "La solidificación del agua en los glaciares.",
+      "La sedimentación de minerales en el fondo oceánico."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La combustión de combustibles fósiles libera carbono que permanecía almacenado durante largos periodos geológicos, aumentando la concentración atmosférica de $\\text{CO}_2$[cite: 11]."
+  },
+  {
+    "q": "20. Una zona agrícola presenta contaminación del aire por quema de residuos vegetales, aplicación de fertilizantes y uso de maquinaria con motores de combustión. ¿Cuál asociación entre actividad y contaminante es correcta?",
+    "opts": [
+      "Quema de residuos — exclusivamente oxígeno molecular.",
+      "Aplicación de fertilizantes nitrogenados — posible emisión de $\\text{NH}_3$; combustión de maquinaria — emisión de $\\text{NO}_x$ y partículas.",
+      "Uso de maquinaria — eliminación completa de los hidrocarburos atmosféricos.",
+      "Quema de residuos — producción exclusiva de vapor de agua sin partículas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La aplicación de determinados fertilizantes puede liberar $\\text{NH}_3$, mientras que los motores emiten $\\text{NO}_x$ y otros contaminantes. La quema de residuos vegetales puede liberar partículas, $\\text{CO}$, $\\text{CO}_2$ y otros compuestos, según las condiciones de combustión[cite: 11]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 54";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Contaminación atmosférica e impacto ambiental</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 54";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Contaminación atmosférica e impacto ambiental<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Contaminación atmosférica e impacto ambiental",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openPeriodicModal() { document.getElementById('periodicModal').style.display = 'flex'; }
+function closePeriodicModal() { document.getElementById('periodicModal').style.display = 'none'; }
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Contaminación atmosférica e impacto ambiental",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>
