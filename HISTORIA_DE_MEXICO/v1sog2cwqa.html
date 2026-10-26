@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 25</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "25. Reordenación geopolítica y económica de la posguerra (Tema 25)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál fue una de las principales consecuencias geopolíticas de la Segunda Guerra Mundial?",
+    "opts": [
+      "La consolidación de Europa como centro indiscutible del poder mundial.",
+      "La desaparición de las rivalidades ideológicas entre las potencias.",
+      "El surgimiento de Estados Unidos y la Unión Soviética como superpotencias.",
+      "La restauración del sistema colonial europeo sin modificaciones."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Después de 1945, Estados Unidos y la Unión Soviética concentraron un poder superior, configurando un orden internacional bipolar[cite: 20]."
+  },
+  {
+    "q": "2. Al finalizar la Segunda Guerra Mundial, Europa quedó debilitada económicamente, mientras EE. UU. conservó capacidad industrial y la URSS amplió su influencia. ¿Qué interpretación explica la nueva distribución?",
+    "opts": [
+      "La pérdida de influencia europea favoreció la configuración de un sistema bipolar encabezado por Estados Unidos y la Unión Soviética.",
+      "La guerra restableció el equilibrio de poder europeo anterior a 1914.",
+      "La Unión Soviética abandonó Europa oriental para concentrarse en Asia.",
+      "Estados Unidos renunció a intervenir en los asuntos internacionales."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La destrucción europea facilitó el ascenso de EE. UU. y la URSS, cabezas de bloques con proyectos políticos y económicos contrapuestos[cite: 20]."
+  },
+  {
+    "q": "3. ¿Qué conferencia internacional de 1945 reunió a Franklin D. Roosevelt, Winston Churchill y Iósif Stalin para discutir la organización de la posguerra?",
+    "opts": [
+      "Conferencia de Bandung.",
+      "Conferencia de San Francisco.",
+      "Conferencia de Bretton Woods.",
+      "Conferencia de Yalta."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "En la Conferencia de Yalta (febrero de 1945) se discutió la reorganización europea, la ocupación de Alemania y los principios de la ONU[cite: 20]."
+  },
+  {
+    "q": "4. En julio y agosto de 1945, los aliados se reunieron en Potsdam para tratar la situación de Alemania tras su derrota. ¿Cuál fue una de las decisiones centrales?",
+    "opts": [
+      "Restablecer el gobierno nazi bajo supervisión internacional.",
+      "Desmilitarizar y desnazificar Alemania, además de reorganizar su administración bajo la ocupación aliada.",
+      "Incorporar toda Alemania a la Unión Soviética.",
+      "Permitir que Alemania conservara intacta su estructura militar y su régimen político."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Potsdam estableció objetivos para la ocupación, incluyendo la desmilitarización, desnazificación y reorganización institucional de Alemania[cite: 20]."
+  },
+  {
+    "q": "5. ¿Cuál fue el propósito principal de la creación de la Organización de las Naciones Unidas (ONU) en 1945?",
+    "opts": [
+      "Establecer una alianza militar exclusiva de los países socialistas.",
+      "Imponer un sistema económico único a todos los Estados.",
+      "Sustituir a todos los gobiernos nacionales por una autoridad mundial.",
+      "Promover la paz, la seguridad internacional y la cooperación entre los países."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La ONU fue creada para mantener la paz y seguridad internacionales, fomentar relaciones amistosas y promover la cooperación global[cite: 20]."
+  },
+  {
+    "q": "6. Un Estado miembro de la ONU considera que otro país representa una amenaza para la paz internacional. ¿Qué órgano tiene la responsabilidad primordial y puede adoptar decisiones vinculantes?",
+    "opts": [
+      "El Consejo de Seguridad.",
+      "La Asamblea General.",
+      "La Secretaría General.",
+      "La Corte Internacional de Justicia."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El Consejo de Seguridad tiene la responsabilidad primordial de mantener la paz y la seguridad internacionales, emitiendo resoluciones obligatorias[cite: 20]."
+  },
+  {
+    "q": "7. ¿Qué acuerdo estableció las bases del sistema monetario y financiero de posguerra, dando origen al FMI y al Banco Mundial (BIRF)?",
+    "opts": [
+      "Tratado de Versalles.",
+      "Acuerdos de Bretton Woods.",
+      "Tratado de Roma.",
+      "Pacto de Varsovia."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Los acuerdos de Bretton Woods (1944) sentaron las bases del sistema monetario internacional y crearon el FMI y el Banco Mundial[cite: 20]."
+  },
+  {
+    "q": "8. Después de la guerra, Europa enfrentó escasez e infraestructura destruida. EE. UU. financió programas de recuperación económica occidental. ¿A qué iniciativa corresponde?",
+    "opts": [
+      "Doctrina Truman.",
+      "Plan Molotov.",
+      "Plan Marshall.",
+      "Pacto de Varsovia."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Plan Marshall (1947-1948) proveyó ayuda económica estadounidense para la reconstrucción europea y para contener la influencia comunista[cite: 20]."
+  },
+  {
+    "q": "9. ¿Qué estableció el Tratado del Atlántico Norte, firmado en 1949?",
+    "opts": [
+      "Una alianza militar entre Estados Unidos, Canadá y países de Europa occidental basada en la defensa colectiva.",
+      "La integración económica de todos los países socialistas europeos.",
+      "La disolución de las fuerzas armadas de los países firmantes.",
+      "La creación de un gobierno único para Europa y América."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El tratado fundó la OTAN, estableciendo la defensa colectiva (Artículo 5), donde un ataque a uno es considerado un ataque a todos[cite: 20]."
+  },
+  {
+    "q": "10. En 1955, la URSS y países socialistas formalizaron una alianza militar en respuesta a la OTAN y al ingreso de Alemania Occidental a esta. ¿Cuál fue?",
+    "opts": [
+      "Comunidad Económica Europea.",
+      "Organización de las Naciones Unidas.",
+      "OECE.",
+      "Pacto de Varsovia."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Pacto de Varsovia (1955) fue la alianza militar del bloque soviético en respuesta directa a la creación y expansión de la OTAN[cite: 20]."
+  },
+  {
+    "q": "11. ¿Qué característica distinguió a la Guerra Fría?",
+    "opts": [
+      "La ausencia de conflictos regionales durante toda la segunda mitad del siglo XX.",
+      "La competencia política, ideológica, económica y militar entre EE. UU. y la URSS, sin una guerra directa generalizada entre ambas.",
+      "La alianza permanente entre EE. UU. y la URSS contra Europa occidental.",
+      "La eliminación de las armas nucleares después de 1945."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La Guerra Fría fue una disputa global bipolar con carrera armamentista e intervenciones indirectas, evitando un enfrentamiento bélico directo a gran escala[cite: 20]."
+  },
+  {
+    "q": "12. Durante la Guerra Fría, EE. UU. promovió una política dirigida a impedir la expansión de la influencia soviética hacia nuevos territorios. ¿Qué concepto identifica esta estrategia?",
+    "opts": [
+      "Autodeterminación colonial.",
+      "Coexistencia pacífica.",
+      "Política de contención.",
+      "Neutralidad armada."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La política de contención guio gran parte de la acción diplomática y militar norteamericana para frenar la expansión del comunismo soviético[cite: 20]."
+  },
+  {
+    "q": "13. ¿Quién formuló la Doctrina Truman de 1947 y cuál fue uno de sus objetivos centrales?",
+    "opts": [
+      "Harry S. Truman; apoyar a países que enfrentaban presiones de expansión comunista.",
+      "Iósif Stalin; promover la integración de Europa occidental.",
+      "Winston Churchill; establecer el Pacto de Varsovia.",
+      "Charles de Gaulle; disolver la ONU."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Harry S. Truman propuso apoyar a naciones amenazadas por el comunismo (como Grecia y Turquía), consolidando la estrategia de contención[cite: 20]."
+  },
+  {
+    "q": "14. Durante la Guerra Fría, EE. UU. y la URSS acumularon armas nucleares. ¿Qué concepto describe la situación en la que ambas podían responder con una represalia devastadora?",
+    "opts": [
+      "Desarme unilateral.",
+      "Neutralidad estratégica.",
+      "Equilibrio comercial.",
+      "Destrucción mutua asegurada."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La destrucción mutua asegurada fungió como factor disuasorio nuclear ante la certeza de que un primer ataque acarrearía la aniquilación total recíproca[cite: 20]."
+  },
+  {
+    "q": "15. ¿Qué acontecimiento simbolizó la división de Europa en dos bloques durante la Guerra Fría?",
+    "opts": [
+      "La creación de la OMC.",
+      "La construcción del Muro de Berlín en 1961.",
+      "La firma del Tratado de Maastricht.",
+      "La independencia de EE. UU."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El Muro de Berlín (1961) se convirtió en el emblema físico de la cortina de hierro y la división ideológica del mundo occidental y soviético[cite: 20]."
+  },
+  {
+    "q": "16. En 1948-1949, la URSS bloqueó los accesos a Berlín occidental, respondiendo EE. UU. y el Reino Unido con un puente aéreo. ¿Qué demuestra este episodio?",
+    "opts": [
+      "Que Alemania se reunificó inmediatamente.",
+      "Que la ONU sustituyó a las potencias ocupantes.",
+      "Que la rivalidad entre superpotencias produjo enfrentamientos indirectos y presiones sin llegar a la guerra abierta.",
+      "Que la URSS se incorporó a la OTAN."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El bloqueo de Berlín evidenció que las superpotencias medían sus fuerzas mediante crisis logísticas y políticas sin desatar un conflicto bélico frontal[cite: 20]."
+  },
+  {
+    "q": "17. ¿Qué organización se creó en 1949 para la cooperación económica europea, convirtiéndose luego en un foro político y de derechos humanos más amplio?",
+    "opts": [
+      "OTAN.",
+      "Pacto de Varsovia.",
+      "ONU.",
+      "Consejo de Europa."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Consejo de Europa (1949) se instituyó para salvaguardar los derechos fundamentales, la democracia parlamentaria y el Estado de derecho[cite: 20]."
+  },
+  {
+    "q": "18. ¿Cuál fue una diferencia fundamental entre el FMI y el Banco Mundial (BIRF) en el sistema de posguerra?",
+    "opts": [
+      "El FMI se orientó a la estabilidad monetaria y balanza de pagos, mientras el BIRF se enfocó en reconstrucción y desarrollo mediante financiamiento.",
+      "El FMI se creó como alianza militar y el BIRF como tribunal.",
+      "El FMI administró fuerzas de ocupación y el BIRF organizó elecciones.",
+      "El FMI reguló derechos humanos y el BIRF prohibió el comercio."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El FMI atiende la estabilidad financiera y cambiaria temporal, en tanto el Banco Mundial (BIRF) otorga préstamos a largo plazo para reconstrucción y desarrollo[cite: 20]."
+  },
+  {
+    "q": "19. ¿Qué objetivo perseguía el Acuerdo General sobre Aranceles Aduaneros y Comercio (GATT), establecido en 1947?",
+    "opts": [
+      "Prohibir el comercio entre bloques capitalistas y socialistas.",
+      "Crear una moneda única mundial.",
+      "Reducir barreras comerciales y promover reglas para el intercambio internacional.",
+      "Establecer una alianza militar permanente."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El GATT apuntó a disminuir aranceles y normar el libre comercio internacional de manera multilateral hasta ceder paso a la OMC[cite: 20]."
+  },
+  {
+    "q": "20. Durante la Guerra Fría, varios países recién independizados evitaron subordinarse a EE. UU. o la URSS. ¿Qué proceso se relaciona con esta postura?",
+    "opts": [
+      "La integración de Asia y África al Pacto de Varsovia.",
+      "La consolidación colonial europea.",
+      "La desaparición de organismos internacionales.",
+      "El surgimiento del Movimiento de Países No Alineados."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Movimiento de Países No Alineados propugnó la soberanía y neutralidad activa frente a la polarización de los bloques de la Guerra Fría[cite: 20]."
+  },
+  {
+    "q": "21. ¿Qué acontecimiento de 1949 profundizó la división política de Alemania tras la Segunda Guerra Mundial?",
+    "opts": [
+      "La creación de la República Federal de Alemania y la República Democrática Alemana.",
+      "La incorporación de toda Alemania a la URSS.",
+      "La disolución de las zonas de ocupación y reunificación inmediata.",
+      "La firma del Tratado de Roma por ambas Alemanias."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En 1949 nacieron formalmente la RFA (occidental) y la RDA (soviética), cristalizando la partición alemana[cite: 20]."
+  },
+  {
+    "q": "22. En 1947 EE. UU. lanzó la Doctrina Truman y el Plan Marshall. ¿Cuál opción distingue correctamente ambas iniciativas?",
+    "opts": [
+      "La Doctrina Truman fue acuerdo comercial y el Plan Marshall alianza militar.",
+      "La Doctrina Truman expresó una estrategia política de contención, mientras el Plan Marshall fue ayuda económica para la reconstrucción.",
+      "La Doctrina Truman creó el Pacto de Varsovia y el Plan Marshall la ONU.",
+      "La Doctrina Truman fue financiera y el Plan Marshall desarme nuclear."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La Doctrina Truman fijó la directriz política anticomunista, y el Plan Marshall operó como el instrumento financiero de recuperación europea[cite: 20]."
+  },
+  {
+    "q": "23. ¿Qué función cumple la Asamblea General de la ONU?",
+    "opts": [
+      "Dirigir en exclusiva todas las operaciones militares globales.",
+      "Imponer sentencias penales a jefes de Estado.",
+      "Servir como órgano deliberativo donde los Estados miembros debaten asuntos internacionales y adoptan resoluciones.",
+      "Sustituir a los gobiernos nacionales en la administración."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La Asamblea General funciona como el principal foro de debate multilateral, emitiendo recomendaciones y resoluciones de carácter deliberativo[cite: 20]."
+  },
+  {
+    "q": "24. La crisis de los misiles de Cuba en 1962 llevó a EE. UU. y la URSS al borde de la guerra nuclear. ¿Cuál fue una consecuencia importante?",
+    "opts": [
+      "La disolución de la OTAN.",
+      "La reunificación alemana.",
+      "La incorporación de Cuba al bloque occidental.",
+      "El establecimiento de una comunicación directa (teléfono rojo) entre Washington y Moscú para reducir riesgos."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Tras el peligro atómico de 1962, ambas superpotencias instalaron un canal directo de comunicación inmediata para gestionar crisis y prevenir accidentes[cite: 20]."
+  },
+  {
+    "q": "25. ¿Qué tratado estableció la Comunidad Económica Europea y la Euratom en 1957?",
+    "opts": [
+      "Tratado de Roma.",
+      "Tratado de Versalles.",
+      "Tratado de Tordesillas.",
+      "Tratado de Brest-Litovsk."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los Tratados de Roma de 1957 consolidaron el núcleo institucional e integracionista de la Comunidad Económica Europea (CEE)[cite: 20]."
+  },
+  {
+    "q": "26. La URSS reprimió la Revolución húngara de 1956 y la Primavera de Praga de 1968. ¿Qué interpretación explica mejor estos hechos?",
+    "opts": [
+      "La URSS apoyaba que sus aliados abandonaran el socialismo libremente.",
+      "La URSS buscaba mantener su influencia estratégica en Europa oriental y frenar reformas que amenazaran el control del bloque.",
+      "Fueron operaciones militares de EE. UU. en Europa oriental.",
+      "Los países de Europa oriental habían salido formalmente del Pacto de Varsovia."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las intervenciones militares soviéticas en Hungría y Checoslovaquia obedecieron al propósito de preservar por la fuerza la cohesión y hegemonía del bloque[cite: 20]."
+  },
+  {
+    "q": "27. ¿Cuál fue el objetivo principal de la OTAN durante la Guerra Fría?",
+    "opts": [
+      "Promover la integración monetaria europea.",
+      "Sustituir a la ONU como foro mundial.",
+      "Organizar una alianza militar defensiva entre sus integrantes frente a posibles agresiones del bloque soviético.",
+      "Garantizar economías socialistas a sus miembros."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La OTAN se estructuró como un pacto de seguridad militar mutua para contrarrestar la amenaza militar del bloque oriental[cite: 20]."
+  },
+  {
+    "q": "28. A finales de los 80s, Mijaíl Gorbachov impulsó reformas en la URSS. ¿Cuál opción relaciona correctamente perestroika y glasnost?",
+    "opts": [
+      "Perestroika: expansión militar; glasnost: cierre de medios.",
+      "Perestroika: creación de la OTAN; glasnost: Plan Marshall.",
+      "Perestroika: restauración zarista; glasnost: ruptura diplomática.",
+      "Perestroika: reestructuración económica y política; glasnost: mayor apertura informativa y debate público."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La perestroika implicó la reforma estructural interna, mientras la glasnost propició la transparencia informativa y la apertura democrática soviética[cite: 20]."
+  },
+  {
+    "q": "29. ¿Qué acontecimiento de 1989 se convirtió en un símbolo del debilitamiento del bloque socialista europeo?",
+    "opts": [
+      "La caída del Muro de Berlín.",
+      "La creación del Pacto de Varsovia.",
+      "La firma de los Tratados de Roma.",
+      "La fundación de la ONU."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La caída del Muro de Berlín en noviembre de 1989 encarnó el colapso político de las dictaduras comunistas de Europa del Este[cite: 20]."
+  },
+  {
+    "q": "30. La URSS se disolvió en diciembre de 1991. ¿Cuál fue una consecuencia geopolítica fundamental de este acontecimiento?",
+    "opts": [
+      "El inicio de una alianza militar permanente entre EE. UU. y la URSS.",
+      "El fin de la Guerra Fría en su forma bipolar y la desaparición de la Unión Soviética como superpotencia.",
+      "La restauración inmediata de los imperios coloniales.",
+      "La desaparición de la ONU."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La disolución soviética clausuró definitivamente el orden bipolar de la Guerra Fría, dejando a EE. UU. como la única superpotencia global temporal[cite: 20]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 25";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Reordenación geopolítica y económica de la posguerra</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 25";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Reordenación geopolítica y económica de la posguerra<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Reordenación geopolítica y económica de la posguerra",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Reordenación geopolítica y económica de la posguerra",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

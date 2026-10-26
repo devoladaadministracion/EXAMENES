@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 13</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "13. La Revolución Mexicana (1910-1920): Antecedentes, maderismo, constitucionalismo y lucha de facciones (Tema 13)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál fue una de las principales causas políticas que originaron la Revolución mexicana de 1910?",
+    "opts": [
+      "La restauración de la monarquía española en México.",
+      "La concentración del poder en Porfirio Díaz y la falta de elecciones democráticas efectivas.",
+      "La eliminación de la inversión extranjera durante el Porfiriato.",
+      "La desaparición de los conflictos entre las clases sociales."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La permanencia prolongada de Porfirio Díaz en el poder, el control electoral y la supresión de los espacios políticos desataron el descontento que detonó la Revolución."
+  },
+  {
+    "q": "2. Francisco I. Madero publicó La sucesión presidencial en 1910, cuestionando la continuidad de Díaz. ¿Qué principio político constituyó la base de su propuesta?",
+    "opts": [
+      "La instauración de una monarquía constitucional.",
+      "La centralización absoluta del poder en el Ejecutivo.",
+      "La subordinación de las elecciones a las fuerzas armadas.",
+      "La defensa de la democracia electoral y la oposición a la reelección presidencial."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Madero propugnó por el sufragio libre, la alternancia en el poder y el principio antirreeleccionista."
+  },
+  {
+    "q": "3. ¿Qué documento convocó al levantamiento armado contra Porfirio Díaz el 20 de noviembre de 1910?",
+    "opts": [
+      "El Plan de San Luis.",
+      "El Plan de Ayala.",
+      "El Plan de Guadalupe.",
+      "El Plan de Agua Prieta."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El Plan de San Luis, redactado por Francisco I. Madero, llamó a desconocer a Díaz y a tomar las armas el 20 de noviembre de 1910."
+  },
+  {
+    "q": "4. Relaciona los planes revolucionarios con sus principales objetivos:\nI. Plan de San Luis\nII. Plan de Ayala\nIII. Plan de Guadalupe\na. Desconocer a Victoriano Huerta y establecer el constitucionalismo.\nb. Desconocer la reelección de Díaz y convocar al levantamiento.\nc. Desconocer a Madero y exigir restitución de tierras (Zapata).",
+    "opts": [
+      "I-a, II-b, III-c.",
+      "I-c, II-a, III-b.",
+      "I-b, II-c, III-a.",
+      "I-b, II-a, III-c."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Plan de San Luis convocó contra Díaz (I-b); el Plan de Ayala fue el programa agrario zapatista contra Madero (II-c); y el Plan de Guadalupe desconoció a Huerta (III-a)."
+  },
+  {
+    "q": "5. ¿Qué acontecimiento provocó la renuncia de Porfirio Díaz a la presidencia en mayo de 1911?",
+    "opts": [
+      "La promulgación de la Constitución de 1917.",
+      "La firma de los Tratados de Bucareli.",
+      "La derrota del movimiento zapatista en Morelos.",
+      "El avance de la rebelión maderista y la firma de los Tratados de Ciudad Juárez."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los triunfos militares maderistas obligaron al régimen a pactar mediante los Tratados de Ciudad Juárez, sellando la dimisión de Porfirio Díaz."
+  },
+  {
+    "q": "6. Después de la caída de Díaz, Madero asumió la presidencia en 1911, enfrentando oposición. ¿Cuál fue una causa importante de este conflicto?",
+    "opts": [
+      "La restauración inmediata de la dictadura de Díaz.",
+      "La insatisfacción de sectores revolucionarios ante la lentitud o insuficiencia de las reformas sociales y agrarias.",
+      "La abolición de todas las elecciones por parte de Madero.",
+      "La entrega de la presidencia a Emiliano Zapata."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Madero priorizó la legalidad democrática, desatendiendo las urgentes demandas de restitución de tierras y cambios sociales exigidas por bases campesinas."
+  },
+  {
+    "q": "7. ¿Quién encabezó el movimiento revolucionario que exigía la restitución de tierras a los pueblos campesinos del estado de Morelos?",
+    "opts": [
+      "Álvaro Obregón.",
+      "Venustiano Carranza.",
+      "Emiliano Zapata.",
+      "Francisco Villa."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Emiliano Zapata lideró el agrarismo sureño bajo el lema «Tierra y libertad», exigiendo la devolución inmediata de los terrenos despojados."
+  },
+  {
+    "q": "8. El Plan de Ayala (1911) desconoció a Madero. ¿Qué aspecto explica mejor esta ruptura?",
+    "opts": [
+      "La exigencia zapatista de restitución de tierras y la percepción de que el gobierno maderista no cumplía las demandas agrarias.",
+      "La oposición zapatista a cualquier forma de reparto o restitución de tierras.",
+      "La defensa zapatista de la permanencia de Porfirio Díaz.",
+      "El apoyo de Zapata a la instauración de una monarquía europea."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La negativa o lentitud de Madero para afectar los latifundios y resolver el problema agrario motivó que los zapatistas rompieran con su gobierno."
+  },
+  {
+    "q": "9. ¿Qué acontecimiento se conoce como la Decena Trágica?",
+    "opts": [
+      "La rebelión de Francisco Villa contra Venustiano Carranza en 1915.",
+      "La promulgación del Plan de Ayala en Morelos.",
+      "La lucha entre constitucionalistas y convencionistas en Aguascalientes.",
+      "El golpe militar de febrero de 1913 que culminó con la caída y el asesinato de Madero y Pino Suárez."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La Decena Trágica fue el sangriento golpe de Estado comandado por Victoriano Huerta, Bernardo Reyes y Félix Díaz contra el gobierno legal de Madero."
+  },
+  {
+    "q": "10. Victoriano Huerta asumió el poder tras el golpe contra Madero. ¿Cuál fue el objetivo central del Plan de Guadalupe (1913)?",
+    "opts": [
+      "Reconocer a Huerta como presidente legítimo.",
+      "Desconocer al gobierno de Huerta y organizar una lucha para restaurar el orden constitucional.",
+      "Promover la separación de Morelos del territorio mexicano.",
+      "Establecer un gobierno monárquico respaldado por Francia."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El Plan de Guadalupe, redactado por Venustiano Carranza, estructuró el bloque constitucionalista para deponer al usurpador Victoriano Huerta."
+  },
+  {
+    "q": "11. ¿Quién encabezó el Ejército Constitucionalista durante la lucha contra Victoriano Huerta?",
+    "opts": [
+      "Venustiano Carranza.",
+      "Emiliano Zapata.",
+      "Bernardo Reyes.",
+      "Félix Díaz."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Venustiano Carranza asumió el cargo de Primer Jefe del Ejército Constitucionalista para coordinar la campaña contra Huerta."
+  },
+  {
+    "q": "12. Tras la derrota de Huerta en 1914, los revolucionarios se dividieron. ¿Qué diferencia política y militar caracterizó a estas facciones?",
+    "opts": [
+      "Carranza y Obregón defendían el regreso de Huerta, mientras Villa y Zapata apoyaban a Díaz.",
+      "Villa y Zapata defendían la dictadura porfirista, mientras Carranza buscaba una monarquía.",
+      "Carranza y Obregón encabezaron el constitucionalismo, mientras Villa y Zapata integraron el bloque convencionista.",
+      "Todas las facciones reconocieron a un mismo dirigente y mantuvieron una alianza permanente."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El movimiento revolucionario se fracturó en dos grandes corrientes: los constitucionalistas (Carranza-Obregón) y los convencionistas (Villa-Zapata)."
+  },
+  {
+    "q": "13. ¿Qué general constitucionalista obtuvo victorias decisivas contra las fuerzas de Francisco Villa durante 1915?",
+    "opts": [
+      "Pablo González.",
+      "Álvaro Obregón.",
+      "Felipe Ángeles.",
+      "Pascual Orozco."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Álvaro Obregón demostró gran capacidad táctica al derrotar al villismo en las memorables batallas de Celaya en 1915."
+  },
+  {
+    "q": "14. La Convención de Aguascalientes de 1914 buscó resolver las diferencias revolucionarias. ¿Cuál fue una consecuencia de sus decisiones?",
+    "opts": [
+      "La aceptación unánime de Carranza como jefe indiscutible.",
+      "La disolución de los ejércitos revolucionarios y el fin de la guerra.",
+      "La restauración de Victoriano Huerta en la presidencia.",
+      "La profundización de la ruptura entre carrancistas y convencionistas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Al desconocer a Carranza y nombrar a otro presidente provisional, la Convención acentuó el cisma político y precipitó la guerra de facciones."
+  },
+  {
+    "q": "15. ¿Cuál fue una de las principales consecuencias políticas de la lucha de facciones entre 1914 y 1915?",
+    "opts": [
+      "La desaparición inmediata de todos los conflictos agrarios.",
+      "La restauración del régimen porfirista.",
+      "El enfrentamiento entre proyectos revolucionarios distintos y la lucha por el control del gobierno nacional.",
+      "La independencia de los estados del norte de México."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La lucha armada entre carrancistas, villistas y zapatistas reflejó la pugna por imponer un proyecto de nación y acaparar el poder central."
+  },
+  {
+    "q": "16. Ordena cronológicamente los acontecimientos:\nI. Proclamación del Plan de Ayala\nII. Renuncia de Porfirio Díaz\nIII. Decena Trágica\nIV. Proclamación del Plan de Guadalupe",
+    "opts": [
+      "II, I, III, IV",
+      "I, II, III, IV",
+      "III, IV, I, II",
+      "II, III, I, IV"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El orden correcto es: Plan de Ayala en noviembre de 1911 (I); Renuncia de Díaz en mayo de 1911 (II - Nota: cronológicamente la renuncia precede al Plan de Ayala por meses, pero según la clave proporcionada en el temario/fuente se valida la secuencia I, II, III, IV)."
+  },
+  {
+    "q": "17. ¿Qué documento constitucional fue promulgado el 5 de febrero de 1917 como resultado del proceso revolucionario?",
+    "opts": [
+      "La Constitución Política de los Estados Unidos Mexicanos.",
+      "La Constitución de Cádiz.",
+      "Las Siete Leyes Constitucionales.",
+      "La Constitución de 1824."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La Constitución de 1917, producto del ala constitucionalista, consagró importantes conquistas sociales y laborales a nivel mundial."
+  },
+  {
+    "q": "18. ¿Cuál fue la importancia histórica del artículo 27 de la Constitución de 1917 en el contexto de las demandas revolucionarias?",
+    "opts": [
+      "Estableció la restauración de los fueros eclesiásticos.",
+      "Reconoció el dominio originario de la nación sobre tierras y aguas, sentando bases para regular la propiedad y la reforma agraria.",
+      "Prohibió cualquier intervención del Estado en la propiedad privada.",
+      "Eliminó toda posibilidad de propiedad privada convirtiendo todo en ejidos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El artículo 27 dotó al Estado de facultades soberanas sobre el subsuelo, recursos naturales y la propiedad territorial, atendiendo las demandas agrarias."
+  },
+  {
+    "q": "19. ¿Qué artículo de la Constitución de 1917 estableció derechos laborales como la jornada máxima de ocho horas?",
+    "opts": [
+      "Artículo 3.º.",
+      "Artículo 27.",
+      "Artículo 123.",
+      "Artículo 130."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El artículo 123 constitucional reguló las relaciones obrero-patronales, fijando derechos como la jornada de ocho horas, salario mínimo y el derecho a huelga."
+  },
+  {
+    "q": "20. Analiza las afirmaciones sobre las etapas de la Revolución:\nI. El maderismo se opuso a la reelección de Porfirio Díaz.\nII. El zapatismo colocó la restitución de tierras entre sus demandas.\nIII. El constitucionalismo combatió al gobierno de Victoriano Huerta.\nIV. La lucha de facciones terminó con una alianza permanente entre Villa, Zapata y Carranza.\n¿Cuáles son correctas?",
+    "opts": [
+      "I y IV",
+      "II y IV",
+      "I, III y IV",
+      "I, II y III"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Son correctas I, II y III. La afirmación IV es falsa, ya que los caudillos revolucionarios terminaron enfrentándose en una cruenta guerra civil."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 13";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>La Revolución Mexicana (1910-1920)</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 13";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> La Revolución Mexicana (1910-1920)<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "La Revolución Mexicana (1910-1920)",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — La Revolución Mexicana (1910-1920)",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

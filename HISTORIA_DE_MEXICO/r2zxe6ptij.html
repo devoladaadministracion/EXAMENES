@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 19</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "19. Gobiernos de la crisis, organizaciones y movimientos sociales (Tema 19)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Qué presidente de México impulsó la política económica conocida como desarrollo compartido?",
+    "opts": [
+      "Gustavo Díaz Ordaz",
+      "Luis Echeverría Álvarez",
+      "José López Portillo",
+      "Miguel de la Madrid Hurtado"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Luis Echeverría gobernó de 1970 a 1976 y promovió el desarrollo compartido, que buscaba ampliar la participación del Estado en la economía y distribuir de manera más equitativa sus beneficios."
+  },
+  {
+    "q": "2. Durante el gobierno de Luis Echeverría aumentó el gasto público para impulsar el crecimiento y atender demandas sociales, pero crecieron el déficit y la inflación. ¿Qué contradicción económica refleja?",
+    "opts": [
+      "El aumento del gasto público eliminó la dependencia de las importaciones.",
+      "La expansión del Estado produjo un equilibrio presupuestario permanente.",
+      "La inversión pública redujo por completo las desigualdades sociales.",
+      "La búsqueda de crecimiento y redistribución generó desequilibrios financieros."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La expansión del gasto público permitió financiar programas, pero también contribuyó al déficit fiscal y a presiones inflacionarias cuando los ingresos no bastaron."
+  },
+  {
+    "q": "3. ¿Cuál fue una característica central de la política económica de José López Portillo, presidente de México entre 1976 y 1982?",
+    "opts": [
+      "El impulso a la economía mediante la explotación petrolera.",
+      "La eliminación de la participación estatal en la industria petrolera.",
+      "La sustitución del petróleo por la agricultura como principal fuente de divisas.",
+      "La privatización total de Petróleos Mexicanos."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El gobierno de López Portillo apostó por el crecimiento masivo de la producción y las exportaciones de petróleo para financiar el desarrollo económico del país."
+  },
+  {
+    "q": "4. A finales de los 70s, México aumentó su endeudamiento con la expectativa de que los ingresos petroleros crecerían; luego cayeron los precios y subieron las tasas de interés. ¿Cuál fue una consecuencia?",
+    "opts": [
+      "La desaparición de la deuda externa mexicana.",
+      "El fortalecimiento permanente del peso frente al dólar.",
+      "Una crisis de deuda y una mayor dificultad para cumplir las obligaciones financieras.",
+      "La eliminación de la inflación mediante el aumento de las exportaciones."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La caída de los ingresos petroleros y el encarecimiento del financiamiento externo agravaron la vulnerabilidad económica de México y condujeron a la crisis de 1982."
+  },
+  {
+    "q": "5. ¿Qué medida anunció José López Portillo el 1 de septiembre de 1982, en el contexto de la crisis económica?",
+    "opts": [
+      "La privatización de la banca comercial.",
+      "La nacionalización de la banca privada.",
+      "La creación del Banco de México.",
+      "La eliminación de Petróleos Mexicanos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Ante la crisis financiera, López Portillo decretó la nacionalización de la banca privada y estableció el control generalizado de cambios."
+  },
+  {
+    "q": "6. Un historiador compara las políticas de Echeverría (gasto y redistribución) y López Portillo (auge petrolero y endeudamiento). ¿Qué conclusión explica mejor sus diferencias?",
+    "opts": [
+      "Ambos eliminaron la intervención estatal y confiaron exclusivamente en el libre mercado.",
+      "Echeverría dependió del petróleo como única fuente, mientras López Portillo abandonó el gasto.",
+      "López Portillo estableció una economía agrícola que sustituyó al sector industrial.",
+      "Ambos recurrieron a una participación estatal importante, pero con estrategias distintas para financiar el desarrollo."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Echeverría enfatizó el gasto social y la intervención, mientras López Portillo fundamentó su estrategia en la bonanza petrolera y el endeudamiento externo."
+  },
+  {
+    "q": "7. ¿Cuál fue uno de los principales propósitos del movimiento ferrocarrilero de 1958-1959?",
+    "opts": [
+      "Obtener mejores salarios, prestaciones y democracia sindical.",
+      "Exigir la desaparición de todas las universidades públicas.",
+      "Promover la privatización de los ferrocarriles.",
+      "Impulsar la reelección presidencial."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los trabajadores ferrocarrileros, encabezados por figuras como Demetrio Vallejo, demandaron mejoras salariales y verdadera autonomía frente al control oficial."
+  },
+  {
+    "q": "8. En los 50s, trabajadores organizados cuestionaron a dirigentes sindicales vinculados al gobierno exigiendo elecciones democráticas. ¿Qué problema denunciaban?",
+    "opts": [
+      "La ausencia de industrias estratégicas en el país.",
+      "La inexistencia de una Constitución federal.",
+      "El control corporativo de organizaciones obreras por parte del Estado y del partido gobernante.",
+      "La prohibición constitucional de formar sindicatos."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El sistema corporativo integraba a los sindicatos al partido oficial limitando su autonomía, lo que desató protestas de las bases trabajadoras."
+  },
+  {
+    "q": "9. ¿Qué organización encabezó la movilización estudiantil de 1968 como instancia de coordinación y representación de distintas escuelas participantes?",
+    "opts": [
+      "Confederación Nacional Campesina.",
+      "Consejo Nacional de Huelga.",
+      "Confederación de Trabajadores de México.",
+      "Confederación Nacional de Organizaciones Populares."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El Consejo Nacional de Huelga (CNH) coordinó a estudiantes de diversas instituciones en 1968, planteando demandas de libertades democráticas y cese a la represión."
+  },
+  {
+    "q": "10. El movimiento estudiantil de 1968 exigió la liberación de presos políticos, derogación de leyes represivas y respeto a libertades. ¿Qué interpretación relaciona mejor esto con el régimen?",
+    "opts": [
+      "El movimiento buscaba establecer una monarquía constitucional.",
+      "Las demandas se limitaban exclusivamente al aumento de becas escolares.",
+      "Los estudiantes pretendían sustituir las elecciones por una sucesión hereditaria.",
+      "Las protestas cuestionaban el autoritarismo y la restricción de derechos políticos."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El movimiento estudiantil colocó en el centro la lucha por la democratización, el respeto a las libertades civiles y el rechazo al autoritarismo gubernamental."
+  },
+  {
+    "q": "11. ¿A qué acontecimiento se conoce como el Halconazo, ocurrido durante el gobierno de Luis Echeverría?",
+    "opts": [
+      "La huelga ferrocarrilera de 1959.",
+      "La nacionalización de la banca en 1982.",
+      "La represión de una manifestación estudiantil el 10 de junio de 1971 en la Ciudad de México.",
+      "La fundación del PNR en 1929."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El 10 de junio de 1971, un grupo paramilitar denominado «Los Halcones» reprimió una marcha estudiantil, demostrando la persistencia de la violencia de Estado."
+  },
+  {
+    "q": "12. Tras las represiones de 1968 y 1971, parte de la oposición optó por la lucha armada clandestina. ¿Cuál fue un factor que contribuyó a este proceso?",
+    "opts": [
+      "La apertura inmediata de un sistema plenamente competitivo.",
+      "La desaparición de los conflictos agrarios y laborales.",
+      "La renuncia del Estado a utilizar mecanismos coercitivos.",
+      "La persistencia de restricciones políticas y episodios de represión."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El cierre de canales pacíficos de participación política y la cerrazón represiva del Estado empujaron a sectores opositores a la vía guerrillera."
+  },
+  {
+    "q": "13. ¿Qué dirigente se relaciona con la lucha guerrillera campesina desarrollada en Guerrero durante las décadas de 1960 y 1970?",
+    "opts": [
+      "Lucio Cabañas Barrientos.",
+      "Plutarco Elías Calles.",
+      "Manuel Ávila Camacho.",
+      "Adolfo Ruiz Cortines."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Lucio Cabañas encabezó el Partido de los Pobres, núcleo guerrillero rural en la sierra de Guerrero que protestaba contra la desigualdad y la represión."
+  },
+  {
+    "q": "14. Una organización clandestina urbana surgida en los 70s justificaba la lucha armada para transformar el sistema. ¿Cuál de las siguientes se relaciona con ese contexto?",
+    "opts": [
+      "Consejo Nacional de Huelga.",
+      "Liga Comunista 23 de Septiembre.",
+      "Confederación Nacional Campesina.",
+      "Partido Nacional Revolucionario."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La Liga Comunista 23 de Septiembre (fundada en 1973) fue la principal organización guerrillera de carácter urbano en México durante esa década."
+  },
+  {
+    "q": "15. ¿Cuál fue una consecuencia política de la reforma electoral promovida en el gobierno de López Portillo mediante la LFOPPE de 1977?",
+    "opts": [
+      "La prohibición definitiva de los partidos de oposición.",
+      "La eliminación de la Cámara de Diputados.",
+      "Una mayor incorporación legal de partidos opositores a la competencia electoral.",
+      "La instauración de la reelección presidencial inmediata."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La Ley Federal de Organizaciones Políticas y Procesos Electorales (LFOPPE) facilitó el registro de fuerzas opositoras y otorgó representación plural en el Congreso."
+  },
+  {
+    "q": "16. En 1979, fuerzas de izquierda obtuvieron representación en la Cámara de Diputados tras la reforma de 1977. ¿Qué efecto institucional refleja?",
+    "opts": [
+      "La desaparición de los partidos políticos nacionales.",
+      "La sustitución del Poder Legislativo por organizaciones sindicales.",
+      "El establecimiento de un sistema de partido único sin oposición.",
+      "La ampliación de la representación parlamentaria y de los canales legales de oposición."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La reforma abrió cauces institucionales para la incorporación parlamentaria de corrientes políticas hasta entonces marginadas o clandestinas."
+  },
+  {
+    "q": "17. ¿Qué partido político surgió en 1939 como oposición al predominio del partido oficial, defendiendo la democracia y una visión social católica?",
+    "opts": [
+      "Partido de la Revolución Democrática.",
+      "Partido Acción Nacional.",
+      "Partido Nacional Revolucionario.",
+      "Partido de la Revolución Mexicana."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El Partido Acción Nacional (PAN), fundado en 1939, se consolidó como la principal alternativa política de derecha frente al régimen hegemónico."
+  },
+  {
+    "q": "18. Durante el predominio del PRI, organizaciones obreras y campesinas se vincularon al partido gobernante. ¿Qué función cumplía esta estructura corporativa?",
+    "opts": [
+      "Descentralizar por completo el poder político y eliminar la influencia presidencial.",
+      "Garantizar que todos los sindicatos fueran independientes del gobierno.",
+      "Articular sectores sociales con el régimen, canalizando demandas y apoyos mediante organizaciones reconocidas oficialmente.",
+      "Sustituir las elecciones por asambleas autónomas en centros de trabajo."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El corporativismo integró a las masas organizadas bajo la disciplina del partido oficial, sirviendo como mecanismo de control y base de legitimidad."
+  },
+  {
+    "q": "19. ¿Qué central obrera estuvo históricamente vinculada al partido oficial y desempeñó un papel importante en el corporativismo mexicano?",
+    "opts": [
+      "Confederación de Trabajadores de México.",
+      "Consejo Nacional de Huelga.",
+      "Liga Comunista 23 de Septiembre.",
+      "Ejército Zapatista de Liberación Nacional."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La CTM, creada en 1936, se erigió en el pilar sindical del sector obrero incorporado a la estructura corporativa del partido de Estado."
+  },
+  {
+    "q": "20. Un grupo de trabajadores forma un sindicato independiente porque los dirigentes oficiales no defienden sus demandas. ¿Qué distingue a esta decisión del sindicalismo corporativo?",
+    "opts": [
+      "La subordinación obligatoria de las demandas a las decisiones presidenciales.",
+      "La eliminación de la negociación colectiva.",
+      "La integración automática al sector obrero del partido gobernante.",
+      "La búsqueda de autonomía organizativa frente al Estado y las dirigencias oficiales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El sindicalismo independiente reivindicó la libertad de gestión y defensa salarial al margen de las directrices de las centrales obreras oficiales."
+  },
+  {
+    "q": "21. ¿Cuál fue una demanda central de las movilizaciones de médicos residentes e internos ocurridas entre 1964 y 1965?",
+    "opts": [
+      "La disolución de todas las instituciones de salud pública.",
+      "La mejora de las condiciones laborales y de formación profesional.",
+      "La eliminación de los estudios universitarios de medicina.",
+      "La privatización de los hospitales del Estado."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El movimiento médico demandó salarios justos, basificantes, mejores condiciones laborales y el cese de represalias administrativas."
+  },
+  {
+    "q": "22. Las movilizaciones de médicos, ferrocarrileros y maestros compartieron demandas laborales pero sufrieron represión. ¿Qué aspecto común explica estos conflictos?",
+    "opts": [
+      "La ausencia total de organizaciones de trabajadores en México.",
+      "La existencia de sindicatos plenamente autónomos y ajenos al poder político.",
+      "La tensión entre las demandas de autonomía y mejora laboral y los mecanismos de control estatal.",
+      "La desaparición de la intervención gubernamental en los conflictos laborales."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El choque se producía cuando las bases laborales exigían mejoras reales y autonomía, colisionando con los intereses de control corporativo del Estado."
+  },
+  {
+    "q": "23. ¿Qué disposición legal de 1977 amplió las posibilidades de registro y participación electoral de partidos de oposición en México?",
+    "opts": [
+      "Ley Federal del Trabajo.",
+      "Ley Orgánica del Congreso General.",
+      "Ley de Asociaciones Religiosas y Culto Público.",
+      "Ley Federal de Organizaciones Políticas y Procesos Electorales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La LFOPPE de 1977 constituyó el parteaguas jurídico que modernizó el sistema electoral y garantizó espacios legislativos a las minorías políticas."
+  },
+  {
+    "q": "24. En las décadas de 1960 y 1970 coexistían elecciones con fuerte concentración del poder en el Ejecutivo y oposición limitada. ¿Cómo se define esta situación?",
+    "opts": [
+      "Un régimen autoritario con instituciones electorales y pluralismo restringido.",
+      "Una democracia consolidada con alternancia frecuente en la Presidencia.",
+      "Una dictadura militar que había suprimido de manera permanente las elecciones.",
+      "Un sistema parlamentario en el que el Congreso elegía al presidente."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El sistema político mexicano se caracterizó por un autoritarismo sustentado en fachada electoral, hegemonía priista y control de los espacios de oposición."
+  },
+  {
+    "q": "25. ¿Qué demanda del movimiento feminista mexicano adquirió mayor visibilidad durante las décadas de 1970 y 1980?",
+    "opts": [
+      "La restauración de la monarquía.",
+      "La eliminación del derecho de las mujeres a estudiar.",
+      "La igualdad de derechos y el reconocimiento de la autonomía de las mujeres.",
+      "La prohibición de que las mujeres participaran en organizaciones civiles."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El movimiento feminista impulsó la revisión de los roles tradicionales, exigiendo equidad jurídica, derechos reproductivos y respeto a la autonomía femenina."
+  },
+  {
+    "q": "26. Una organización de mujeres denuncia que las leyes y prácticas sociales reproducen desigualdades en el empleo y la vida familiar. ¿Qué enfoque caracteriza su planteamiento?",
+    "opts": [
+      "Defender que las diferencias entre hombres y mujeres son inmodificables.",
+      "La exigencia de igualdad de derechos y transformación de las relaciones sociales discriminatorias.",
+      "Proponer la exclusión de las mujeres de la educación superior.",
+      "Defender que los derechos políticos deban depender del sexo."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El activismo feminista abogó por la erradicación de las estructuras patriarcales y la discriminación sistémica en la sociedad."
+  },
+  {
+    "q": "27. ¿Qué organización campesina se vinculó históricamente con el partido oficial y participó en la incorporación política del sector agrario?",
+    "opts": [
+      "Confederación Nacional Campesina.",
+      "Consejo Nacional de Huelga.",
+      "Liga Comunista 23 de Septiembre.",
+      "Confederación de Trabajadores de México."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La Confederación Nacional Campesina (CNC) integró corporativamente al campesinado organizado dentro de los estatutos del partido de Estado."
+  },
+  {
+    "q": "28. Distintas organizaciones sociales se movilizaron por salarios, democracia sindical y libertades. ¿Qué repercusión general tuvieron en la vida política?",
+    "opts": [
+      "Eliminaron de inmediato el predominio del partido oficial.",
+      "Produjeron la desaparición de las organizaciones corporativas.",
+      "Impidieron cualquier reforma electoral posterior.",
+      "Visibilizaron los límites del sistema político y contribuyeron a presionar por una mayor apertura."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las protestas populares socavaron la coartada democrática del régimen e impulsaron la necesidad ineludible de reformas políticas."
+  },
+  {
+    "q": "29. ¿Cuál fue una consecuencia del movimiento estudiantil de 1968 para la sociedad mexicana?",
+    "opts": [
+      "La desaparición inmediata del partido gobernante.",
+      "El establecimiento de la reelección presidencial.",
+      "La mayor visibilidad de las demandas democráticas y de las críticas al autoritarismo.",
+      "La abolición de las universidades públicas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El legado de 1968 transformó la conciencia cívica nacional, visibilizando el rechazo al autoritarismo y abriendo cauces a la oposición crítica."
+  },
+  {
+    "q": "30. Un investigador estudia la relación entre los movimientos sociales de 1958-1971 y la reforma política de 1977. ¿Cuál es la interpretación histórica más adecuada?",
+    "opts": [
+      "La reforma de 1977 eliminó de inmediato la desigualdad entre partidos.",
+      "Las movilizaciones contribuyeron a cuestionar la legitimidad del régimen y formaron parte del contexto de presión por una apertura política.",
+      "Los movimientos sociales carecieron de relación con las demandas de democratización.",
+      "La reforma política fue resultado exclusivo de la desaparición de los sindicatos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las presiones de los movimientos sociales desgastaron la legitimidad del sistema hegemónico, empujando al Estado a instrumentar la reforma política de 1977."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 19";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Gobiernos de la crisis, organizaciones y movimientos sociales</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 19";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Gobiernos de la crisis, organizaciones y movimientos sociales<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Gobiernos de la crisis; organizaciones políticas y sociales; movimientos sociales y repercusiones",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Gobiernos de la crisis, organizaciones y movimientos sociales",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

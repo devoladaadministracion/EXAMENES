@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 29</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "29. Retos de la globalización (Tema 29)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál de las siguientes afirmaciones describe mejor el concepto de globalización?",
+    "opts": [
+      "Es el proceso mediante el cual los países eliminan sus diferencias culturales y políticas.",
+      "Es la integración e interdependencia creciente de las economías y sociedades a escala mundial.",
+      "Es la sustitución del comercio internacional por la producción nacional.",
+      "Es el establecimiento de un sistema económico idéntico en todos los países."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La globalización es un proceso de integración e interdependencia entre países que involucra intercambios económicos, tecnológicos, culturales y sociales[cite: 20]."
+  },
+  {
+    "q": "2. Una empresa mexicana diseña un teléfono en México, adquiere componentes en Asia, lo ensambla en otro país y lo comercializa en América y Europa. ¿Qué característica representa?",
+    "opts": [
+      "La desaparición de las economías nacionales.",
+      "La autosuficiencia productiva de los países participantes.",
+      "La sustitución de las empresas transnacionales por productores locales.",
+      "La fragmentación internacional de los procesos productivos y la integración de cadenas globales de valor."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las cadenas globales de valor distribuyen distintas etapas de producción entre varios países, aprovechando recursos, costos y tecnologías[cite: 20]."
+  },
+  {
+    "q": "3. ¿Cuál fue uno de los factores tecnológicos que impulsó la expansión de la globalización desde finales del siglo XX?",
+    "opts": [
+      "El desarrollo de las telecomunicaciones y de las tecnologías de la información.",
+      "La reducción de las comunicaciones internacionales.",
+      "La desaparición de los medios de transporte modernos.",
+      "La prohibición de las transacciones electrónicas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Internet, las telecomunicaciones y los avances en transporte facilitaron la comunicación, la coordinación empresarial y el intercambio internacional[cite: 20]."
+  },
+  {
+    "q": "4. Una empresa transnacional traslada parte de su producción a un país con menores costos laborales y mantiene oficinas de investigación en su origen. ¿Qué fenómeno explica esto?",
+    "opts": [
+      "La eliminación de la división internacional del trabajo.",
+      "La desaparición de las diferencias productivas entre países.",
+      "La reorganización internacional de la producción para aprovechar ventajas comparativas y reducir costos.",
+      "La sustitución de la inversión extranjera por el consumo interno."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las empresas distribuyen sus actividades entre países para aprovechar diferencias en costos, capacidades productivas e infraestructura[cite: 20]."
+  },
+  {
+    "q": "5. ¿Cuál es una característica de las empresas transnacionales en el contexto de la globalización?",
+    "opts": [
+      "Operan exclusivamente dentro de las fronteras de su país de origen.",
+      "Desarrollan actividades económicas en varios países y coordinan operaciones internacionales.",
+      "Evitan participar en las cadenas internacionales de producción.",
+      "Dependen únicamente de los recursos proporcionados por el gobierno de su país."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las empresas transnacionales mantienen filiales en diferentes países y coordinan producción, distribución, comercialización e inversión globalmente[cite: 20]."
+  },
+  {
+    "q": "6. Un país reduce aranceles a importaciones y facilita la inversión extranjera, aumentando la competencia para empresas nacionales. ¿Cuál es la interpretación más precisa?",
+    "opts": [
+      "La apertura comercial garantiza que todas las empresas nacionales aumenten sus ganancias.",
+      "La inversión extranjera elimina automáticamente la dependencia tecnológica.",
+      "La reducción de aranceles impide la participación de empresas extranjeras.",
+      "La apertura económica puede ampliar las opciones de consumo y atraer inversiones, pero también presionar a las empresas nacionales menos competitivas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La apertura facilita el intercambio y la IED aporta capital, pero las empresas nacionales pueden enfrentar mayor competencia y requerir mejoras[cite: 20]."
+  },
+  {
+    "q": "7. ¿Qué organización internacional se creó en 1995 para administrar acuerdos comerciales multilaterales y facilitar las relaciones comerciales?",
+    "opts": [
+      "Organización Mundial del Comercio (OMC).",
+      "UNESCO.",
+      "OMS.",
+      "OIT."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La OMC comenzó a funcionar el 1 de enero de 1995 como marco institucional para administrar acuerdos comerciales multilaterales y resolver controversias[cite: 20]."
+  },
+  {
+    "q": "8. Una compañía extranjera instala una planta industrial en México, aporta maquinaria y contrata trabajadores. ¿Qué tipo de operación financiera representa?",
+    "opts": [
+      "Una transferencia corriente para consumo de los hogares.",
+      "Una inversión de cartera basada en valores financieros.",
+      "Una inversión extranjera directa que establece o amplía una actividad productiva en el país receptor.",
+      "Una importación de bienes de consumo sin relación con la producción."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La inversión extranjera directa implica una relación de inversión duradera y control o influencia en una empresa productiva de otro país[cite: 20]."
+  },
+  {
+    "q": "9. ¿Cuál de las siguientes situaciones ejemplifica la globalización cultural?",
+    "opts": [
+      "La prohibición de consumir productos culturales extranjeros.",
+      "La desaparición de las comunicaciones entre sociedades.",
+      "La reducción de los intercambios artísticos internacionales.",
+      "La difusión internacional de música, películas, gastronomía y tendencias culturales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La globalización cultural facilita la circulación de expresiones y prácticas culturales entre países mediante medios digitales, turismo y migración[cite: 20]."
+  },
+  {
+    "q": "10. Una plataforma digital ofrece servicios en México, contrata personal en distintos países y recibe pagos electrónicos globales. ¿Qué aspecto de la globalización lo permite?",
+    "opts": [
+      "La eliminación de las fronteras jurídicas nacionales.",
+      "La integración de mercados y servicios mediante tecnologías digitales y redes internacionales.",
+      "La sustitución completa de los servicios por bienes materiales.",
+      "La desaparición de las regulaciones fiscales en todos los países."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las tecnologías digitales permiten ofrecer servicios globales, coordinar operaciones y procesar pagos transfronterizos sin anular las leyes locales[cite: 20]."
+  },
+  {
+    "q": "11. ¿Cuál es una ventaja potencial de la globalización para los consumidores?",
+    "opts": [
+      "La desaparición de diferencias de precios entre países.",
+      "La garantía de que todos los productos sean nacionales.",
+      "El acceso a una mayor variedad de bienes y servicios provenientes de diferentes mercados.",
+      "La eliminación de la necesidad de comparar calidad y precio."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La integración comercial amplía la variedad de productos disponibles y las opciones de elección de los consumidores[cite: 20]."
+  },
+  {
+    "q": "12. Una empresa nacional pierde mercado tras la entrada de compañías extranjeras con mayor tecnología y financiamiento. ¿Qué riesgo de la globalización ilustra?",
+    "opts": [
+      "La presión competitiva sobre las empresas nacionales con desventajas tecnológicas o productivas.",
+      "La eliminación de las diferencias de productividad.",
+      "La desaparición de la competencia internacional.",
+      "La reducción inevitable de la variedad de productos disponibles."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La competencia internacional puede desplazar a empresas nacionales que carecen de recursos suficientes para competir en precio, calidad o tecnología[cite: 20]."
+  },
+  {
+    "q": "13. ¿Qué relación existe entre la globalización y la división internacional del trabajo?",
+    "opts": [
+      "La globalización impide que los países se especialicen en actividades productivas.",
+      "La división internacional del trabajo elimina la necesidad del comercio.",
+      "La globalización obliga a todos los países a producir exactamente los mismos bienes.",
+      "La globalización favorece la especialización de países y empresas en distintas etapas o actividades productivas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La división internacional del trabajo distribuye actividades según capacidades y ventajas, y la globalización amplía su coordinación internacional[cite: 20]."
+  },
+  {
+    "q": "14. Un país exporta materias primas e importa tecnología y manufacturas de mayor valor. ¿Qué desafío económico puede enfrentar a largo plazo?",
+    "opts": [
+      "La desaparición de su necesidad de importar tecnología.",
+      "Una dependencia de exportaciones primarias y tecnología exterior que puede limitar la diversificación productiva.",
+      "La garantía de que todos los sectores crezcan al mismo ritmo.",
+      "La eliminación automática de fluctuaciones de precios internacionales."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Concentrar exportaciones en materias primas aumenta la vulnerabilidad ante precios y limita el desarrollo de capacidades productivas avanzadas[cite: 20]."
+  },
+  {
+    "q": "15. ¿Cuál es una posible desventaja social de la globalización?",
+    "opts": [
+      "La eliminación de toda diferencia salarial.",
+      "La distribución automática y equitativa de beneficios económicos.",
+      "El aumento de las desigualdades cuando los beneficios se concentran en determinados grupos o regiones.",
+      "La desaparición de las diferencias en el acceso a la educación."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Los beneficios de la globalización no se distribuyen equitativamente; los actores con más recursos y capacidades los aprovechan mejor[cite: 20]."
+  },
+  {
+    "q": "16. Una crisis financiera iniciada en una economía importante provoca retiros de capital y caídas bursátiles globales. ¿Qué característica de la globalización explica esto?",
+    "opts": [
+      "La independencia absoluta de los mercados financieros nacionales.",
+      "La desaparición de los movimientos internacionales de capital.",
+      "La ausencia de vínculos entre instituciones financieras.",
+      "La interdependencia de los mercados, que puede transmitir perturbaciones económicas entre países."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La integración financiera conecta mercados globales, permitiendo que una crisis se propague mediante salidas de capital y contracción del crédito[cite: 20]."
+  },
+  {
+    "q": "17. ¿Qué función desempeña el T-MEC en la integración económica regional?",
+    "opts": [
+      "Establece un marco de reglas comerciales y compromisos económicos entre los tres países.",
+      "Elimina todas las leyes nacionales de los países participantes.",
+      "Sustituye las monedas nacionales por una moneda común.",
+      "Impide que México comercie con países ajenos a América del Norte."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El T-MEC fija las reglas comerciales entre México, EE. UU. y Canadá sin crear una unión monetaria ni vetar comercio con terceros países[cite: 20]."
+  },
+  {
+    "q": "18. Una empresa agrícola exporta sin invertir en tecnología, capacitación ni procesamiento industrial. ¿Cuál es el principal riesgo de mantener esta estrategia?",
+    "opts": [
+      "Que las exportaciones se conviertan en importaciones.",
+      "Que desaparezca la demanda internacional agrícola.",
+      "Que el país deje de participar en el comercio internacional.",
+      "Que la actividad permanezca concentrada en productos primarios y capture menos valor agregado mediante transformación e innovación."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Exportar productos primarios genera ingresos, pero sin innovación se desaprovechan oportunidades de agregar valor y reducir vulnerabilidades[cite: 20]."
+  },
+  {
+    "q": "19. ¿Cuál de los siguientes fenómenos está relacionado con la globalización tecnológica?",
+    "opts": [
+      "La eliminación de la investigación científica internacional.",
+      "La difusión de innovaciones y conocimientos entre países mediante redes de comunicación y cooperación.",
+      "La prohibición de utilizar tecnologías extranjeras.",
+      "La desaparición de diferencias de infraestructura regional."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La globalización tecnológica fomenta la circulación internacional de saberes e innovaciones, aunque su aprovechamiento depende de capacidades locales[cite: 20]."
+  },
+  {
+    "q": "20. Una empresa usa proveedores de cinco países para fabricar un producto; un fallo logístico en uno frena toda la producción. ¿Qué reto de la globalización se observa?",
+    "opts": [
+      "La desaparición de las cadenas internacionales de suministro.",
+      "La autosuficiencia total de las transnacionales.",
+      "La vulnerabilidad de las cadenas globales de suministro ante interrupciones localizadas.",
+      "La imposibilidad de operar con proveedores internacionales."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Depender de eslabones y proveedores específicos en cadenas globales expone a la producción a cuellos de botella geográficos o logísticos[cite: 20]."
+  },
+  {
+    "q": "21. ¿Qué se entiende por deslocalización productiva?",
+    "opts": [
+      "El traslado de actividades productivas a otro lugar o país para reorganizar la producción.",
+      "La eliminación de todas las instalaciones industriales.",
+      "La sustitución de trabajadores por consumidores.",
+      "La prohibición de invertir fuera del país de origen."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La deslocalización implica reubicar etapas productivas a otras zonas o naciones por razones de costos, eficiencia o cercanía a suministros[cite: 20]."
+  },
+  {
+    "q": "22. Una empresa traslada una planta al extranjero para reducir costos, manteniendo diseño e investigación en su origen. ¿Qué conclusión es adecuada?",
+    "opts": [
+      "La deslocalización traslada necesariamente todas las actividades.",
+      "La empresa abandonó por completo el mercado internacional.",
+      "La investigación no genera valor económico.",
+      "La deslocalización puede afectar de manera diferente a las regiones, concentrando funciones en unas y trasladando otras."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las corporaciones fragmentan sus funciones territorialmente, beneficiando a unas regiones con empleos operativos y reteniendo funciones especializadas en otras[cite: 20]."
+  },
+  {
+    "q": "23. ¿Cuál es una consecuencia ambiental posible de la expansión de la producción y del comercio mundial?",
+    "opts": [
+      "La eliminación automática de emisiones contaminantes.",
+      "El aumento de la presión sobre los recursos naturales y de las emisiones asociadas a actividades productivas y de transporte.",
+      "La desaparición de residuos industriales.",
+      "La recuperación inmediata de ecosistemas afectados."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El incremento del volumen productivo y logístico eleva la presión ambiental y energética, dependiendo su mitigación de regulaciones y tecnologías[cite: 20]."
+  },
+  {
+    "q": "24. Un país atrae IED para tecnología, pero importa componentes y la investigación se hace afuera. ¿Qué medida ayudaría a maximizar los beneficios nacionales?",
+    "opts": [
+      "Prohibir la capacitación local.",
+      "Limitar proveedores nacionales sin evaluar capacidades.",
+      "Fortalecer la formación técnica, la investigación nacional y los vínculos con proveedores locales.",
+      "Sustituir la inversión productiva por importaciones de bienes terminados."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El desarrollo de capacidades internas, educación técnica y eslabonamientos locales potencia la transferencia de conocimientos y la derrama económica[cite: 20]."
+  },
+  {
+    "q": "25. ¿Qué papel desempeñan los organismos internacionales en el proceso de globalización?",
+    "opts": [
+      "Sustituyen a todos los gobiernos nacionales.",
+      "Eliminan diferencias económicas mediante una sola política.",
+      "Impiden acuerdos de cooperación.",
+      "Facilitan la cooperación y establecen marcos de coordinación en comercio, salud, trabajo y desarrollo."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los organismos multilaterales proporcionan plataformas de cooperación, normativas estandarizadas y directrices de coordinación global[cite: 20]."
+  },
+  {
+    "q": "26. Un país participa en el comercio mundial, pero parte de su población carece de educación, conectividad y capacitación. ¿Qué problema limita su aprovechamiento global?",
+    "opts": [
+      "La insuficiencia de capacidades humanas e infraestructura para acceder a oportunidades económicas y tecnológicas.",
+      "El exceso de igualdad en recursos productivos.",
+      "La desaparición de la competencia empresarial.",
+      "La imposibilidad de que la educación influya en la productividad."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La escasez de capital humano capacitado e infraestructura digital frena la incorporación de la población a empleos de mayor valor tecnológico y salarial[cite: 20]."
+  },
+  {
+    "q": "27. ¿Cuál es una diferencia fundamental entre la globalización y la simple existencia del comercio internacional?",
+    "opts": [
+      "La globalización se limita al intercambio agrícola.",
+      "El comercio internacional solo existe entre economías idénticas.",
+      "La globalización comprende una integración más amplia de actividades económicas, financieras, tecnológicas, culturales y sociales.",
+      "El comercio internacional requiere anular las fronteras."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El comercio es solo una faceta de la globalización, la cual abarca flujos financieros, redes productivas globales, tecnología y difusión cultural[cite: 20]."
+  },
+  {
+    "q": "28. Una región recibe IED con empleos y exportaciones, pero las pymes locales no entran en las cadenas de suministro y los beneficios se concentran. Conclusión:",
+    "opts": [
+      "La inversión extranjera siempre distribuye beneficios uniformemente.",
+      "La integración global puede impulsar la actividad y generar beneficios desiguales entre empresas y regiones.",
+      "El aumento exportador elimina la desigualdad territorial.",
+      "La presencia extranjera frena el crecimiento del empleo."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La inserción global dinamiza la economía receptora, pero sin derrama productiva local propicia asimetrías regionales y sectoriales[cite: 20]."
+  },
+  {
+    "q": "29. ¿Cuál de las siguientes acciones contribuye a que un país enfrente los retos de la globalización?",
+    "opts": [
+      "Evitar permanentemente la innovación tecnológica.",
+      "Depender de un solo producto de exportación.",
+      "Reducir la formación profesional para disminuir costos educativos.",
+      "Promover la diversificación productiva, la educación, la innovación y el desarrollo de infraestructura."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La diversificación, el fortalecimiento educativo, la innovación y la infraestructura adecuada robustecen la competitividad y resiliencia nacional[cite: 20]."
+  },
+  {
+    "q": "30. Un país aumenta exportaciones e IED, pero mantiene baja productividad interna y desigualdad de ingresos. ¿Qué estrategia aborda integralmente los retos?",
+    "opts": [
+      "Concentrar recursos solo en exportaciones sin cambiar condiciones internas.",
+      "Abandonar relaciones comerciales y financieras externas.",
+      "Combinar la inserción internacional con políticas de innovación, educación, fortalecimiento de empresas nacionales y ampliación de oportunidades.",
+      "Sustituir inversión productiva por consumo de importados."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Aprovechar la globalización exige potenciar las capacidades internas mediante innovación, educación y apoyo empresarial, complementadas con equidad social[cite: 20]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 29";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Retos de la globalización</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 29";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Retos de la globalización<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Retos de la globalización",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Retos de la globalización",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "12. Los movimientos de oposición al régimen porfirista y crisis del Porfiriato (Tema 12)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál fue uno de los principales objetivos del Partido Liberal Mexicano, encabezado por los hermanos Flores Magón y otros opositores al Porfiriato?",
+    "opts": [
+      "Restablecer la monarquía de Maximiliano de Habsburgo.",
+      "Defender la reelección indefinida de Porfirio Díaz.",
+      "Promover reformas políticas y sociales contra la dictadura porfirista.",
+      "Fortalecer los privilegios políticos de los grandes hacendados."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Partido Liberal Mexicano denunció la dictadura, la represión política y la explotación laboral. Su programa de 1906 propuso reformas políticas, laborales y agrarias."
+  },
+  {
+    "q": "2. En 1906, el Partido Liberal Mexicano difundió un programa que incluía demandas laborales, como la jornada máxima de ocho horas. ¿Qué interpretación explica mejor el alcance de estas propuestas?",
+    "opts": [
+      "Buscaban conservar las relaciones laborales existentes sin intervención del Estado.",
+      "Pretendían limitar los abusos patronales y mejorar las condiciones de vida de los trabajadores.",
+      "Proponían sustituir los derechos laborales por privilegios exclusivos para empresarios.",
+      "Tenían como objetivo principal restaurar el sistema político colonial."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El programa liberal de 1906 planteó reformas sociales y laborales que cuestionaban las condiciones de explotación presentes en distintos sectores productivos durante el Porfiriato."
+  },
+  {
+    "q": "3. ¿Qué acontecimiento de 1906 evidenció el descontento de los trabajadores mineros frente a las condiciones laborales durante el Porfiriato?",
+    "opts": [
+      "La huelga de Cananea.",
+      "La Decena Trágica.",
+      "La rebelión de Tuxtepec.",
+      "La huelga de Río Blanco."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La huelga de Cananea, ocurrida en Sonora en junio de 1906, fue protagonizada por trabajadores mineros que exigían mejores condiciones laborales y un trato equitativo."
+  },
+  {
+    "q": "4. La huelga de Cananea de 1906 y la de Río Blanco de 1907 compartieron características, aunque ocurrieron en sectores productivos distintos. ¿Cuál fue una semejanza fundamental?",
+    "opts": [
+      "Ambas fueron dirigidas por el gobierno para impulsar la industrialización.",
+      "Las dos tuvieron como objetivo reinstaurar el Imperio mexicano.",
+      "Ambas consiguieron inmediatamente todas sus demandas laborales.",
+      "En ambas hubo protestas obreras contra las condiciones laborales y una respuesta represiva de las autoridades."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Cananea estuvo vinculada con la minería y Río Blanco con la industria textil. En ambos conflictos hubo demandas laborales y represión armada, evidenciando las tensiones sociales."
+  },
+  {
+    "q": "5. ¿Cuál fue una de las principales demandas de los opositores políticos al Porfiriato?",
+    "opts": [
+      "La eliminación de las elecciones y del Congreso.",
+      "La continuidad de Porfirio Díaz mediante reelecciones sucesivas.",
+      "La libertad política y la celebración de elecciones efectivas.",
+      "La restauración de los fueros eclesiásticos."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Los opositores denunciaban la falta de democracia efectiva y el control electoral. La demanda de sufragio efectivo se convirtió en la consigna central antirreeleccionista."
+  },
+  {
+    "q": "6. Francisco I. Madero publicó en 1908 el libro La sucesión presidencial en 1910. ¿Cuál fue su principal planteamiento político?",
+    "opts": [
+      "Promover una nueva intervención militar europea en México.",
+      "Impulsar la democracia y oponerse a la reelección presidencial indefinida.",
+      "Establecer una dictadura militar permanente.",
+      "Restablecer el gobierno de Antonio López de Santa Anna."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Madero cuestionó la concentración del poder y defendió la participación electoral, la alternancia política y el principio antirreeleccionista."
+  },
+  {
+    "q": "7. ¿Qué organización política encabezó Francisco I. Madero para competir contra el régimen de Porfirio Díaz en 1910?",
+    "opts": [
+      "Partido Conservador.",
+      "Partido Científico.",
+      "Partido Liberal Constitucionalista.",
+      "Partido Nacional Antirreeleccionista."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Madero impulsó el movimiento antirreeleccionista y encabezó el Partido Nacional Antirreeleccionista, que promovió su candidatura presidencial."
+  },
+  {
+    "q": "8. En 1910, Francisco I. Madero fue encarcelado durante el proceso electoral y Porfirio Díaz declarado vencedor. ¿Qué consecuencia política tuvo esta situación?",
+    "opts": [
+      "Se profundizó la desconfianza en las elecciones y Madero llamó al levantamiento mediante el Plan de San Luis.",
+      "Madero reconoció la legitimidad de la reelección y abandonó la actividad política.",
+      "El gobierno porfirista transfirió inmediatamente el poder a los antirreeleccionistas.",
+      "Se disolvieron todos los movimientos opositores y desapareció el descontento social."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Madero denunció la imposición electoral y publicó el Plan de San Luis, en el que desconoció la reelección de Díaz y convocó a levantarse en armas."
+  },
+  {
+    "q": "9. ¿Qué principio político se sintetizó en la consigna maderista «Sufragio efectivo, no reelección»?",
+    "opts": [
+      "La supremacía del ejército sobre las instituciones civiles.",
+      "La continuidad de los gobernantes sin competencia electoral.",
+      "El respeto al voto ciudadano y el rechazo a la permanencia indefinida en el poder.",
+      "La eliminación de los partidos políticos."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La consigna defendía elecciones auténticas y la limitación de la continuidad presidencial mediante la oposición rotunda a la reelección."
+  },
+  {
+    "q": "10. El Plan de San Luis, difundido en 1910, desconoció las elecciones presidenciales y convocó a un levantamiento armado. ¿Qué aspecto del régimen porfirista buscaba combatir directamente?",
+    "opts": [
+      "La expansión de la red ferroviaria.",
+      "El predominio de la inversión extranjera en la minería.",
+      "La modernización de las instituciones educativas.",
+      "La falta de competencia electoral efectiva y la permanencia de Díaz en la presidencia."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Plan de San Luis cuestionó la legalidad de los comicios y llamó a terminar con el gobierno de Díaz mediante una insurrección nacional."
+  },
+  {
+    "q": "11. ¿Qué factor económico contribuyó al agravamiento de la crisis del Porfiriato hacia 1907-1908?",
+    "opts": [
+      "La eliminación de todas las exportaciones mexicanas.",
+      "La crisis económica internacional de 1907 y sus repercusiones en México.",
+      "La desaparición de la inversión extranjera desde 1876.",
+      "El abandono completo de la minería y de la industria."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La crisis internacional de 1907 repercutió en el crédito, el comercio y la producción nacional, sumándose al descontento político y social."
+  },
+  {
+    "q": "12. Un historiador explica que, hacia el final del Porfiriato, coexistían crecimiento de la infraestructura, concentración de riqueza, conflictos obreros y falta de democracia. ¿Qué conclusión interpreta esto?",
+    "opts": [
+      "La modernización económica resolvió de manera uniforme los problemas sociales y políticos.",
+      "La crisis porfirista se debió únicamente a la ausencia de ferrocarriles.",
+      "La estabilidad política eliminó los conflictos entre trabajadores y empresarios.",
+      "El crecimiento económico fue desigual y coexistió con tensiones sociales y restricciones políticas que debilitaron al régimen."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El crecimiento económico porfiriano benefició de forma desigual a la población, alimentando tensiones sociales y políticas que desgastaron al Estado."
+  },
+  {
+    "q": "13. ¿Cuál fue una consecuencia política de la entrevista concedida por Porfirio Díaz al periodista James Creelman en 1908?",
+    "opts": [
+      "La abolición inmediata de la presidencia.",
+      "La convocatoria a un Congreso Constituyente que sustituyó al gobierno.",
+      "El aumento de las expectativas de apertura democrática y de participación de la oposición.",
+      "La entrega del gobierno mexicano a una potencia extranjera."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las declaraciones de Díaz sobre la madurez del país para la democracia estimularon la movilización y organización de los grupos de oposición."
+  },
+  {
+    "q": "14. Relaciona correctamente los movimientos de oposición con el sector social o la figura que los representa:\nI. Huelga de Cananea\nII. Huelga de Río Blanco\nIII. Movimiento antirreeleccionista\na. Francisco I. Madero\nb. Trabajadores mineros de Sonora\nc. Trabajadores textiles de Veracruz",
+    "opts": [
+      "I-b, II-c, III-a",
+      "I-a, II-b, III-c",
+      "I-c, II-a, III-b",
+      "I-b, II-a, III-c"
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Cananea fue una huelga minera en Sonora (I-b); Río Blanco reunió a textiles en Veracruz (II-c); y Madero encabezó el antirreeleccionismo (III-a)."
+  },
+  {
+    "q": "15. ¿Qué acontecimiento se considera convencionalmente el inicio de la Revolución mexicana contra el régimen porfirista?",
+    "opts": [
+      "La promulgación de la Constitución de 1857.",
+      "La firma de los Tratados de La Soledad.",
+      "La restauración de la República en 1867.",
+      "El levantamiento convocado por el Plan de San Luis para el 20 de noviembre de 1910."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El llamado a levantarse en armas el 20 de noviembre de 1910, estipulado en el Plan de San Luis, marca el inicio formal de la Revolución mexicana."
+  },
+  {
+    "q": "16. ¿Cuál de las siguientes secuencias presenta correctamente el orden cronológico de los acontecimientos?\nI. Huelga de Cananea\nII. Publicación de La sucesión presidencial en 1910\nIII. Huelga de Río Blanco\nIV. Proclamación del Plan de San Luis",
+    "opts": [
+      "II, I, IV, III",
+      "I, III, II, IV",
+      "III, II, I, IV",
+      "I, II, IV, III"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El orden cronológico correcto es: Cananea en 1906 (I), Río Blanco en 1907 (III), el libro de Madero en 1908 (II) y el Plan de San Luis en 1910 (IV)."
+  },
+  {
+    "q": "17. ¿Qué relación existió entre la concentración de la propiedad agraria y el descontento social durante el Porfiriato?",
+    "opts": [
+      "La concentración de tierras fortaleció la autonomía económica de todas las comunidades.",
+      "La distribución equitativa de las haciendas eliminó los conflictos rurales.",
+      "La pérdida de tierras y la expansión de las haciendas afectaron a numerosos campesinos y comunidades indígenas.",
+      "La propiedad rural dejó de tener importancia en la economía mexicana."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Los despojos agrarios provocaron un amplio malestar en el campo, sumando a campesinos e indígenas a las filas del descontento contra el régimen."
+  },
+  {
+    "q": "18. El régimen porfirista enfrentó oposición de obreros, campesinos, periodistas y grupos políticos. ¿Qué factor explica que estas expresiones de descontento se intensificaran hacia 1910?",
+    "opts": [
+      "La combinación de desigualdades sociales, represión política, conflictos laborales y cuestionamientos a la reelección presidencial.",
+      "La desaparición de las diferencias económicas y la plena libertad electoral.",
+      "La eliminación de la inversión extranjera y de la producción exportadora.",
+      "La ausencia de conflictos agrarios y de organizaciones opositoras."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La crisis del sistema porfirista fue multidimensional, aglutinando demandas obreras, agrarias, políticas y económicas que convergieron en la lucha armada."
+  },
+  {
+    "q": "19. ¿Cuál fue una característica de la represión gubernamental contra la oposición durante el Porfiriato?",
+    "opts": [
+      "La protección irrestricta de los periódicos opositores.",
+      "La celebración de elecciones competitivas en todas las entidades.",
+      "La aceptación de todas las huelgas sin intervención policial.",
+      "La censura, el encarcelamiento de opositores y el uso de la fuerza contra algunos movimientos sociales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Para acallar las protestas y mantener el control político, el régimen empleó sistemáticamente la censura de prensa, encarcelamientos y represión armada."
+  },
+  {
+    "q": "20. Analiza las afirmaciones sobre los movimientos de oposición y la crisis del Porfiriato:\nI. El PLM difundió un programa de reformas.\nII. Las huelgas de Cananea y Río Blanco expresaron conflictos laborales.\nIII. El Plan de San Luis defendió la reelección de Porfirio Díaz.\nIV. La crisis económica y la falta de democracia contribuyeron al debilitamiento del régimen.\n¿Cuáles son correctas?",
+    "opts": [
+      "I y III",
+      "II y III",
+      "I, II y IV",
+      "I, II, III y IV"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Son correctas I, II y IV. La afirmación III es completamente falsa, ya que el Plan de San Luis combatió y desconoció la reelección de Díaz."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 12";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Oposición al régimen porfirista y crisis del Porfiriato</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 12";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Oposición al régimen porfirista y crisis del Porfiriato<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Los movimientos de oposición al régimen porfirista y crisis del Porfiriato",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Los movimientos de oposición al régimen porfirista y crisis del Porfiriato",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

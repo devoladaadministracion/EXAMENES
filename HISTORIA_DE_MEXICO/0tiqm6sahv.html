@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 28</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "28. Comportamiento de la economía nacional, factores de producción y flujo circular (Tema 28)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuáles son los factores de producción que se utilizan tradicionalmente para explicar la generación de bienes y servicios?",
+    "opts": [
+      "Consumo, ahorro, inversión y comercio.",
+      "Tierra, trabajo, capital y capacidad empresarial.",
+      "Oferta, demanda, inflación y desempleo.",
+      "Impuestos, subsidios, exportaciones e importaciones."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Los factores de producción tradicionales son tierra, trabajo y capital; la capacidad empresarial se incorpora para explicar la organización y coordinación de estos recursos[cite: 20]."
+  },
+  {
+    "q": "2. Una empresa de alimentos utiliza un terreno para cultivar maíz, contrata trabajadores, adquiere maquinaria y organiza sus actividades mediante un administrador. ¿Cuál es la clasificación correcta?",
+    "opts": [
+      "Terreno: capital; trabajadores: tierra; maquinaria: trabajo; administrador: consumo.",
+      "Terreno: trabajo; trabajadores: capital; maquinaria: capacidad empresarial; administrador: tierra.",
+      "Terreno: tierra; trabajadores: trabajo; maquinaria: capital; administrador: capacidad empresarial.",
+      "Terreno: capacidad empresarial; trabajadores: trabajo; maquinaria: consumo; administrador: capital."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La tierra abarca recursos naturales; el trabajo es el esfuerzo humano; el capital incluye los bienes de producción (maquinaria); y la capacidad empresarial organiza y asume riesgos[cite: 20]."
+  },
+  {
+    "q": "3. En el modelo del flujo circular de la economía, ¿qué función desempeñan los hogares cuando participan en el mercado de factores de producción?",
+    "opts": [
+      "Ofrecen factores productivos y reciben ingresos a cambio.",
+      "Determinan por sí solos los precios de todos los bienes.",
+      "Sustituyen a las empresas en la producción industrial.",
+      "Recaudan los impuestos que financian al gobierno."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los hogares ofrecen trabajo, tierra, capital u otros recursos productivos, recibiendo a cambio ingresos como salarios, rentas e intereses[cite: 20]."
+  },
+  {
+    "q": "4. En una economía simplificada, los hogares consumen bienes de las empresas, y estas pagan salarios a los hogares. ¿Qué representa esta relación en el flujo circular?",
+    "opts": [
+      "Una transferencia unilateral de recursos del gobierno a las empresas.",
+      "Un intercambio exclusivo de bienes entre hogares.",
+      "Una relación en la que las empresas reciben ingresos sin realizar pagos.",
+      "Un flujo real de factores y bienes acompañado de un flujo monetario en sentido contrario."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los factores productivos y bienes circulan en un sentido, mientras que los pagos monetarios correspondientes circulan en sentido contrario[cite: 20]."
+  },
+  {
+    "q": "5. ¿Qué característica distingue principalmente a una economía abierta de una economía cerrada?",
+    "opts": [
+      "La ausencia de empresas privadas.",
+      "La inexistencia de impuestos y gasto público.",
+      "La realización de intercambios económicos con otros países.",
+      "La producción exclusiva de bienes de consumo."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Una economía abierta mantiene relaciones económicas con el exterior mediante actividades como exportaciones, importaciones y flujos de capital[cite: 20]."
+  },
+  {
+    "q": "6. Una empresa mexicana compra componentes electrónicos a una compañía extranjera para fabricar equipos que vende en México. ¿Cómo se clasifica esto desde la perspectiva mexicana?",
+    "opts": [
+      "Como una importación de insumos productivos.",
+      "Como una exportación de bienes finales.",
+      "Como una transferencia de impuestos al extranjero.",
+      "Como un pago de salarios a trabajadores nacionales."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los componentes que ingresan al país procedentes del extranjero para incorporarse al proceso productivo constituyen importaciones de insumos[cite: 20]."
+  },
+  {
+    "q": "7. ¿Cuál de las siguientes actividades pertenece al sector primario de la economía?",
+    "opts": [
+      "La fabricación de automóviles.",
+      "La comercialización de medicamentos.",
+      "La prestación de servicios bancarios.",
+      "La extracción de minerales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El sector primario comprende la obtención directa de recursos naturales: agricultura, ganadería, pesca, silvicultura y minería[cite: 20]."
+  },
+  {
+    "q": "8. Una empresa transforma algodón en tela y la vende a fabricantes de prendas. ¿Qué sector económico realiza principalmente esta actividad?",
+    "opts": [
+      "Sector terciario, porque participa en el comercio.",
+      "Sector secundario, porque transforma una materia prima en un producto manufacturado.",
+      "Sector primario, porque obtiene directamente recursos naturales.",
+      "Sector externo, porque toda venta entre empresas constituye comercio."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El sector secundario incluye la industria manufacturera y la transformación de materias primas en bienes elaborados o semielaborados[cite: 20]."
+  },
+  {
+    "q": "9. ¿Cuál de las siguientes actividades corresponde al sector terciario?",
+    "opts": [
+      "La extracción de petróleo.",
+      "El cultivo de trigo.",
+      "La prestación de servicios de transporte.",
+      "La fabricación de cemento."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El sector terciario abarca las actividades que ofrecen servicios, tales como transporte, comercio, educación, salud y turismo[cite: 20]."
+  },
+  {
+    "q": "10. Una economía registra mayor producción agrícola, industrial y de servicios de transporte. ¿Cuál es la interpretación más adecuada?",
+    "opts": [
+      "Los tres cambios pertenecen exclusivamente al sector primario.",
+      "El crecimiento de un sector elimina la actividad de los demás.",
+      "Los servicios de transporte sustituyen a la producción agrícola e industrial.",
+      "Los sectores primario, secundario y terciario pueden crecer de manera complementaria mediante sus relaciones productivas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los sectores económicos son interdependientes: la agricultura provee insumos, la industria los transforma y el transporte facilita su distribución[cite: 20]."
+  },
+  {
+    "q": "11. ¿Qué representa el producto interno bruto (PIB) de un país durante un periodo determinado?",
+    "opts": [
+      "El valor de todos los bienes usados que cambian de propietario.",
+      "El valor de mercado de los bienes y servicios finales producidos dentro del territorio económico.",
+      "La suma de los ingresos obtenidos exclusivamente por empresas nacionales en el extranjero.",
+      "El total de dinero que circula entre hogares sin considerar la producción."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El PIB mide el valor de los bienes y servicios finales producidos dentro de las fronteras de un país durante un periodo, evitando duplicar insumos intermedios[cite: 20]."
+  },
+  {
+    "q": "12. Una economía registra un PIB de 8 billones y de 8.4 billones al año siguiente en precios constantes. ¿Cuál fue la tasa de crecimiento real?",
+    "opts": [
+      "4 %",
+      "6 %",
+      "5 %",
+      "8 %"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La tasa se calcula como \([(8.4 - 8) / 8] \times 100 = 5\%\), reflejando variación en volumen al estar en precios constantes[cite: 20]."
+  },
+  {
+    "q": "13. ¿Cuál es la función económica principal del gobierno dentro del flujo circular de una economía mixta?",
+    "opts": [
+      "Sustituir todas las decisiones de hogares y empresas.",
+      "Eliminar la necesidad de intercambiar bienes y servicios.",
+      "Participar únicamente como comprador de productos extranjeros.",
+      "Recaudar impuestos, proporcionar bienes y servicios públicos y regular la actividad económica."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El gobierno interviene recaudando impuestos, efectuando gasto público, proveyendo servicios (salud, educación) y regulando la economía[cite: 20]."
+  },
+  {
+    "q": "14. El gobierno construye una carretera contratando trabajadores y comprando materiales a empresas nacionales con impuestos. ¿Qué efecto describe mejor esto?",
+    "opts": [
+      "El gasto público genera demanda de trabajo y bienes, y distribuye ingresos hacia hogares y empresas.",
+      "Los impuestos desaparecen del flujo circular y no afectan a los agentes económicos.",
+      "La construcción reduce necesariamente el ingreso de todos los hogares.",
+      "El gasto público elimina la participación del sector privado en la producción."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El gasto gubernamental dinamiza la demanda, contrata factores productivos y transfiere ingresos a trabajadores y empresas[cite: 20]."
+  },
+  {
+    "q": "15. En una economía abierta, ¿qué representa una exportación?",
+    "opts": [
+      "La compra de un bien producido en otro país.",
+      "La venta de un bien o servicio producido en el país a un comprador del extranjero.",
+      "El pago de salarios a trabajadores nacionales.",
+      "La recaudación de impuestos sobre ventas internas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las exportaciones son bienes y servicios vendidos al exterior, constituyendo una fuente de demanda e ingresos externos para los productores nacionales[cite: 20]."
+  },
+  {
+    "q": "16. Un país exportó mercancías por 250 mil millones e importó por 290 mil millones de dólares. Considerando solo mercancías, ¿cuál fue su saldo comercial?",
+    "opts": [
+      "Superávit de 40 mil millones de dólares.",
+      "Superávit de 540 mil millones de dólares.",
+      "Déficit de 40 mil millones de dólares.",
+      "Déficit de 250 mil millones de dólares."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El saldo comercial se obtiene restando importaciones a exportaciones: 250 − 290 = −40 mil millones de dólares (déficit)[cite: 20]."
+  },
+  {
+    "q": "17. ¿Cuál situación ejemplifica mejor la relación entre los sectores económicos y la vida cotidiana?",
+    "opts": [
+      "Una fábrica produce alimentos sin utilizar materias primas ni servicios.",
+      "Los hogares consumen productos sin que exista actividad económica.",
+      "El comercio funciona sin requerir transporte, almacenamiento o producción.",
+      "Una panadería compra trigo, lo transforma en pan y lo vende mediante establecimientos comerciales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El ejemplo vincula el sector primario (trigo), el secundario (transformación en pan) y el terciario (comercialización)[cite: 20]."
+  },
+  {
+    "q": "18. Una empresa exportadora recibe más pedidos extranjeros; para satisfacerlos contrata personal, compra insumos y amplía producción. ¿Cuál es la consecuencia más directa?",
+    "opts": [
+      "El aumento de las exportaciones puede impulsar la producción nacional y la demanda de factores productivos.",
+      "Las exportaciones reducen automáticamente todas las importaciones del país.",
+      "La contratación de trabajadores elimina los costos de producción.",
+      "El crecimiento de una empresa exportadora garantiza que desaparezca el desempleo nacional."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Un incremento en la demanda externa estimula la producción local, la contratación de factores y las compras a proveedores nacionales[cite: 20]."
+  },
+  {
+    "q": "19. ¿Qué función cumple el ahorro de los hogares dentro del funcionamiento de una economía?",
+    "opts": [
+      "Garantiza que todos los bienes producidos sean consumidos inmediatamente.",
+      "Puede canalizarse mediante el sistema financiero hacia la inversión productiva.",
+      "Sustituye por completo los ingresos provenientes del trabajo.",
+      "Elimina la necesidad de financiamiento para las empresas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El ahorro es la parte del ingreso no consumida que, a través de intermediarios financieros, puede canalizarse para financiar la inversión productiva[cite: 20]."
+  },
+  {
+    "q": "20. En una economía abierta, hogares consumen importados y empresas compran maquinaria extranjera. ¿Cuál afirmación interpreta mejor esto?",
+    "opts": [
+      "Ambas operaciones son exportaciones porque generan gasto dentro del país.",
+      "El consumo de productos importados siempre reduce el bienestar económico.",
+      "Las importaciones pueden satisfacer la demanda interna y proporcionar bienes de capital; sus efectos dependen de su uso y condiciones productivas.",
+      "La compra de maquinaria extranjera no tiene relación con la producción nacional."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las importaciones comprenden bienes de consumo e insumos/capital; estos últimos pueden potenciar la capacidad productiva según su destino y uso[cite: 20]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 28";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Comportamiento de la economía nacional, factores de producción y flujo circular</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 28";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Comportamiento de la economía nacional, factores de producción y flujo circular<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Comportamiento de la economía nacional; factores de producción, flujo circular, sectores económicos y vida cotidiana",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Comportamiento de la economía nacional, factores de producción y flujo circular",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

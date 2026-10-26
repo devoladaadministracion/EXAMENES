@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 17</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "9. México contemporáneo: Unidad Nacional, Desarrollo Estabilizador y Desarrollo Compartido (Tema 17)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Qué presidente mexicano impulsó la política de Unidad Nacional durante la Segunda Guerra Mundial?",
+    "opts": [
+      "Miguel Alemán Valdés.",
+      "Manuel Ávila Camacho.",
+      "Adolfo López Mateos.",
+      "Luis Echeverría Álvarez."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Manuel Ávila Camacho gobernó de 1940 a 1946 y promovió la conciliación entre distintos sectores sociales y políticos, en un contexto marcado por la Segunda Guerra Mundial."
+  },
+  {
+    "q": "2. Durante el gobierno de Manuel Ávila Camacho, México se incorporó al bloque aliado en la Segunda Guerra Mundial. ¿Qué acontecimiento contribuyó directamente a la declaración de guerra en 1942?",
+    "opts": [
+      "La invasión alemana de Polonia.",
+      "El ataque japonés a Pearl Harbor.",
+      "El hundimiento de buques petroleros mexicanos por submarinos alemanes.",
+      "La ocupación de Francia por las fuerzas aliadas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En mayo de 1942, submarinos alemanes hundieron los buques petroleros mexicanos Potrero del Llano y Faja de Oro, llevando a México a declarar la guerra a las potencias del Eje."
+  },
+  {
+    "q": "3. ¿Cuál fue una característica de la política de Unidad Nacional aplicada durante el gobierno de Ávila Camacho?",
+    "opts": [
+      "La búsqueda de conciliación entre sectores sociales para favorecer la estabilidad política.",
+      "La eliminación de la propiedad privada en todas las actividades económicas.",
+      "La disolución de las instituciones surgidas de la Revolución mexicana.",
+      "La suspensión permanente de las relaciones diplomáticas con Estados Unidos."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La política de Unidad Nacional buscó disminuir las confrontaciones internas y fomentar la cooperación entre empresarios, trabajadores y gobierno durante la conflagración mundial."
+  },
+  {
+    "q": "4. Durante la Segunda Guerra Mundial, la demanda internacional de materias primas y manufacturas aumentó. ¿Qué efecto tuvo este contexto en la economía mexicana?",
+    "opts": [
+      "La desaparición de la producción industrial nacional.",
+      "La sustitución total de las exportaciones por importaciones.",
+      "El abandono de la inversión en infraestructura.",
+      "El impulso a la producción nacional y al proceso de industrialización por sustitución de importaciones."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las dificultades para importar bienes extranjeros y la alta demanda externa estimularon la producción nacional y el proceso de sustitución de importaciones."
+  },
+  {
+    "q": "5. ¿Qué presidente gobernó México de 1946 a 1952 y fue el primero en llegar a la presidencia bajo las siglas del Partido Revolucionario Institucional (PRI)?",
+    "opts": [
+      "Adolfo Ruiz Cortines.",
+      "Miguel Alemán Valdés.",
+      "Manuel Ávila Camacho.",
+      "Adolfo López Mateos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Miguel Alemán Valdés gobernó de 1946 a 1952, siendo el primer presidente civil de la posrevolución y el primero abanderado por el recién nombrado PRI."
+  },
+  {
+    "q": "6. Durante el gobierno de Miguel Alemán Valdés se promovieron obras públicas, inversión industrial y participación del capital privado. ¿Qué orientación económica refleja mejor esto?",
+    "opts": [
+      "La colectivización de todas las empresas industriales.",
+      "La reducción de la inversión pública para eliminar la infraestructura estatal.",
+      "La promoción de la industrialización mediante inversión pública y privada.",
+      "La sustitución de la industria nacional por una economía exclusivamente agrícola."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El alemanismo fomentó la industrialización acelerada, la construcción de gran infraestructura urbana y carretera, combinando la inversión estatal con la privada."
+  },
+  {
+    "q": "7. ¿Cuál fue una consecuencia del crecimiento de las ciudades mexicanas durante las décadas de 1940 y 1950?",
+    "opts": [
+      "La desaparición de las diferencias económicas entre el campo y la ciudad.",
+      "La reducción permanente de la migración interna.",
+      "El abandono de los servicios urbanos por parte de toda la población.",
+      "El aumento de la migración rural hacia las ciudades y la expansión de zonas urbanas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La centralización de la actividad industrial urbana propició una masiva migración campo-ciudad, expandiendo de manera acelerada las urbes."
+  },
+  {
+    "q": "8. Un país incrementa su producción industrial al fabricar internamente bienes que antes importaba, mediante protección comercial e inversión. ¿Qué estrategia económica describe esta situación?",
+    "opts": [
+      "Sustitución de importaciones.",
+      "Especialización exclusiva en exportaciones agrícolas.",
+      "Desindustrialización planificada.",
+      "Liberalización comercial sin protección a la industria nacional."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La industrialización por sustitución de importaciones consistió en blindar el mercado interno para manufacturar los bienes de consumo que antes se compraban afuera."
+  },
+  {
+    "q": "9. ¿En qué consistió, principalmente, el llamado Milagro Mexicano?",
+    "opts": [
+      "En la eliminación de la participación del Estado en la economía.",
+      "En el crecimiento económico sostenido y la expansión industrial durante varias décadas.",
+      "En la sustitución de la moneda nacional por el dólar.",
+      "En la desaparición de las desigualdades sociales mediante el reparto universal de la riqueza."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El 'Milagro Mexicano' se caracterizó por tasas de crecimiento del PIB muy elevadas, expansión industrial y estabilidad monetaria entre las décadas de 1940 y 1970."
+  },
+  {
+    "q": "10. Entre 1954 y 1970, México mantuvo una paridad cercana a 12.50 pesos por dólar, acompañada de crecimiento económico y estabilidad de precios. ¿Qué política económica se asocia?",
+    "opts": [
+      "Desarrollo compartido.",
+      "Economía de guerra permanente.",
+      "Desarrollo estabilizador.",
+      "Colectivización agrícola integral."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El desarrollo estabilizador fue el modelo macroeconómico enfocado en lograr crecimiento con baja inflación y estabilidad cambiaria estricta."
+  },
+  {
+    "q": "11. ¿Qué presidente inició el periodo del desarrollo estabilizador en 1952?",
+    "opts": [
+      "Adolfo López Mateos.",
+      "Gustavo Díaz Ordaz.",
+      "Miguel de la Madrid.",
+      "Adolfo Ruiz Cortines."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Adolfo Ruiz Cortines asumió la presidencia en 1952, implementando medidas de austeridad y control del gasto para estabilizar la economía nacional."
+  },
+  {
+    "q": "12. El desarrollo estabilizador favoreció el crecimiento industrial, pero generó limitaciones estructurales. ¿Cuál fue una de ellas?",
+    "opts": [
+      "La desaparición de la inversión privada nacional.",
+      "La dependencia de la industrialización respecto de la protección estatal y la concentración de los beneficios del crecimiento.",
+      "La eliminación de la producción manufacturera.",
+      "La renuncia del gobierno a intervenir en la infraestructura económica."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Pese al alto crecimiento, el modelo generó una industria protegida poco competitiva y acentuó las disparidades en la distribución de la riqueza."
+  },
+  {
+    "q": "13. ¿Qué presidente gobernó México durante la mayor parte de la década de 1960 y encabezó el país durante los Juegos Olímpicos de 1968?",
+    "opts": [
+      "Gustavo Díaz Ordaz.",
+      "Luis Echeverría Álvarez.",
+      "José López Portillo.",
+      "Adolfo Ruiz Cortines."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Gustavo Díaz Ordaz gobernó de 1964 a 1970, periodo que abarcó los eventos olímpicos de 1968 y el conflicto estudiantil de ese mismo año."
+  },
+  {
+    "q": "14. Durante el desarrollo estabilizador, el Estado promovió la industria mediante protección comercial y obras. ¿Cuál fue una consecuencia en la relación campo-ciudad?",
+    "opts": [
+      "La distribución homogénea de la inversión industrial entre regiones rurales.",
+      "La desaparición de la migración campesina hacia los centros industriales.",
+      "La concentración de empleos industriales y servicios en las ciudades, favoreciendo la migración rural-urbana.",
+      "La sustitución de las ciudades por comunidades agrícolas autosuficientes."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La concentración de la inversión en los polos urbanos propició el abandono paulatino del campo y una intensa migración hacia las principales ciudades."
+  },
+  {
+    "q": "15. ¿Cuál fue un acontecimiento representativo de la crisis política y social de 1968 en México?",
+    "opts": [
+      "La promulgación de la Constitución de 1917.",
+      "La expropiación petrolera.",
+      "La fundación del Partido Nacional Revolucionario.",
+      "La represión del movimiento estudiantil el 2 de octubre en Tlatelolco."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La masacre del 2 de octubre de 1968 en la Plaza de las Tres Culturas evidenció el autoritarismo del régimen y fracturó la legitimidad política institucional."
+  },
+  {
+    "q": "16. Un análisis del desarrollo estabilizador señala que el PIB creció, mientras persistían la desigualdad y la limitada participación política. ¿Qué conclusión interpreta esto?",
+    "opts": [
+      "El crecimiento económico garantizó automáticamente una democracia plena y la igualdad social.",
+      "La estabilidad macroeconómica podía coexistir con tensiones sociales y restricciones políticas.",
+      "El crecimiento económico fue resultado exclusivo de la producción agrícola tradicional.",
+      "La industrialización eliminó toda intervención gubernamental en la economía."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El auge económico no resolvió las profundas carencias sociales ni las demandas de apertura democrática, evidenciando los límites políticos del modelo."
+  },
+  {
+    "q": "17. ¿Quién fue presidente de México durante el periodo de desarrollo compartido, de 1970 a 1976?",
+    "opts": [
+      "Luis Echeverría Álvarez.",
+      "José López Portillo.",
+      "Gustavo Díaz Ordaz.",
+      "Carlos Salinas de Gortari."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Luis Echeverría Álvarez encabezó el ejecutivo federal de 1970 a 1976, intentando corregir las disparidades sociales mediante una expansión del gasto."
+  },
+  {
+    "q": "18. El gobierno de Luis Echeverría propuso aumentar el gasto público para atender necesidades sociales. Sin embargo, al final se agravaron los desequilibrios fiscales. ¿Qué tensión refleja?",
+    "opts": [
+      "La incompatibilidad absoluta entre cualquier inversión pública y el crecimiento económico.",
+      "La desaparición de la deuda externa por la reducción de las importaciones.",
+      "La expansión del gasto y la intervención estatal sin ingresos suficientes para sostenerlas, contribuyendo a desequilibrios económicos.",
+      "La sustitución de impuestos por ingresos provenientes exclusivamente de la agricultura."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El modelo de desarrollo compartido generó un abultado déficit fiscal y endeudamiento al incrementar el gasto social sin una reforma fiscal que lo respaldara."
+  },
+  {
+    "q": "19. ¿Cuál fue el objetivo central de la política económica denominada desarrollo compartido?",
+    "opts": [
+      "Eliminar por completo la participación del Estado en la economía.",
+      "Regresar al predominio absoluto de las exportaciones de materias primas.",
+      "Reducir los programas sociales para concentrar el ingreso en el sector privado.",
+      "Distribuir de manera más equitativa los beneficios del crecimiento y ampliar la intervención estatal."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El desarrollo compartido buscó reorientar la economía para abatir la desigualdad mediante mayor presencia del Estado y gasto público focalizado."
+  },
+  {
+    "q": "20. En 1976, México experimentó una devaluación del peso tras un largo periodo de estabilidad cambiaria. ¿Qué factores contribuyeron a esta crisis al final del gobierno de Echeverría?",
+    "opts": [
+      "La reducción absoluta del gasto público, el superávit permanente y la desaparición de la deuda externa.",
+      "Los desequilibrios fiscales y externos, las presiones inflacionarias y la pérdida de confianza en la estabilidad cambiaria.",
+      "La eliminación de las importaciones y el cierre completo de la economía.",
+      "La sustitución de la industria petrolera por una economía exclusivamente turística."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El déficit fiscal, la inflación descontrolada y la fuga de capitales obligaron a romper en septiembre de 1976 la tradicional paridad cambiaria fija."
+  },
+  {
+    "q": "21. ¿Qué presidente asumió el poder en diciembre de 1976 y gobernó durante el auge petrolero de finales de esa década?",
+    "opts": [
+      "Miguel de la Madrid.",
+      "Luis Echeverría Álvarez.",
+      "José López Portillo.",
+      "Ernesto Zedillo."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "José López Portillo gobernó de 1976 a 1982, apostando el desarrollo nacional a la bonanza de los grandes yacimientos petroleros descubiertos."
+  },
+  {
+    "q": "22. Durante el gobierno de José López Portillo, México incrementó sus ingresos petroleros y recurrió al endeudamiento externo. ¿Por qué esto hizo vulnerable a la economía?",
+    "opts": [
+      "Porque los ingresos y la capacidad de pago dependían en gran medida de los precios del petróleo y del financiamiento externo.",
+      "Porque el petróleo dejó de tener importancia en las exportaciones mexicanas.",
+      "Porque la deuda externa se pagaba exclusivamente con impuestos agrícolas.",
+      "Porque el aumento de la producción petrolera eliminó la necesidad de importar bienes."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La economía quedó atada a la volatilidad internacional del precio del crudo y a las tasas de interés extranjeras, colapsando ante la caída petrolera de 1981."
+  },
+  {
+    "q": "23. ¿Qué acontecimiento económico crítico ocurrió en México en 1982, al final del gobierno de José López Portillo?",
+    "opts": [
+      "La creación del Banco de México.",
+      "La promulgación de la Constitución de 1917.",
+      "La fundación del Partido Revolucionario Institucional.",
+      "La crisis de la deuda externa y la nacionalización de la banca."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Ante la incapacidad de pagar los compromisos financieros externos, en 1982 estalló la severa crisis de la deuda y se decretó la nacionalización de la banca privada."
+  },
+  {
+    "q": "24. Una empresa mexicana se endeudó en dólares con estabilidad cambiaria. Tras una fuerte devaluación, necesita más pesos para cubrir la misma obligación. ¿Qué efecto explica esto?",
+    "opts": [
+      "La disminución automática del valor en pesos de las deudas denominadas en dólares.",
+      "El aumento del costo en moneda nacional de las obligaciones externas, agravando la carga financiera.",
+      "La conversión automática de toda deuda externa en deuda sin intereses.",
+      "La eliminación de las obligaciones financieras mediante el aumento de las exportaciones."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La devaluación encareció exponencialmente el servicio de la deuda extranjera en moneda nacional, llevando a la quiebra a múltiples empresas."
+  },
+  {
+    "q": "25. ¿Cuál de las siguientes medidas se relaciona con el gobierno de Adolfo López Mateos durante el desarrollo estabilizador?",
+    "opts": [
+      "La nacionalización de la industria petrolera en 1938.",
+      "La creación del Partido Nacional Revolucionario en 1929.",
+      "La nacionalización de la industria eléctrica en 1960.",
+      "La nacionalización de la banca en 1982."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En 1960, bajo la administración de Adolfo López Mateos, se nacionalizó la industria eléctrica para asegurar el suministro energético al sector industrial."
+  },
+  {
+    "q": "26. Compara los modelos económicos del desarrollo estabilizador y del desarrollo compartido. ¿Cuál afirmación distingue correctamente sus prioridades?",
+    "opts": [
+      "El desarrollo estabilizador priorizó el crecimiento con estabilidad de precios; el desarrollo compartido buscó redistribuir los beneficios mediante mayor intervención y gasto estatal.",
+      "Ambos modelos tuvieron como objetivo principal eliminar la industria nacional y depender de importaciones.",
+      "El desarrollo estabilizador eliminó la inversión pública, mientras que el desarrollo compartido suprimió los programas sociales.",
+      "El desarrollo compartido buscó mantener sin cambios la distribución del ingreso y reducir la participación del Estado."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El estabilizador apostó por la estabilidad macroeconómica y el crecimiento industrial; el compartido intentó corregir los rezagos sociales ampliando el papel del Estado."
+  },
+  {
+    "q": "27. ¿Qué institución financiera fue creada en 1925 y desempeñó un papel central en la política monetaria durante los periodos económicos estudiados?",
+    "opts": [
+      "Nacional Financiera.",
+      "Banco Nacional de Crédito Rural.",
+      "Comisión Federal de Electricidad.",
+      "Banco de México."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Banco de México, fundado en 1925, fungió como el banco central encargado de la emisión de moneda y la regulación de la política financiera y monetaria."
+  },
+  {
+    "q": "28. Durante el desarrollo estabilizador, el crecimiento industrial se apoyó en la protección del mercado interno. ¿Qué problema podía surgir si las empresas dependían de esto?",
+    "opts": [
+      "La desaparición de toda competencia entre empresas extranjeras.",
+      "La dificultad para competir internacionalmente y la permanencia de industrias con baja eficiencia relativa.",
+      "La eliminación inmediata de las desigualdades regionales.",
+      "El aumento automático de la innovación sin necesidad de inversión."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El proteccionismo prolongado generó plantas industriales poco eficientes y con nula capacidad para competir en los mercados globales de exportación."
+  },
+  {
+    "q": "29. ¿Qué presidente mexicano decretó la nacionalización de la banca en septiembre de 1982?",
+    "opts": [
+      "José López Portillo.",
+      "Luis Echeverría Álvarez.",
+      "Miguel de la Madrid.",
+      "Gustavo Díaz Ordaz."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "José López Portillo emitió el decreto de nacionalización de la banca privada en su último informe de gobierno de septiembre de 1982."
+  },
+  {
+    "q": "30. Un análisis histórico identifica tres etapas: conciliación social e industrialización (guerra); crecimiento sostenido con estabilidad de precios; y aumento del gasto con crisis de deuda (1980s). ¿Cuál es la correspondencia?",
+    "opts": [
+      "Desarrollo compartido; Unidad Nacional; desarrollo estabilizador.",
+      "Desarrollo estabilizador; desarrollo compartido; Unidad Nacional.",
+      "Unidad Nacional; desarrollo estabilizador; desarrollo compartido.",
+      "Unidad Nacional; desarrollo compartido; desarrollo estabilizador."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La secuencia histórica correcta es: Unidad Nacional (1940-1952), Desarrollo Estabilizador (1952-1970) y Desarrollo Compartido (1970-1982)."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 17";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>México contemporáneo: Unidad Nacional, Desarrollo Estabilizador y Desarrollo Compartido</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 17";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> México contemporáneo: Unidad Nacional y Modelos Económicos<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "México contemporáneo (1940-actualidad): Unidad Nacional, Desarrollo Estabilizador y Desarrollo Compartido",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — México contemporáneo (Unidad Nacional, Desarrollo Estabilizador y Desarrollo Compartido)",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

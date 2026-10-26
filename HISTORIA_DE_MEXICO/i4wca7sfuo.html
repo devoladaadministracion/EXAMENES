@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 21</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "21. Neoliberalismo en México (1982-actualidad), globalización y nuevo orden económico (Tema 21)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál de las siguientes características corresponde al modelo económico neoliberal?",
+    "opts": [
+      "La planificación central de toda la producción por parte del Estado.",
+      "La eliminación del comercio internacional.",
+      "La ampliación permanente de las empresas públicas.",
+      "La promoción del libre mercado y de la participación de la iniciativa privada."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El neoliberalismo promueve la competencia, la apertura comercial y una mayor participación del sector privado, así como la reducción de la intervención directa del Estado."
+  },
+  {
+    "q": "2. Un gobierno vende empresas estatales, reduce algunas barreras comerciales y modifica regulaciones para facilitar la inversión privada. ¿Qué orientación económica reflejan?",
+    "opts": [
+      "El proteccionismo industrial.",
+      "La economía de planificación centralizada.",
+      "La liberalización económica.",
+      "La sustitución de mercados por cooperativas estatales."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La liberalización económica busca disminuir restricciones a la actividad privada y al comercio, mientras que las privatizaciones transfieren empresas públicas al sector privado."
+  },
+  {
+    "q": "3. ¿En qué contexto histórico comenzó la aplicación de políticas neoliberales en México a principios de la década de 1980?",
+    "opts": [
+      "La crisis de la deuda externa de 1982.",
+      "La expropiación petrolera de 1938.",
+      "La crisis política de 1968.",
+      "La firma del TLCAN en 1992."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La crisis de la deuda externa de 1982, acompañada de inflación y desequilibrios financieros, favoreció el inicio de políticas de ajuste y transformación del modelo económico."
+  },
+  {
+    "q": "4. México ingresó al Acuerdo General sobre Aranceles Aduaneros y Comercio (GATT) en 1986. ¿Cuál fue la importancia de esta decisión para la orientación económica del país?",
+    "opts": [
+      "Estableció un monopolio estatal sobre todas las importaciones.",
+      "Representó un paso hacia la apertura comercial y la reducción de barreras al intercambio internacional.",
+      "Eliminó la necesidad de exportar productos mexicanos.",
+      "Prohibió la participación de empresas extranjeras en el mercado nacional."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El ingreso al GATT comprometió a México con reglas multilaterales de comercio, impulsando la apertura de una economía tradicionalmente protegida."
+  },
+  {
+    "q": "5. ¿Qué presidente mexicano impulsó una amplia privatización de empresas públicas y profundizó las reformas de mercado durante su gobierno de 1988 a 1994?",
+    "opts": [
+      "José López Portillo.",
+      "Ernesto Zedillo.",
+      "Carlos Salinas de Gortari.",
+      "Luis Echeverría Álvarez."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Carlos Salinas de Gortari profundizó las reformas neoliberales mediante privatizaciones masivas, apertura comercial y la firma del TLCAN."
+  },
+  {
+    "q": "6. Una empresa estatal es vendida a inversionistas privados argumentando mayor eficiencia. ¿Cuál de las siguientes afirmaciones evalúa correctamente esta política?",
+    "opts": [
+      "La privatización garantiza que disminuyan los precios para todos los consumidores.",
+      "La privatización impide que surjan monopolios privados.",
+      "La privatización elimina la necesidad de regular los mercados.",
+      "La privatización transfiere la propiedad al sector privado, pero sus resultados dependen de la competencia y regulación."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La privatización cambia la titularidad de una empresa, pero no garantiza automáticamente eficiencia ni beneficios sociales; depende de la competencia y supervisión regulatoria."
+  },
+  {
+    "q": "7. ¿Cuál fue uno de los objetivos principales del Tratado de Libre Comercio de América del Norte (TLCAN), que entró en vigor en 1994?",
+    "opts": [
+      "Establecer una moneda única para México, Estados Unidos y Canadá.",
+      "Crear un gobierno supranacional con autoridad sobre los tres países.",
+      "Sustituir las exportaciones por la producción exclusiva para el mercado interno.",
+      "Reducir barreras comerciales y facilitar el intercambio de bienes y servicios entre los países miembros."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El TLCAN estableció reglas para agilizar el intercambio comercial y de inversiones entre México, EE. UU. y Canadá, sin crear monedas ni gobiernos comunes."
+  },
+  {
+    "q": "8. Una fábrica mexicana utiliza componentes importados y exporta gran parte de su producción. Si cambia la demanda en EE. UU., sus operaciones cambian. ¿Qué fenómeno explica esto?",
+    "opts": [
+      "La globalización de las cadenas productivas.",
+      "La autarquía económica.",
+      "La desaparición de la división internacional del trabajo.",
+      "La sustitución completa de las importaciones por producción nacional."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La globalización conecta etapas de producción entre países, haciendo que las empresas integradas a cadenas globales dependan de la dinámica externa."
+  },
+  {
+    "q": "9. ¿Qué institución internacional se relaciona con la supervisión de la cooperación monetaria y el otorgamiento de asistencia financiera a países con dificultades de balanza de pagos?",
+    "opts": [
+      "UNESCO.",
+      "OIT.",
+      "Fondo Monetario Internacional (FMI).",
+      "OMS."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Fondo Monetario Internacional fomenta la cooperación monetaria mundial y otorga préstamos a países con problemas financieros, condicionados a programas de ajuste."
+  },
+  {
+    "q": "10. Un país obtiene un préstamo del FMI durante una crisis y aplica medidas para reducir el déficit público. ¿Qué tensión puede surgir al aplicar estas políticas?",
+    "opts": [
+      "La imposibilidad de realizar cualquier intercambio comercial.",
+      "El conflicto entre los objetivos de estabilidad macroeconómica y los posibles costos sociales del ajuste.",
+      "La desaparición automática de la deuda externa.",
+      "La garantía de que aumentarán de inmediato los salarios reales."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las medidas de ajuste buscan estabilidad fiscal, pero los recortes drásticos en el gasto público suelen generar costos sociales severos e impactos en servicios básicos."
+  },
+  {
+    "q": "11. ¿Qué cambio introdujo la reforma al artículo 27 constitucional de 1992 en materia agraria?",
+    "opts": [
+      "Estableció la obligación de repartir tierras de manera indefinida.",
+      "Prohibió la existencia de ejidos en todo el territorio nacional.",
+      "Restableció legalmente el sistema de haciendas porfirianas.",
+      "Modificó el régimen ejidal y permitió, bajo condiciones legales, nuevas formas de transmisión de derechos sobre parcelas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La reforma de 1992 dio fin al reparto agrario y permitió la asociación y adopción del dominio pleno sobre parcelas ejidales bajo ciertos requisitos."
+  },
+  {
+    "q": "12. Tras la apertura comercial, algunas empresas modernizaron su tecnología y exportaron, mientras otras perdieron mercado. ¿Qué conclusión explica mejor esta diferencia?",
+    "opts": [
+      "La apertura comercial produce los mismos resultados en todas las empresas.",
+      "La competencia internacional elimina las diferencias de productividad.",
+      "Los efectos de la apertura dependen de la productividad, la tecnología y la capacidad de adaptación de cada empresa.",
+      "Las empresas nacionales no pueden participar en mercados internacionales."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La apertura abre oportunidades externas pero exige competitividad; los resultados empresariales varían según su tecnología, eficiencia y recursos."
+  },
+  {
+    "q": "13. ¿Cuál fue una repercusión social asociada con las transformaciones económicas neoliberales en México?",
+    "opts": [
+      "La desaparición de todas las diferencias de ingreso.",
+      "La eliminación de los empleos informales.",
+      "La reducción automática de la pobreza en todas las regiones.",
+      "La persistencia de desigualdades sociales y regionales, pese al crecimiento de sectores exportadores."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los beneficios de la modernización exportadora se distribuyeron de manera heterogénea, coexistiendo con marcadas disparidades sociales y territoriales."
+  },
+  {
+    "q": "14. Un estudio muestra una región exportadora próspera junto a una zona rural atrasada y con alta pobreza. ¿Qué concepto permite interpretar esta diferencia?",
+    "opts": [
+      "Desarrollo regional homogéneo.",
+      "Desigualdad en la distribución territorial de los beneficios de la globalización.",
+      "Autonomía completa de las economías locales frente al mercado nacional.",
+      "Desaparición de las diferencias entre sectores productivos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La integración global no impacta por igual a todas las regiones; la infraestructura previa y la dotación de capital determinan la capacidad de aprovecharla."
+  },
+  {
+    "q": "15. ¿Qué acontecimiento político de 2000 se considera un hito de la transición democrática mexicana?",
+    "opts": [
+      "La nacionalización de la banca privada.",
+      "La entrada de México al GATT.",
+      "La victoria presidencial de Vicente Fox, que produjo la alternancia partidista.",
+      "La firma del TLCAN."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El triunfo electoral de Vicente Fox en 2000 significó la primera alternancia en la Presidencia de la República tras más de 70 años de hegemonía del partido oficial."
+  },
+  {
+    "q": "16. Una empresa extranjera instala una planta en México buscando cercanía con EE. UU., infraestructura y reglas claras. ¿Qué fenómeno representa principalmente esta decisión?",
+    "opts": [
+      "La inversión extranjera directa vinculada con la integración productiva internacional.",
+      "La eliminación de las exportaciones mexicanas.",
+      "La sustitución de toda actividad industrial por agricultura de subsistencia.",
+      "El aislamiento de México de los mercados globales."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La inversión extranjera directa (IED) busca aprovechar ventajas competitivas locales para integrarse a los flujos y cadenas de valor internacionales."
+  },
+  {
+    "q": "17. ¿Qué organismo sustituyó al GATT como organización internacional encargada de administrar acuerdos comerciales multilaterales a partir de 1995?",
+    "opts": [
+      "Banco Mundial.",
+      "Organización Mundial del Comercio (OMC).",
+      "OEA.",
+      "BID."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La Organización Mundial del Comercio (OMC) entró en funciones en 1995 para regular formalmente el comercio global y dirimir disputas comerciales."
+  },
+  {
+    "q": "18. Una empresa traslada su producción a un país con menores costos laborales, diseña en otro y vende en varios continentes. ¿Qué característica de la globalización se observa?",
+    "opts": [
+      "La concentración de todas las actividades económicas en una sola frontera.",
+      "La desaparición de la especialización productiva.",
+      "La eliminación de los flujos internacionales de capital.",
+      "La fragmentación internacional de los procesos productivos según costos y ventajas de localización."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las corporaciones globales fragmentan sus cadenas de valor geográficamente para optimizar costos operativos y aprovechar ventajas competitivas regionales."
+  },
+  {
+    "q": "19. ¿Qué medida se asocia con la política económica aplicada durante el gobierno de Ernesto Zedillo para enfrentar la crisis financiera de 1994-1995?",
+    "opts": [
+      "El cierre permanente de las exportaciones.",
+      "La abolición del sistema bancario.",
+      "La aplicación de medidas de estabilización y el apoyo al sistema financiero.",
+      "La sustitución de la economía de mercado por una planificación central."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Para paliar la crisis del peso de 1994, el gobierno de Zedillo instrumentó un riguroso programa de ajuste macroeconómico y rescates financieros bancarios."
+  },
+  {
+    "q": "20. Una familia gana en pesos y debe un crédito en dólares. Tras una fuerte depreciación del peso, necesita más moneda nacional para cubrir la misma deuda. ¿Qué explica esto?",
+    "opts": [
+      "La reducción del valor del dólar frente al peso.",
+      "La desaparición de las obligaciones contractuales.",
+      "El aumento automático del salario real de la familia.",
+      "El encarecimiento de la deuda expresada en moneda extranjera al convertirla a pesos."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La depreciación cambiaria multiplica el desembolso en moneda local requerido para honrar pasivos denominados en divisas extranjeras."
+  },
+  {
+    "q": "21. ¿Cuál es una característica fundamental de la globalización económica?",
+    "opts": [
+      "La intensificación de los intercambios de bienes, servicios, capitales y tecnología entre países.",
+      "La prohibición de la inversión extranjera.",
+      "La desaparición de las empresas transnacionales.",
+      "La sustitución de todas las monedas nacionales por una sola moneda mundial."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La globalización económica se define por la interdependencia creciente de los mercados globales a través de flujos comerciales, financieros y tecnológicos."
+  },
+  {
+    "q": "22. Una empresa exporta a EE. UU. Una recesión allí reduce la demanda y sus pedidos caen. ¿Qué aspecto de la globalización explica esta repercusión?",
+    "opts": [
+      "La independencia total entre los mercados nacionales.",
+      "La transmisión internacional de cambios económicos a través de las relaciones comerciales.",
+      "La desaparición de los ciclos económicos.",
+      "La imposibilidad de que una recesión afecte al comercio exterior."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La integración comercial expone a las economías proveedoras a las fluctuaciones de la demanda en los mercados de destino final."
+  },
+  {
+    "q": "23. ¿Qué se entiende por desregulación económica dentro de las políticas neoliberales?",
+    "opts": [
+      "La eliminación de todas las leyes constitucionales.",
+      "La prohibición de la actividad empresarial privada.",
+      "La modificación o eliminación de normas que restringen la actividad económica, sin desaparecer toda regulación.",
+      "La sustitución de instituciones financieras por organizaciones comunitarias."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La desregulación aligera controles normativos sobre los mercados para dinamizar la inversión, manteniendo normas básicas de orden y competencia."
+  },
+  {
+    "q": "24. Un gobierno reduce aranceles y privatiza empresas, pero conserva instituciones que supervisan la competencia. ¿Cuál interpretación es correcta?",
+    "opts": [
+      "El gobierno ha eliminado toda intervención estatal en la economía.",
+      "Las medidas corresponden a una economía totalmente planificada.",
+      "La inversión extranjera es incompatible con cualquier regulación pública.",
+      "La orientación neoliberal puede coexistir con un Estado que mantiene funciones regulatorias e institucionales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El neoliberalismo busca potenciar al mercado, pero requiere de un marco estatal regulador para garantizar la competencia y el cumplimiento legal."
+  },
+  {
+    "q": "25. ¿Cuál fue una de las consecuencias de la expansión de las exportaciones manufactureras mexicanas durante la integración comercial con América del Norte?",
+    "opts": [
+      "Una mayor participación de México en cadenas regionales de producción.",
+      "La desaparición de la industria manufacturera.",
+      "La eliminación de las importaciones de insumos industriales.",
+      "La reducción del comercio con EE. UU. y Canadá a cero."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El comercio norteamericano integró a la planta industrial mexicana en complejos eslabonamientos productivos de carácter regional."
+  },
+  {
+    "q": "26. Una compañía produce en México con maquinaria importada, componentes asiáticos y capital internacional. Una interrupción logística frena los componentes y cae la producción. Conclusión:",
+    "opts": [
+      "La globalización elimina la dependencia entre proveedores.",
+      "La interdependencia de las cadenas globales puede transmitir interrupciones entre países y sectores.",
+      "Las empresas globales no dependen del transporte internacional.",
+      "La producción nacional permanece aislada de los acontecimientos externos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las redes logísticas globales vuelven a las líneas de ensamblaje vulnerables ante cuellos de botella geográficos o logísticos externos."
+  },
+  {
+    "q": "27. ¿Qué significa que una economía dependa en gran medida de las exportaciones y del financiamiento externo?",
+    "opts": [
+      "Que no puede importar bienes de ningún tipo.",
+      "Que sus decisiones económicas no reciben influencia internacional.",
+      "Que los cambios en la demanda externa o en las condiciones financieras internacionales pueden afectar su crecimiento y estabilidad.",
+      "Que todas sus empresas pertenecen al Estado."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La apertura exterior aporta dinamismo, pero también vulnerabilidad frente a choques externos en los mercados financieros y de materias primas."
+  },
+  {
+    "q": "28. Un país atrae inversión y exporta, pero mantiene informalidad, brechas salariales y regiones marginadas. ¿Qué conclusión es más adecuada sobre globalización y desarrollo?",
+    "opts": [
+      "La apertura comercial garantiza por sí sola la igualdad económica.",
+      "El crecimiento de las exportaciones elimina automáticamente la informalidad.",
+      "La inversión extranjera impide cualquier desarrollo tecnológico.",
+      "La integración global puede impulsar ciertos sectores, pero no garantiza por sí misma un desarrollo social equilibrado."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La inserción global favorece la competitividad sectorial, pero se requieren políticas públicas complementarias para abatir la desigualdad estructural."
+  },
+  {
+    "q": "29. ¿Qué diferencia distingue principalmente al proteccionismo económico de la apertura comercial?",
+    "opts": [
+      "El proteccionismo busca proteger la producción nacional mediante aranceles, mientras la apertura reduce barreras al comercio exterior.",
+      "El proteccionismo elimina todos los impuestos y la apertura los incrementa.",
+      "El proteccionismo prohíbe la producción nacional y la apertura la sustituye por estatal.",
+      "Ambos conceptos significan exactamente lo mismo."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El proteccionismo erige barreras arancelarias para resguardar el mercado interno; la apertura comercial fomenta el libre flujo de mercancías reduciéndolas."
+  },
+  {
+    "q": "30. México adoptó políticas de apertura, privatización y atracción de capital desde los 80s, logrando integración global pero persistiendo desigualdades. ¿Cuál es la valoración más sólida?",
+    "opts": [
+      "Las reformas no produjeron cambios en la estructura económica mexicana.",
+      "La globalización eliminó por completo la desigualdad social.",
+      "Las reformas transformaron la inserción internacional de México, pero sus resultados económicos y sociales fueron desiguales.",
+      "La apertura provocó que México dejara de participar en el comercio internacional."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las reformas neoliberales reconfiguraron exitosamente el perfil exportador del país, mas no resolvieron las profundas disparidades socioeconómicas internas."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 21";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Neoliberalismo en México, globalización y nuevo orden económico</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 21";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Neoliberalismo, globalización y nuevo orden económico<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Neoliberalismo en México (1982-actualidad), globalización y nuevo orden económico",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Neoliberalismo en México, globalización y nuevo orden económico",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

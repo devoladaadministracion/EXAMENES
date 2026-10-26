@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "18. El Estado benefactor y su crisis (1940-1982): Milagro mexicano y contexto mundial (Tema 18)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál fue una característica fundamental del Estado benefactor en México entre 1940 y 1982?",
+    "opts": [
+      "La eliminación de los servicios públicos de salud y educación.",
+      "La reducción absoluta de la participación gubernamental en la economía.",
+      "La intervención del Estado en la economía y la ampliación de servicios sociales.",
+      "La sustitución de las instituciones públicas por empresas extranjeras."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Estado benefactor promovió la intervención gubernamental en la economía, la inversión en infraestructura y la provisión de servicios sociales, aunque sus beneficios no llegaron por igual a toda la población."
+  },
+  {
+    "q": "2. Durante el periodo de industrialización mexicana, el gobierno invirtió en infraestructura, protegió industrias y amplió instituciones sociales. ¿Qué relación explica mejor estas acciones?",
+    "opts": [
+      "El Estado buscaba favorecer el crecimiento económico y contribuir a la estabilidad social mediante su intervención.",
+      "El gobierno pretendía eliminar la industria nacional y depender de las importaciones.",
+      "Las políticas públicas tenían como objetivo transferir todos los servicios sociales al sector privado.",
+      "La inversión estatal buscaba sustituir por completo el comercio internacional."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La intervención estatal pretendía impulsar la industrialización, construir infraestructura y atender algunas demandas sociales, generando crecimiento y estabilidad social."
+  },
+  {
+    "q": "3. ¿A qué periodo se refiere principalmente el llamado Milagro Mexicano?",
+    "opts": [
+      "A la etapa de la Independencia, entre 1810 y 1821.",
+      "Al periodo de la Reforma liberal, entre 1855 y 1876.",
+      "A la crisis revolucionaria, entre 1910 y 1920.",
+      "A varias décadas de crecimiento económico sostenido e industrialización, especialmente entre 1940 y 1970."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Milagro Mexicano se refiere al crecimiento económico sostenido que acompañó la industrialización y la expansión de infraestructura durante buena parte de las décadas de 1940, 1950 y 1960."
+  },
+  {
+    "q": "4. México experimentó un crecimiento importante de la producción industrial durante el siglo XX mediante la fabricación nacional de bienes que antes se compraban afuera. ¿Cómo se denomina esto?",
+    "opts": [
+      "Desarrollo compartido.",
+      "Sustitución de importaciones.",
+      "Colectivización integral.",
+      "Liberalización comercial absoluta."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La sustitución de importaciones buscaba desarrollar industrias nacionales capaces de producir bienes anteriormente importados, con apoyo de aranceles y protección del mercado interno."
+  },
+  {
+    "q": "5. ¿Qué presidente gobernó México durante la mayor parte de la Segunda Guerra Mundial y promovió la política de Unidad Nacional?",
+    "opts": [
+      "Miguel Alemán Valdés.",
+      "Adolfo López Mateos.",
+      "Manuel Ávila Camacho.",
+      "Luis Echeverría Álvarez."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Manuel Ávila Camacho gobernó de 1940 a 1946, promoviendo la conciliación social y la cooperación económica con Estados Unidos durante la guerra."
+  },
+  {
+    "q": "6. Durante la Segunda Guerra Mundial, la demanda internacional de productos mexicanos aumentó y la dificultad para importar bienes favoreció la producción interna. ¿Qué proceso se fortaleció?",
+    "opts": [
+      "La sustitución de importaciones y la expansión industrial.",
+      "La desaparición de las manufacturas nacionales.",
+      "La eliminación de la inversión en infraestructura.",
+      "La transformación de México en una economía exclusivamente agrícola."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La demanda externa y las restricciones comerciales estimularon la producción nacional, favoreciendo la industrialización y las manufacturas para el mercado interno."
+  },
+  {
+    "q": "7. ¿Qué institución fue creada en 1943 para proporcionar servicios de seguridad social a los trabajadores asegurados del sector privado y sus familias?",
+    "opts": [
+      "Instituto de Seguridad y Servicios Sociales de los Trabajadores del Estado (ISSSTE).",
+      "Instituto Mexicano del Seguro Social (IMSS).",
+      "Comisión Federal de Electricidad (CFE).",
+      "Petróleos Mexicanos (PEMEX)."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El IMSS fue creado en 1943 para ofrecer servicios médicos y prestaciones de seguridad social a los trabajadores asegurados y sus familias."
+  },
+  {
+    "q": "8. Después de la Segunda Guerra Mundial, numerosos países capitalistas impulsaron políticas de bienestar social y regulación económica. ¿Qué influencia internacional legitimó este modelo?",
+    "opts": [
+      "La eliminación de los sistemas de seguridad social en Europa occidental.",
+      "La desaparición de la intervención económica de los gobiernos.",
+      "La expansión de las ideas keynesianas sobre el papel del Estado en la economía.",
+      "La sustitución de las economías mixtas por sistemas exclusivamente agrícolas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las ideas de John Maynard Keynes defendían la intervención gubernamental para estabilizar la economía, estimular la demanda y reducir las crisis, influyendo en la posguerra."
+  },
+  {
+    "q": "9. ¿Qué institución mexicana se creó en 1959 para proporcionar seguridad social a los trabajadores al servicio del Estado?",
+    "opts": [
+      "Instituto Mexicano del Seguro Social (IMSS).",
+      "Instituto de Seguridad y Servicios Sociales de los Trabajadores del Estado (ISSSTE).",
+      "Banco de México.",
+      "Comisión Federal de Electricidad (CFE)."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El ISSSTE se creó en 1959 para brindar prestaciones de seguridad social a los trabajadores del Estado, ampliando la cobertura de protección social."
+  },
+  {
+    "q": "10. Durante el Milagro Mexicano, el gobierno protegió a diversas industrias nacionales mediante aranceles y medidas que limitaban la competencia extranjera. ¿Cuál fue una consecuencia a largo plazo?",
+    "opts": [
+      "La eliminación automática de las desigualdades sociales.",
+      "La desaparición de toda dependencia tecnológica.",
+      "La reducción permanente de los costos de producción en todas las industrias.",
+      "La formación de industrias protegidas que, en algunos casos, enfrentaron dificultades para competir internacionalmente."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La protección comercial ayudó a desarrollar la industria nacional, pero redujo los incentivos para aumentar la productividad, generando dificultades para competir internacionalmente."
+  },
+  {
+    "q": "11. ¿Qué organismo internacional fue creado en 1944, en la Conferencia de Bretton Woods, para promover la cooperación monetaria y la estabilidad financiera?",
+    "opts": [
+      "Fondo Monetario Internacional (FMI).",
+      "Organización del Tratado del Atlántico Norte (OTAN).",
+      "UNESCO.",
+      "Organización de los Estados Americanos (OEA)."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El Fondo Monetario Internacional fue concebido en Bretton Woods para promover la cooperación monetaria internacional, apoyar la estabilidad cambiaria y dar asistencia financiera."
+  },
+  {
+    "q": "12. Después de la Segunda Guerra Mundial, EE. UU. y la URSS encabezaron bloques rivales. ¿Cómo influyó esto en el contexto en que se desarrolló la economía mexicana?",
+    "opts": [
+      "Obligó a México a integrarse formalmente al bloque soviético.",
+      "Provocó la desaparición del comercio entre México y EE. UU.",
+      "Generó un contexto de competencia geopolítica en el que México mantuvo una relación económica estrecha con EE. UU.",
+      "Eliminó la importancia estratégica de América Latina para las potencias."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La Guerra Fría organizó las relaciones internacionales alrededor de la rivalidad entre EE. UU. y la URSS; México mantuvo vínculos económicos estrechos con EE. UU. sin unirse al bloque soviético."
+  },
+  {
+    "q": "13. ¿Cuál fue una característica del Estado benefactor mexicano entre 1940 y 1982?",
+    "opts": [
+      "La desaparición de la inversión pública en infraestructura.",
+      "La ampliación de instituciones y servicios de seguridad social, aunque con cobertura desigual.",
+      "La eliminación de los derechos laborales constitucionales.",
+      "La sustitución de todos los hospitales públicos por instituciones privadas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Durante estas décadas se ampliaron instituciones de salud, educación y seguridad social, aunque la cobertura fue desigual entre trabajadores formales, rurales y desempleados."
+  },
+  {
+    "q": "14. Un país presenta crecimiento industrial, servicios públicos e inversión estatal, pero mantiene una distribución desigual del ingreso. ¿Cuál es la interpretación más adecuada?",
+    "opts": [
+      "La expansión económica garantizó que toda la población recibiera los mismos beneficios.",
+      "Las desigualdades demuestran que no existió crecimiento industrial.",
+      "La intervención estatal impidió cualquier mejoría en las condiciones de vida.",
+      "El crecimiento y la expansión de servicios coexistieron con desigualdades sociales y regionales persistentes."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El crecimiento económico y la expansión de servicios produjeron beneficios importantes, pero no eliminaron las diferencias de ingreso ni las desigualdades territoriales."
+  },
+  {
+    "q": "15. ¿Qué acontecimiento internacional de 1973 contribuyó al aumento de los costos de producción y a las presiones inflacionarias en numerosas economías?",
+    "opts": [
+      "La primera crisis del petróleo, asociada con el embargo petrolero de países árabes exportadores.",
+      "La creación del Tratado de Libre Comercio de América del Norte.",
+      "La disolución de la Unión Soviética.",
+      "La caída del Muro de Berlín."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En 1973, el embargo petrolero de países árabes disparó los precios internacionales del petróleo, elevando los costos energéticos y contribuyendo a la inflación y estancamiento."
+  },
+  {
+    "q": "16. Durante la década de 1970, diversas economías experimentaron simultáneamente inflación elevada y bajo crecimiento económico. ¿Qué término describe esta combinación?",
+    "opts": [
+      "Deflación.",
+      "Pleno empleo.",
+      "Estanflación.",
+      "Superávit comercial."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La estanflación combina estancamiento económico con inflación, complicando la política económica pues estimular la demanda agravaba la inflación y restringirla profundizaba el desempleo."
+  },
+  {
+    "q": "17. ¿Cuál fue una consecuencia de la crisis económica mexicana de 1976?",
+    "opts": [
+      "La desaparición definitiva de la deuda externa.",
+      "La devaluación del peso después de un largo periodo de estabilidad cambiaria.",
+      "La adopción inmediata del euro como moneda nacional.",
+      "La eliminación de la inflación durante el gobierno de Luis Echeverría."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "En septiembre de 1976, México abandonó la paridad fija de 12.50 pesos por dólar, reflejando los desequilibrios económicos acumulados."
+  },
+  {
+    "q": "18. El Estado mexicano amplió el gasto público en los 70s para impulsar el crecimiento. Si los ingresos fiscales no aumentaban al mismo ritmo, ¿qué consecuencia podía producirse?",
+    "opts": [
+      "La desaparición de la necesidad de financiamiento público.",
+      "La reducción automática de la deuda externa.",
+      "El equilibrio presupuestario permanente.",
+      "Un déficit fiscal creciente y una mayor necesidad de endeudamiento."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Cuando los gastos superan los ingresos se produce un déficit fiscal; si se financia con préstamos, aumentan la deuda pública y la vulnerabilidad gubernamental."
+  },
+  {
+    "q": "19. ¿Qué presidente mexicano gobernó durante la crisis de la deuda y la nacionalización de la banca en 1982?",
+    "opts": [
+      "José López Portillo.",
+      "Miguel de la Madrid.",
+      "Luis Echeverría Álvarez.",
+      "Carlos Salinas de Gortari."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "José López Portillo gobernó de 1976 a 1982, enfrentando al final una grave crisis financiera que llevó a la nacionalización de la banca privada."
+  },
+  {
+    "q": "20. México aumentó su producción petrolera y recurrió al crédito internacional en los 70s; luego la caída de precios y problemas de refinanciamiento agravaron la crisis. ¿Qué problema estructural se evidencia?",
+    "opts": [
+      "La inexistencia de relaciones entre el petróleo y las finanzas públicas.",
+      "La independencia completa de México respecto de los mercados financieros internacionales.",
+      "La vulnerabilidad de una economía dependiente de ingresos petroleros y financiamiento externo.",
+      "La ausencia de deuda pública durante el auge petrolero."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El aumento del endeudamiento y la dependencia de los ingresos petroleros hicieron a México vulnerable a cambios en precios internacionales y condiciones de crédito."
+  },
+  {
+    "q": "21. ¿Qué modelo económico mexicano se caracterizó por combinar industrialización, protección del mercado interno y crecimiento con estabilidad de precios?",
+    "opts": [
+      "Desarrollo compartido.",
+      "Desarrollo estabilizador.",
+      "Economía de guerra.",
+      "Modelo de libre comercio irrestricto."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El desarrollo estabilizador, asociado con las décadas de 1950 y 1960, buscó mantener el crecimiento económico y la estabilidad monetaria mediante políticas fiscales e industriales."
+  },
+  {
+    "q": "22. Un historiador observa que durante el Milagro Mexicano aumentaron la manufactura y la urbanización, mientras la agricultura perdió peso relativo. ¿Qué transformación explica esto?",
+    "opts": [
+      "La sustitución de la industria por actividades rurales de subsistencia.",
+      "La eliminación de las ciudades como centros de producción.",
+      "La desaparición del mercado interno mexicano.",
+      "La transición hacia una economía más industrial y urbana, con cambios en el empleo y la migración."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La industrialización concentró empleos y servicios en las ciudades y favoreció la migración rural-urbana, disminuyendo la participación relativa de la agricultura."
+  },
+  {
+    "q": "23. ¿Cuál fue uno de los objetivos del Plan Marshall, anunciado por Estados Unidos en 1947?",
+    "opts": [
+      "Apoyar la reconstrucción económica de Europa occidental después de la Segunda Guerra Mundial.",
+      "Financiar la independencia de todas las colonias africanas.",
+      "Establecer un mercado común entre México y Canadá.",
+      "Crear la OPEP."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El Plan Marshall proporcionó asistencia económica para la reconstrucción europea tras la guerra, buscando también favorecer la estabilidad política y contener la influencia soviética."
+  },
+  {
+    "q": "24. El Estado benefactor se expandió tras la Segunda Guerra Mundial, pero desde los 70s enfrentó presiones por inflación, desaceleración y costos públicos. ¿Qué relación explica esto?",
+    "opts": [
+      "La desaparición de los mercados internacionales y del comercio de materias primas.",
+      "La eliminación universal de los impuestos y de la deuda pública.",
+      "La combinación de problemas económicos internacionales con dificultades fiscales y estructurales de los Estados nacionales.",
+      "La ausencia de cambios en los precios de la energía durante la década de 1970."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las crisis petroleras, la inflación y la desaceleración internacional presionaron las finanzas públicas, sumándose a desequilibrios internos y debilitando el modelo estatal."
+  },
+  {
+    "q": "25. ¿Qué organización internacional se fundó en 1945 con el propósito de promover la cooperación internacional y preservar la paz y la seguridad?",
+    "opts": [
+      "OTAN.",
+      "Organización de las Naciones Unidas.",
+      "OCDE.",
+      "OPEP."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La Organización de las Naciones Unidas (ONU) fue fundada en 1945 al terminar la Segunda Guerra Mundial para promover la paz, la seguridad y la cooperación internacional."
+  },
+  {
+    "q": "26. En la sustitución de importaciones, el gobierno usa aranceles para encarecer productos extranjeros y favorecer a fabricantes nacionales. ¿Cuál es el principal mecanismo económico?",
+    "opts": [
+      "Aumentar automáticamente la productividad de todas las empresas nacionales.",
+      "Eliminar toda necesidad de importar maquinaria y tecnología.",
+      "Garantizar que los bienes nacionales tengan siempre precios inferiores.",
+      "Reducir la presión competitiva de determinados productos importados dentro del mercado interno."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los aranceles elevan el precio de los productos importados ofreciendo protección temporal a las empresas nacionales, aunque no garantizan mayor productividad."
+  },
+  {
+    "q": "27. ¿Qué presidente mexicano gobernó durante la nacionalización de la industria eléctrica en 1960?",
+    "opts": [
+      "Adolfo López Mateos.",
+      "Miguel Alemán Valdés.",
+      "Manuel Ávila Camacho.",
+      "Gustavo Díaz Ordaz."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Durante el gobierno de Adolfo López Mateos, el Estado adquirió empresas eléctricas privadas en 1960 y fortaleció el control nacional sobre esta actividad."
+  },
+  {
+    "q": "28. Una economía registra crecimiento industrial pero su beneficio se concentra en ciertas regiones y grupos. ¿Cuál es la principal limitación social identificada?",
+    "opts": [
+      "La imposibilidad de que exista producción manufacturera.",
+      "La desaparición de la movilidad laboral entre sectores.",
+      "La persistencia de desigualdades en la distribución del ingreso y de las oportunidades.",
+      "La eliminación de la demanda de servicios educativos y sanitarios."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El crecimiento del producto nacional no garantiza una distribución equitativa; la industrialización coexistió con desigualdades regionales e ingresos diferenciados."
+  },
+  {
+    "q": "29. ¿Cuál fue un factor internacional que contribuyó a la crisis económica de México a principios de la década de 1980?",
+    "opts": [
+      "La desaparición de los mercados de crédito internacionales.",
+      "El aumento permanente e ilimitado de los precios del petróleo.",
+      "La reducción general de las tasas de interés internacionales.",
+      "El encarecimiento del crédito internacional y las dificultades para refinanciar la deuda externa."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El aumento de las tasas de interés internacionales y las dificultades de acceso al crédito elevaron el costo del servicio de la deuda mexicana, sumándose a desequilibrios internos."
+  },
+  {
+    "q": "30. Analiza la secuencia histórica: 1940s-1950s (industrialización e intervención estatal), 1950s-1960s (crecimiento con estabilidad de precios), 1970s-1980s (inflación, desequilibrios y crisis de deuda). ¿Qué interpretación explica esto?",
+    "opts": [
+      "El Estado benefactor permaneció sin cambios porque el crecimiento económico eliminó los problemas estructurales.",
+      "El modelo de desarrollo basado en la intervención estatal y la industrialización enfrentó límites internos y choques internacionales que contribuyeron a su crisis.",
+      "La crisis de 1982 fue consecuencia exclusiva de la desaparición de la industria manufacturera.",
+      "La industrialización mexicana se detuvo completamente al finalizar la Segunda Guerra Mundial."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La expansión industrial y la estabilidad no resolvieron todas las desigualdades; en los setenta, las presiones inflacionarias, choques petroleros y endeudamiento llevaron a la crisis de 1982."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 18";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>El Estado benefactor y su crisis</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 18";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> El Estado benefactor y su crisis (1940-1982)<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "El Estado benefactor y su crisis (1940-1982). Milagro mexicano y contexto mundial",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — El Estado benefactor y su crisis (1940-1982)",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

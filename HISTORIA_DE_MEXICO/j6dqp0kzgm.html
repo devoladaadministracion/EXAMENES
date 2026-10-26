@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 23</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "23. Características de los modelos de producción y Ciclo económico capitalista (Tema 23)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál de las siguientes características distingue al modo de producción feudal del modo de producción capitalista?",
+    "opts": [
+      "La producción destinada exclusivamente al autoconsumo de las comunidades.",
+      "La propiedad colectiva de los medios de producción y la ausencia de clases sociales.",
+      "La relación entre señores feudales y campesinos sujetos a obligaciones y rentas.",
+      "La contratación generalizada de trabajadores asalariados por propietarios industriales."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En el feudalismo, los señores poseían el dominio de la tierra y los campesinos estaban sujetos a obligaciones, rentas o prestaciones de trabajo, a diferencia del capitalismo y el trabajo asalariado."
+  },
+  {
+    "q": "2. En una sociedad, los propietarios de las fábricas contratan trabajadores a cambio de un salario para producir mercancías y buscar ganancias. ¿Qué relación de producción predomina?",
+    "opts": [
+      "La relación entre propietarios del capital y trabajadores asalariados.",
+      "La relación entre señores feudales y siervos vinculados a la tierra.",
+      "La relación comunitaria basada en la propiedad colectiva de los medios productivos.",
+      "La relación esclavista basada en la propiedad legal de unas personas sobre otras."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En el capitalismo, los propietarios controlan los medios de producción y contratan fuerza de trabajo a cambio de un salario, orientando la producción al mercado."
+  },
+  {
+    "q": "3. ¿Cuál de los siguientes elementos forma parte de las fuerzas productivas de una sociedad?",
+    "opts": [
+      "Las leyes que regulan la propiedad privada.",
+      "Las instituciones políticas que organizan el Estado.",
+      "Las creencias religiosas que legitiman el orden social.",
+      "La maquinaria, las herramientas y los conocimientos técnicos utilizados para producir."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las fuerzas productivas incluyen los medios de producción, los instrumentos de trabajo, los conocimientos técnicos y la capacidad laboral humana."
+  },
+  {
+    "q": "4. Una empresa incorpora maquinaria automatizada, capacita a su personal y aumenta la mercancía producida por hora. ¿Qué elemento se transforma de manera directa?",
+    "opts": [
+      "La superestructura jurídica de la sociedad.",
+      "Las fuerzas productivas, al modificarse la tecnología y la capacidad productiva.",
+      "La forma de propiedad de la empresa, convertida en colectiva.",
+      "Las relaciones de producción, que desaparecen al incorporarse maquinaria."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La maquinaria y los conocimientos técnicos forman parte de las fuerzas productivas. Su modernización eleva la productividad directamente."
+  },
+  {
+    "q": "5. ¿Cuál es una característica fundamental del modo de producción esclavista?",
+    "opts": [
+      "La existencia de trabajadores que venden libremente su fuerza de trabajo.",
+      "La propiedad colectiva de los medios de producción y la distribución igualitaria.",
+      "El predominio de la servidumbre vinculada a la posesión de la tierra.",
+      "La apropiación de la persona esclavizada y de su trabajo por parte de quien ejerce su dominio."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "En el modelo esclavista, las personas esclavizadas estaban sometidas al dominio de sus propietarios, quienes controlaban coercitivamente su trabajo."
+  },
+  {
+    "q": "6. En una economía capitalista, una fábrica produce más unidades tras incorporar nueva tecnología con la misma jornada y trabajadores. ¿Cuál es la interpretación adecuada?",
+    "opts": [
+      "Disminuyó necesariamente el valor de todas las mercancías en la misma proporción.",
+      "Se eliminó la relación salarial porque ahora existe mayor producción.",
+      "Aumentó la productividad del trabajo debido a una transformación de las fuerzas productivas.",
+      "La economía pasó automáticamente del capitalismo al socialismo."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La productividad mide la cantidad producida por unidad de trabajo o tiempo. A mayor producción con el mismo trabajo, aumenta la productividad."
+  },
+  {
+    "q": "7. En el análisis marxista, ¿qué se entiende por relaciones de producción?",
+    "opts": [
+      "Los vínculos sociales que se establecen entre las personas durante el proceso productivo, incluidos los de propiedad y control.",
+      "Los cambios periódicos de precios que ocurren en los mercados financieros.",
+      "Las normas gramaticales empleadas para describir las actividades económicas.",
+      "Las variaciones de temperatura que afectan la producción agrícola."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Las relaciones de producción son los vínculos sociales que organizan quién posee o controla los medios de producción y cómo se distribuyen los resultados."
+  },
+  {
+    "q": "8. Una economía presenta expansión industrial y del empleo, seguida por menor venta, acumulación de mercancías sin vender y reducción de producción. ¿Qué fenómeno describe esto?",
+    "opts": [
+      "Una transición inevitable del feudalismo al capitalismo.",
+      "Una distribución equitativa y permanente del ingreso.",
+      "Una desaparición definitiva de la propiedad privada.",
+      "Una fluctuación cíclica de la actividad económica capitalista."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El capitalismo presenta fluctuaciones cíclicas; a una etapa de expansión suele seguir una desaceleración o contracción con menor producción e inversión."
+  },
+  {
+    "q": "9. ¿Cuál es la secuencia convencional de las cuatro fases del ciclo económico capitalista?",
+    "opts": [
+      "Inflación, deflación, devaluación y revaluación.",
+      "Expansión, auge, recesión y recuperación.",
+      "Producción, esclavitud, feudalismo y globalización.",
+      "Ahorro, tributación, privatización y nacionalización."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las fases tradicionales del ciclo económico corresponden a la expansión, el auge (o pico), la contracción (o recesión) y la recuperación."
+  },
+  {
+    "q": "10. Durante varios trimestres, una economía registra aumentos del PIB real, del empleo y de la inversión, ampliando instalaciones y contratando personal. ¿En qué fase se encuentra?",
+    "opts": [
+      "Depresión.",
+      "Contracción.",
+      "Expansión.",
+      "Punto mínimo del ciclo."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La expansión se caracteriza por un incremento general de la actividad económica, acompañado de mayores niveles de producción, empleo e inversión."
+  },
+  {
+    "q": "11. ¿Qué caracteriza principalmente al auge o pico de un ciclo económico?",
+    "opts": [
+      "La desaparición de toda actividad productiva.",
+      "El inicio necesario de una economía planificada.",
+      "La caída continua de la producción desde su nivel mínimo.",
+      "La llegada de la actividad económica a un máximo cíclico antes de comenzar una posible contracción."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El auge o pico es el punto máximo de una expansión cíclica, tras el cual la actividad económica suele desacelerarse hacia una contracción."
+  },
+  {
+    "q": "12. Una economía presenta reducción generalizada de producción, inversión, cierre de empresas y aumento del desempleo de forma prolongada y profunda. ¿Qué concepto lo describe?",
+    "opts": [
+      "Depresión económica.",
+      "Auge económico.",
+      "Recuperación económica.",
+      "Expansión económica."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Una depresión es una contracción económica particularmente profunda y prolongada, asociada con una caída grave de la producción, el empleo y la inversión."
+  },
+  {
+    "q": "13. ¿Qué sucede habitualmente durante una fase de recuperación económica?",
+    "opts": [
+      "La producción permanece necesariamente en su máximo histórico.",
+      "La actividad económica comienza a mejorar después de una contracción, con posibles aumentos de producción y empleo.",
+      "Las empresas dejan de invertir de manera permanente.",
+      "El desempleo desaparece inmediatamente al comenzar el crecimiento."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La recuperación es la etapa en la que la actividad económica empieza a repuntar tras una contracción, aumentando gradualmente la producción y la inversión."
+  },
+  {
+    "q": "14. Un país registra caída del PIB real durante dos trimestres consecutivos, sin datos definitivos sobre empleo e ingresos. ¿Cuál es la interpretación más rigurosa?",
+    "opts": [
+      "Se ha demostrado una depresión económica de larga duración.",
+      "La economía necesariamente se encuentra en expansión.",
+      "El país abandonó el capitalismo.",
+      "Existe evidencia de contracción, pero se requiere más información para caracterizar integralmente el ciclo."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Dos trimestres de caída del PIB real sirven como regla práctica para una recesión, pero la evaluación completa requiere analizar múltiples indicadores."
+  },
+  {
+    "q": "15. ¿Cuál de las siguientes situaciones se relaciona directamente con una crisis de sobreproducción en el capitalismo?",
+    "opts": [
+      "Las empresas producen mercancías en cantidades que superan la demanda efectiva y acumulan inventarios sin vender.",
+      "Las empresas producen exclusivamente lo necesario para el autoconsumo familiar.",
+      "La producción se ajusta perfectamente a la demanda en todos los mercados.",
+      "La desaparición de las mercancías como resultado de la producción industrial."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Las crisis de sobreproducción ocurren cuando las mercancías creadas superan la demanda efectiva de mercado, acumulando inventarios y forzando recortes."
+  },
+  {
+    "q": "16. Una empresa vende mercancías por $500,000 con costos de $380,000. ¿Cuál es su ganancia calculada como diferencia entre ingresos y costos?",
+    "opts": [
+      "$120,000.",
+      "$380,000.",
+      "$500,000.",
+      "$880,000."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La ganancia es la diferencia aritmética simple entre ingresos y costos: $500,000 - $380,000 = $120,000."
+  },
+  {
+    "q": "17. En el capitalismo, ¿qué papel desempeña la búsqueda de ganancias en las decisiones de inversión de las empresas?",
+    "opts": [
+      "Impide que las empresas compitan entre sí.",
+      "Garantiza que no existan crisis económicas.",
+      "Influye en la asignación de recursos, la inversión y las decisiones de producción.",
+      "Elimina la necesidad de vender mercancías en el mercado."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La expectativa de beneficios guía las decisiones empresariales de inversión y producción, aunque ello no exima al sistema de incertidumbre y crisis."
+  },
+  {
+    "q": "18. Una economía entra en recesión: bajan ventas, se reduce producción y hay despidos, lo que a su vez disminuye el consumo y debilita más las ventas. ¿Qué mecanismo se observa?",
+    "opts": [
+      "Un aumento automático de la demanda agregada.",
+      "Un proceso de retroalimentación que puede profundizar la contracción económica.",
+      "Una recuperación asegurada por la reducción de salarios.",
+      "Una transformación inmediata de las relaciones capitalistas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La caída de ventas y empleo genera un ciclo de retroalimentación negativa que reduce el consumo de los hogares y profundiza la contracción."
+  },
+  {
+    "q": "19. ¿Cuál de las siguientes afirmaciones distingue correctamente el modo de producción de la fase del ciclo económico?",
+    "opts": [
+      "El modo de producción y el ciclo económico describen exactamente el mismo fenómeno.",
+      "El modo de producción solo se refiere a las variaciones trimestrales del PIB.",
+      "La fase del ciclo económico determina por sí sola quién posee los medios de producción.",
+      "El modo de producción describe la organización social de la producción, mientras el ciclo económico describe fluctuaciones de la actividad."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El modo de producción alude a la estructura social y productiva, mientras que el ciclo económico describe las fluctuaciones temporales de la actividad."
+  },
+  {
+    "q": "20. Una economía experimenta auge, luego acumula inventarios sin vender y reduce inversión, para después recuperarse. ¿Cuál interpretación integra esto correctamente?",
+    "opts": [
+      "El aumento de inventarios demuestra que la economía permanece en auge.",
+      "La recuperación ocurre antes de cualquier contracción en todos los ciclos.",
+      "La acumulación de inventarios puede anticipar una contracción, y el repunte posterior es compatible con una recuperación.",
+      "La secuencia demuestra que el capitalismo fue sustituido por el feudalismo."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Inventarios altos y menor inversión anteceden a la contracción; el repunte posterior corresponde lógicamente a la fase de recuperación cíclica."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 23";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Características de los modelos de producción y Ciclo económico capitalista</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 23";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Modelos de producción y Ciclo económico capitalista<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Características de los modelos de producción y Ciclo económico capitalista",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Características de los modelos de producción y Ciclo económico capitalista",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

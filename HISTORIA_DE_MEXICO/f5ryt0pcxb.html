@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "2. La Nueva España (siglos XVI a XIX): Mesoamérica y Europa de los siglos XV y XVI (Tema 2)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál de las siguientes características permitió distinguir a Mesoamérica como una importante área cultural del México antiguo?",
+    "opts": [
+      "El predominio de la ganadería y el pastoreo de animales domesticados.",
+      "La organización de sociedades nómadas dedicadas exclusivamente a la caza.",
+      "El desarrollo de la agricultura, el cultivo del maíz y tradiciones culturales compartidas.",
+      "La ausencia de centros ceremoniales y de asentamientos permanentes."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Mesoamérica se caracterizó por la agricultura, especialmente el cultivo del maíz, así como por elementos culturales compartidos, como centros ceremoniales, calendarios y prácticas religiosas."
+  },
+  {
+    "q": "2. Un arqueólogo encuentra evidencias de cultivo de maíz, construcción de centros ceremoniales, intercambio comercial y uso de calendarios en una región del México antiguo. ¿Cuál es la interpretación más adecuada?",
+    "opts": [
+      "La región presenta rasgos culturales característicos de Mesoamérica.",
+      "La región perteneció necesariamente a Aridoamérica por su actividad agrícola.",
+      "La región formó parte de Oasisamérica exclusivamente por utilizar calendarios.",
+      "La región careció de sociedades sedentarias debido a sus actividades comerciales."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La combinación de agricultura, centros ceremoniales y conocimientos calendáricos corresponde a rasgos característicos de numerosas sociedades mesoamericanas."
+  },
+  {
+    "q": "3. ¿Cuál de las siguientes regiones culturales se caracterizó, en términos generales, por condiciones áridas o semiáridas y por la presencia de numerosos grupos cazadores-recolectores?",
+    "opts": [
+      "Mesoamérica.",
+      "Oasisamérica.",
+      "Altiplano central.",
+      "Aridoamérica."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Aridoamérica comprendió amplias zonas áridas y semiáridas del norte de México y el actual suroeste de Estados Unidos, donde numerosos grupos practicaron la caza y la recolección."
+  },
+  {
+    "q": "4. Un grupo humano habitó una región del actual norte de México. Sus integrantes se desplazaban para obtener recursos, recolectaban plantas silvestres y cazaban animales debido a la disponibilidad irregular de agua y alimentos. ¿A qué área cultural se asocia principalmente esta forma de vida?",
+    "opts": [
+      "Mesoamérica, por el desarrollo generalizado de ciudades agrícolas.",
+      "Aridoamérica, por las condiciones ambientales y las estrategias de subsistencia descritas.",
+      "Oasisamérica, por la dependencia exclusiva del comercio de larga distancia.",
+      "Mesoamérica, por la presencia obligatoria de agricultura intensiva."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "En muchas zonas de Aridoamérica, las condiciones ambientales favorecieron estrategias de subsistencia basadas en la movilidad, la caza y la recolección."
+  },
+  {
+    "q": "5. ¿Qué característica distingue a Oasisamérica de Aridoamérica?",
+    "opts": [
+      "La ausencia de asentamientos permanentes en toda su extensión.",
+      "El desarrollo de agricultura en ciertas regiones con disponibilidad de agua y condiciones favorables.",
+      "La concentración exclusiva de sociedades olmecas y mayas.",
+      "El predominio de grandes imperios tributarios en todas sus comunidades."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Oasisamérica comprendió regiones del norte de México y del suroeste de Estados Unidos donde algunas sociedades desarrollaron agricultura y asentamientos permanentes."
+  },
+  {
+    "q": "6. Un estudiante clasifica tres regiones culturales: una con grandes centros urbanos agrícolas, otra predominantemente árida con cazadores-recolectores y una tercera con comunidades agrícolas en zonas favorables del norte. ¿Qué correspondencia es correcta?",
+    "opts": [
+      "Mesoamérica: cazadores-recolectores; Aridoamérica: ciudades agrícolas; Oasisamérica: sociedades exclusivamente nómadas.",
+      "Mesoamérica: agricultura urbana; Aridoamérica: agricultura intensiva generalizada; Oasisamérica: ausencia de agricultura.",
+      "Mesoamérica: desarrollo agrícola y urbano; Aridoamérica: predominio de caza y recolección; Oasisamérica: agricultura en determinadas regiones áridas.",
+      "Mesoamérica: pastoreo; Aridoamérica: navegación oceánica; Oasisamérica: agricultura tropical."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La clasificación distingue las áreas por sus condiciones ambientales y sus formas de organización económica y social."
+  },
+  {
+    "q": "7. ¿Cuál fue una de las principales aportaciones de la cultura olmeca al desarrollo cultural de Mesoamérica?",
+    "opts": [
+      "La introducción del hierro como material predominante para fabricar herramientas.",
+      "La fundación de Tenochtitlan como capital de un imperio tributario.",
+      "La construcción de las principales ciudades mayas del periodo Clásico.",
+      "El desarrollo de centros ceremoniales y de una tradición artística destacada por sus cabezas colosales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La cultura olmeca, desarrollada en el Preclásico, destacó por sus centros ceremoniales y sus monumentales esculturas de piedra."
+  },
+  {
+    "q": "8. En un sitio arqueológico del golfo de México se descubren cabezas monumentales de piedra, esculturas con rasgos humanos y animales, y evidencias de centros ceremoniales antiguos. ¿Qué cultura se relaciona más directamente?",
+    "opts": [
+      "Mexica.",
+      "Olmeca.",
+      "Purépecha.",
+      "Tolteca."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las cabezas colosales constituyen una de las manifestaciones artísticas más reconocidas de la cultura olmeca."
+  },
+  {
+    "q": "9. ¿Qué civilización mesoamericana destacó por sus conocimientos matemáticos y astronómicos, el desarrollo de la escritura jeroglífica y el uso del cero?",
+    "opts": [
+      "Mexica.",
+      "Teotihuacana.",
+      "Maya.",
+      "Tarasca."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Los mayas desarrollaron sistemas de escritura, conocimientos matemáticos que incluían el cero y observaciones astronómicas para elaborar calendarios."
+  },
+  {
+    "q": "10. Un investigador analiza inscripciones jeroglíficas, registros calendáricos y representaciones numéricas, identificando un sistema vigesimal y un símbolo para el cero. ¿Qué conclusión es la más adecuada?",
+    "opts": [
+      "Se trata de evidencias compatibles con los conocimientos matemáticos de la civilización maya.",
+      "Se trata de pruebas exclusivas de que la sociedad desconocía la astronomía.",
+      "Se trata de características que identifican únicamente a los pueblos aridoamericanos.",
+      "Se trata de manifestaciones propias de la cultura española del siglo XV."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La civilización maya empleó un sistema numérico vigesimal y desarrolló una notación para el cero, además de avanzados conocimientos astronómicos."
+  },
+  {
+    "q": "11. ¿Cuál fue una característica importante de Teotihuacan durante el periodo Clásico mesoamericano?",
+    "opts": [
+      "Su organización como capital del Imperio mexica durante el siglo XV.",
+      "Su ubicación exclusiva en la península de Yucatán.",
+      "Su fundación por conquistadores españoles en el siglo XVI.",
+      "Su desarrollo como gran centro urbano, religioso y económico del Altiplano central."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Teotihuacan fue una de las mayores ciudades de la América prehispánica y ejerció gran influencia en distintas regiones durante el periodo Clásico."
+  },
+  {
+    "q": "12. Un equipo arqueológico estudia una ciudad prehispánica con amplias avenidas, conjuntos habitacionales, edificios ceremoniales y las pirámides del Sol y de la Luna. ¿Qué interpretación es correcta?",
+    "opts": [
+      "La ciudad fue fundada por los mexicas poco antes de la llegada de Hernán Cortés.",
+      "Los elementos corresponden a Teotihuacan, cuya organización urbana refleja una sociedad compleja.",
+      "La ciudad fue un asentamiento exclusivamente nómada de Aridoamérica.",
+      "Los edificios demuestran que la población desconocía la planificación urbana."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Teotihuacan se distinguió por su planificación urbana, monumentos ceremoniales y conjuntos residenciales propios de una sociedad compleja."
+  },
+  {
+    "q": "13. ¿Qué ciudad fue la capital del Imperio mexica antes de la conquista española?",
+    "opts": [
+      "Tula.",
+      "Cholula.",
+      "Tenochtitlan.",
+      "Monte Albán."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "México-Tenochtitlan fue la capital mexica, fundada en una isla del lago de Texcoco, desde donde se organizó un amplio dominio tributario."
+  },
+  {
+    "q": "14. Los mexicas dominaron numerosas poblaciones mediante alianzas, conquistas y tributos. ¿Qué consecuencia tuvo este sistema para la llegada de los españoles en 1519?",
+    "opts": [
+      "Todas las poblaciones sometidas apoyaron de manera uniforme a los mexicas.",
+      "El sistema tributario eliminó cualquier conflicto entre las ciudades mesoamericanas.",
+      "Los mexicas controlaban de manera directa y homogénea todos los territorios.",
+      "Alguna población sometida o enemiga de los mexicas pudo establecer alianzas con los españoles."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las tensiones generadas por el dominio tributario mexica facilitaron que diversos pueblos descontentos, como los tlaxcaltecas, se aliasen con los españoles."
+  },
+  {
+    "q": "15. ¿Cuál fue una característica de la cultura zapoteca?",
+    "opts": [
+      "El desarrollo de Monte Albán como importante centro político y ceremonial en Oaxaca.",
+      "La fundación de la ciudad de Tenochtitlan en el lago de Texcoco.",
+      "La construcción de Chichén Itzá como capital del Imperio mexica.",
+      "El establecimiento de su centro principal en la región de los grandes lagos."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los zapotecos desarrollaron su civilización en los valles centrales de Oaxaca, siendo Monte Albán su principal centro político y ceremonial."
+  },
+  {
+    "q": "16. Una sociedad mesoamericana desarrolló una tradición artística con urnas funerarias, inscripciones y centros ceremoniales en los valles centrales de Oaxaca. ¿Qué cultura corresponde?",
+    "opts": [
+      "Purépecha.",
+      "Zapoteca.",
+      "Mexica.",
+      "Huasteca."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La cultura zapoteca en Oaxaca dejó evidencias arqueológicas notables de su organización, prácticas funerarias y arquitectura ceremonial."
+  },
+  {
+    "q": "17. ¿Cuál fue uno de los principales cambios económicos y sociales asociados con el Renacimiento europeo?",
+    "opts": [
+      "La desaparición de las actividades comerciales en las ciudades.",
+      "El abandono de la producción artística y del estudio de la Antigüedad clásica.",
+      "La expansión del humanismo y el renovado interés por las culturas griega y romana.",
+      "La eliminación inmediata de las monarquías europeas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Renacimiento impulsó el humanismo, nuevas expresiones artísticas y la revalorización de los referentes de la Antigüedad clásica."
+  },
+  {
+    "q": "18. Durante los siglos XV y XVI, varios reinos europeos fortalecieron sus monarquías, ampliaron sus recursos fiscales y centralizaron su administración. ¿Qué proceso histórico se relaciona?",
+    "opts": [
+      "La desaparición generalizada de las monarquías.",
+      "La fragmentación política absoluta de todos los reinos europeos.",
+      "El establecimiento inmediato de democracias representativas modernas.",
+      "La consolidación de las monarquías autoritarias y el fortalecimiento del poder real."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las monarquías europeas reforzaron su autoridad mediante la centralización administrativa, la recaudación fiscal y el poder militar."
+  },
+  {
+    "q": "19. ¿Qué factor contribuyó a que los europeos buscaran nuevas rutas marítimas hacia Asia durante los siglos XV y XVI?",
+    "opts": [
+      "La intención de eliminar el comercio de especias y productos orientales.",
+      "El interés por acceder directamente a mercancías asiáticas y reducir la dependencia de rutas tradicionales.",
+      "La prohibición universal del comercio entre Europa y Asia.",
+      "La inexistencia de conocimientos náuticos en las sociedades europeas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La búsqueda de rutas marítimas respondió al deseo de acceder directamente al comercio de especias y bienes orientales sin intermediarios."
+  },
+  {
+    "q": "20. Portugal impulsó expediciones marítimas por la costa africana durante el siglo XV y llegó al océano Índico. ¿Qué objetivo económico orientó esta expansión?",
+    "opts": [
+      "Establecer una ruta marítima hacia los mercados asiáticos para participar directamente en el comercio de especias.",
+      "Conquistar el Imperio mexica antes de la llegada de los españoles.",
+      "Sustituir la agricultura europea por la explotación exclusiva de minas americanas.",
+      "Impedir que las embarcaciones europeas utilizaran instrumentos de navegación."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Portugal buscó rodear África para establecer un contacto directo con los mercados de la India y las especias."
+  },
+  {
+    "q": "21. ¿En qué año llegó Cristóbal Colón al continente americano en una expedición financiada por la Corona de Castilla?",
+    "opts": [
+      "1453.",
+      "1492.",
+      "1519.",
+      "1521."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Cristóbal Colón llegó al Caribe en octubre de 1492, iniciando el contacto transatlántico entre Europa y América."
+  },
+  {
+    "q": "22. En 1494, las coronas de Castilla y Portugal acordaron delimitar sus zonas de expansión ultramarina. ¿Cuál fue la importancia del Tratado de Tordesillas?",
+    "opts": [
+      "Estableció la independencia de las colonias americanas.",
+      "Puso fin a toda rivalidad entre las monarquías europeas.",
+      "Dividió las posesiones indígenas entre los pueblos mesoamericanos.",
+      "Estableció una línea de demarcación para distribuir las áreas de expansión de Castilla y Portugal."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Tratado de Tordesillas fijó una línea divisoria en el Atlántico para repartir las zonas de exploración y dominio entre Castilla y Portugal."
+  },
+  {
+    "q": "23. ¿Qué acontecimiento favoreció el avance otomano y modificó las relaciones comerciales y políticas entre Europa y Asia en el siglo XV?",
+    "opts": [
+      "La caída de Constantinopla en 1453.",
+      "La conquista de Tenochtitlan en 1521.",
+      "La llegada de los españoles al Caribe en 1492.",
+      "La firma del Tratado de Tordesillas en 1494."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La toma de Constantinopla por los otomanos en 1453 alteró las rutas comerciales terrestres tradicionales hacia Asia, impulsando la exploración marítima."
+  },
+  {
+    "q": "24. Un historiador explica que la expansión europea del siglo XVI fue resultado de intereses comerciales, competencia monárquica, avances náuticos y riqueza. ¿Cuál es la valoración más adecuada?",
+    "opts": [
+      "Es incorrecta porque las expediciones marítimas tuvieron una sola causa religiosa.",
+      "Es incorrecta porque las monarquías europeas no participaron en la expansión ultramarina.",
+      "Es adecuada porque relaciona factores económicos, políticos y tecnológicos que impulsaron la expansión.",
+      "Es adecuada únicamente si se excluye la influencia de los intereses comerciales."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La expansión ultramarina fue un proceso multicausal donde convergieron factores económicos, políticos, tecnológicos y religiosos."
+  },
+  {
+    "q": "25. ¿Cuál fue una característica de la Reforma protestante iniciada en el siglo XVI?",
+    "opts": [
+      "La restauración de la unidad religiosa de Europa bajo una sola autoridad.",
+      "La crítica a prácticas y doctrinas de la Iglesia católica que dio origen a diversas iglesias protestantes.",
+      "La prohibición general de traducir textos religiosos a las lenguas vernáculas.",
+      "La eliminación de las monarquías como forma de gobierno europeo."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La Reforma protestante cuestionó dogmas y prácticas católicas, impulsando el cisma religioso y la creación de nuevas iglesias cristianas."
+  },
+  {
+    "q": "26. La expansión ultramarina europea estuvo acompañada por la evangelización y justificación religiosa. ¿Cuál afirmación explica mejor esta relación?",
+    "opts": [
+      "La religión fue el único factor que impulsó todas las expediciones europeas.",
+      "La evangelización sustituyó completamente los intereses económicos de las monarquías.",
+      "Las expediciones europeas carecieron de objetivos políticos y comerciales.",
+      "Los intereses religiosos coexistieron con objetivos económicos y políticos en la expansión europea."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La dimensión espiritual y la evangelización marcharon de la mano de los intereses económicos, geopolíticos y de conquista territorial."
+  },
+  {
+    "q": "27. ¿Qué innovación contribuyó a mejorar la navegación oceánica europea durante los siglos XV y XVI?",
+    "opts": [
+      "La brújula, que ayudaba a determinar direcciones durante los desplazamientos.",
+      "La máquina de vapor, utilizada de manera generalizada en barcos oceánicos del siglo XV.",
+      "El ferrocarril, que permitió cruzar los océanos sin embarcaciones.",
+      "El telégrafo eléctrico, empleado para comunicarse entre continentes."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Instrumentos como la brújula y el astrolabio, sumados al diseño de la carabela, optimizaron la navegación en mar abierto."
+  },
+  {
+    "q": "28. Un reino europeo financia expediciones marítimas, busca rutas comerciales directas y compite por territorios ultramarinos. ¿Qué relación refleja?",
+    "opts": [
+      "La expansión comercial fue independiente de los intereses de las monarquías.",
+      "La competencia ultramarina eliminó la participación de los comerciantes.",
+      "Las monarquías apoyaron expediciones para ampliar su influencia política y obtener ventajas económicas.",
+      "El comercio oceánico fue promovido exclusivamente por comunidades campesinas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las monarquías europeas auspiciaron las expediciones ultramarinas para consolidar su poder geopolítico y acaparar riquezas comerciales."
+  },
+  {
+    "q": "29. ¿Cuál de los siguientes procesos europeos precedió a la conquista española de México y contribuyó al contexto histórico de la expansión ultramarina?",
+    "opts": [
+      "La Revolución francesa de 1789.",
+      "La consolidación de los viajes transatlánticos iniciados a finales del siglo XV.",
+      "La independencia de las Trece Colonias en 1776.",
+      "La Revolución industrial británica del siglo XVIII."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Los viajes transatlánticos iniciados en 1492 crearon el puente marítimo que posibilitó la posterior exploración y conquista de Mesoamérica."
+  },
+  {
+    "q": "30. Al comparar Mesoamérica con la Europa de los siglos XV y XVI, un estudiante identifica sociedades con formas distintas de organización. ¿Cuál es la conclusión más rigurosa?",
+    "opts": [
+      "Las sociedades europeas poseían instituciones idénticas y las mesoamericanas carecían de organización política.",
+      "Todas las sociedades mesoamericanas compartían un único gobierno centralizado.",
+      "Las diferencias entre ambas regiones pueden explicarse únicamente por sus religiones.",
+      "Ambas regiones comprendían sociedades diversas, con trayectorias históricas propias y distintas formas de organización y conocimiento."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Europa y Mesoamérica albergaban universos socioculturales complejos y diversos, con dinámicas históricas autónoras previas al contacto."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 2";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>La Nueva España - Mesoamérica y Europa de los siglos XV y XVI</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 2";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> La Nueva España (Mesoamérica y Europa de los siglos XV y XVI)<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "La Nueva España (Mesoamérica y Europa de los siglos XV y XVI)",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — La Nueva España (Mesoamérica y Europa de los siglos XV y XVI)",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

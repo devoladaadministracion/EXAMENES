@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "9. El gobierno de Benito Juárez, Leyes de Reforma, intervención francesa y Restauración de la República (Tema 9)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál fue uno de los principales objetivos de las Leyes de Reforma impulsadas por los liberales durante el gobierno de Benito Juárez?",
+    "opts": [
+      "Restablecer los fueros del clero y del ejército.",
+      "Fortalecer la autoridad política de la Iglesia católica.",
+      "Separar los asuntos civiles de los religiosos y limitar los privilegios corporativos.",
+      "Establecer una monarquía constitucional en México."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Las Leyes de Reforma buscaron reducir el poder político y económico de la Iglesia, establecer la separación entre Iglesia y Estado y fortalecer la autoridad civil."
+  },
+  {
+    "q": "2. Relaciona cada disposición con su contenido principal:\nI. Ley de Nacionalización de los Bienes Eclesiásticos\nII. Ley del Matrimonio Civil\nIII. Ley Orgánica del Registro Civil\na. Matrimonio como acto jurídico civil\nb. Transfirió al dominio de la nación los bienes de la Iglesia\nc. Organizó el registro estatal de nacimientos, matrimonios y defunciones",
+    "opts": [
+      "I-b, II-a, III-c.",
+      "I-a, II-c, III-b.",
+      "I-c, II-b, III-a.",
+      "I-b, II-c, III-a."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La nacionalización de 1859 incorporó los bienes eclesiásticos al dominio nacional (I-b); la Ley del Matrimonio Civil reguló las uniones (II-a); el Registro Civil organizó el control estatal de nacimientos y defunciones (III-c)."
+  },
+  {
+    "q": "3. ¿Por qué Benito Juárez trasladó su gobierno fuera de la Ciudad de México durante la Guerra de Reforma?",
+    "opts": [
+      "Para entregar el gobierno a los conservadores.",
+      "Para preparar la instauración del Segundo Imperio.",
+      "Para negociar la anexión de México a Estados Unidos.",
+      "Para mantener un gobierno liberal constitucional frente al gobierno conservador establecido en la capital."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Durante la Guerra de Reforma, Juárez mantuvo la legitimidad del gobierno constitucional y se desplazó por distintas ciudades mientras los conservadores controlaban la capital."
+  },
+  {
+    "q": "4. En 1859, el gobierno de Benito Juárez promulgó varias disposiciones que modificaron la relación entre la Iglesia y el Estado. ¿Cuál fue una consecuencia institucional de estas medidas?",
+    "opts": [
+      "La Iglesia recuperó el control de los tribunales civiles.",
+      "El Estado asumió funciones civiles como el registro de nacimientos, matrimonios y defunciones.",
+      "Se estableció una religión oficial administrada por el Congreso.",
+      "Los tribunales eclesiásticos sustituyeron a los tribunales nacionales."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las reformas trasladaron al ámbito civil funciones que antes correspondían a instituciones eclesiásticas, consolidando la laicidad estatal."
+  },
+  {
+    "q": "5. ¿Qué acontecimiento militar del 5 de mayo de 1862 se convirtió en un símbolo de la resistencia mexicana frente a la intervención francesa?",
+    "opts": [
+      "La toma de Querétaro.",
+      "La batalla de Calpulalpan.",
+      "La batalla de Puebla.",
+      "La batalla de San Jacinto."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "En la batalla de Puebla, el ejército mexicano al mando de Ignacio Zaragoza derrotó a las tropas francesas, convirtiéndose en emblema de la resistencia."
+  },
+  {
+    "q": "6. Francia, España y Gran Bretaña enviaron fuerzas a México en 1861-1862 por deudas financieras. ¿Por qué España y Gran Bretaña se retiraron mientras Francia continuó la intervención?",
+    "opts": [
+      "Porque ambas potencias reconocieron a Maximiliano como presidente.",
+      "Porque México había cancelado definitivamente todas sus deudas.",
+      "Porque Estados Unidos declaró la guerra a las tres potencias.",
+      "Porque alcanzaron acuerdos con el gobierno mexicano, mientras Francia perseguía objetivos de dominación e instauración de una monarquía."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los Tratados de La Soledad permitieron negociar con España y Gran Bretaña; Francia, bajo Napoleón III, prosiguió con un plan de conquista e imposición monárquica."
+  },
+  {
+    "q": "7. ¿Quién fue el emperador del Segundo Imperio mexicano, establecido con el apoyo de Francia?",
+    "opts": [
+      "Maximiliano de Habsburgo.",
+      "Agustín de Iturbide.",
+      "Félix María Zuloaga.",
+      "Juan Nepomuceno Almonte."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Maximiliano de Habsburgo aceptó la corona mexicana en 1864, gobernando bajo el respaldo de las fuerzas militares francesas."
+  },
+  {
+    "q": "8. Maximiliano de Habsburgo promovió algunas medidas de orientación liberal, aunque su gobierno dependía del apoyo militar francés y conservador. ¿Qué conclusión explica mejor esta contradicción?",
+    "opts": [
+      "Maximiliano rechazó por completo toda legislación liberal y restableció sin cambios el orden colonial.",
+      "Su proyecto monárquico no coincidía plenamente con las expectativas de todos sus aliados conservadores.",
+      "Los liberales mexicanos lo reconocieron unánimemente como presidente constitucional.",
+      "Su gobierno se sostuvo exclusivamente con recursos y tropas mexicanas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Al mantener leyes de corte liberal, Maximiliano descontentó a los conservadores que lo habían apoyado, generando fricciones en su propia base política."
+  },
+  {
+    "q": "9. ¿Qué documento estableció las bases de negociación entre el gobierno mexicano y las potencias europeas que reclamaban el pago de deudas en 1862?",
+    "opts": [
+      "Tratado de Guadalupe Hidalgo.",
+      "Tratado McLane-Ocampo.",
+      "Tratados de La Soledad.",
+      "Tratado de Córdoba."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Los acuerdos preliminares de La Soledad permitieron el diálogo con los acreedores europeos antes de la ruptura francesa."
+  },
+  {
+    "q": "10. Durante la intervención francesa, Benito Juárez mantuvo su gobierno fuera de la capital. ¿Qué factor internacional favoreció la recuperación republicana al final del conflicto?",
+    "opts": [
+      "La alianza militar permanente entre Francia y Estados Unidos.",
+      "El reconocimiento estadounidense del Segundo Imperio como gobierno legítimo.",
+      "La renuncia de Juárez a la presidencia en favor de Maximiliano.",
+      "La retirada progresiva de las tropas francesas, influida por presiones internacionales y el fin de la Guerra Civil en EE. UU."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La presión diplomática de Estados Unidos tras su Guerra Civil y el costo militar en Europa forzaron a Napoleón III a retirar sus tropas de México."
+  },
+  {
+    "q": "11. ¿Qué ocurrió con Maximiliano de Habsburgo después de la derrota definitiva del Segundo Imperio mexicano?",
+    "opts": [
+      "Fue fusilado en Querétaro en junio de 1867.",
+      "Regresó a Austria después de abdicar y abandonar México.",
+      "Fue nombrado presidente de la República restaurada.",
+      "Se exilió en Francia con el apoyo de Benito Juárez."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Tras el sitio de Querétaro, Maximiliano fue juzgado por un tribunal militar y fusilado el 19 de junio de 1867."
+  },
+  {
+    "q": "12. Ordena cronológicamente los acontecimientos:\nI. Promulgación de las Leyes de Reforma en Veracruz\nII. Batalla de Puebla\nIII. Inicio del Segundo Imperio mexicano\nIV. Restauración de la República",
+    "opts": [
+      "II, I, III, IV",
+      "I, II, III, IV",
+      "I, III, II, IV",
+      "III, II, I, IV"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El orden cronológico correcto es: Leyes de Reforma en 1859 (I), Batalla de Puebla en 1862 (II), establecimiento del Imperio en 1864 (III) y Restauración de la República en 1867 (IV)."
+  },
+  {
+    "q": "13. ¿Qué se entiende por Restauración de la República en la historia de México?",
+    "opts": [
+      "La reinstauración de la monarquía de Agustín de Iturbide.",
+      "La recuperación del poder político por los conservadores tras la Guerra de Reforma.",
+      "El restablecimiento del gobierno republicano tras la derrota del Segundo Imperio en 1867.",
+      "La creación de una nueva colonia española en territorio mexicano."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La Restauración de la República (1867-1876) alude al periodo en que el gobierno republicano recuperó el control del país tras derrocar el imperio de Maximiliano."
+  },
+  {
+    "q": "14. Durante la Restauración de la República, Benito Juárez buscó fortalecer las instituciones. ¿Cuál fue uno de los principales retos de su gobierno?",
+    "opts": [
+      "Reconstruir el país después de años de guerra y consolidar la autoridad del gobierno republicano.",
+      "Restablecer la autoridad política de Maximiliano.",
+      "Entregar el control de las aduanas a las fuerzas francesas.",
+      "Sustituir la Constitución de 1857 por las Siete Leyes centralistas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El gobierno republicano enfrentó el reto de pacificar el territorio, sanear las finanzas públicas y consolidar el orden constitucional."
+  },
+  {
+    "q": "15. ¿Quién sucedió a Benito Juárez en la presidencia de México después de las elecciones de 1872?",
+    "opts": [
+      "Porfirio Díaz.",
+      "Sebastián Lerdo de Tejada.",
+      "Ignacio Comonfort.",
+      "José María Iglesias."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "A la muerte de Benito Juárez en julio de 1872, Sebastián Lerdo de Tejada asumió el cargo y ganó posteriormente los comicios presidenciales."
+  },
+  {
+    "q": "16. Sebastián Lerdo de Tejada impulsó la incorporación de las Leyes de Reforma a la Constitución en 1873. ¿Qué efecto político buscaba consolidar?",
+    "opts": [
+      "Restablecer el poder judicial independiente de la Iglesia.",
+      "Establecer una monarquía parlamentaria.",
+      "Devolver a la Iglesia el control del Registro Civil.",
+      "Dar mayor estabilidad constitucional a los principios liberales y a la separación entre Iglesia y Estado."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Elevar las Leyes de Reforma a rango constitucional afianzó jurídicamente el Estado laico frente a futuras modificaciones ordinarias."
+  },
+  {
+    "q": "17. ¿Qué medida de Sebastián Lerdo de Tejada contribuyó a consolidar el carácter laico del Estado mexicano?",
+    "opts": [
+      "La incorporación de las Leyes de Reforma a la Constitución en 1873.",
+      "La restauración de los fueros eclesiásticos.",
+      "La instauración del Segundo Imperio.",
+      "La derogación de la libertad de cultos."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La constitucionalización de las Leyes de Reforma en 1873 selló de forma jurídica la separación definitiva entre Iglesia y Estado en México."
+  },
+  {
+    "q": "18. Porfirio Díaz se levantó contra la reelección de Sebastián Lerdo de Tejada en 1876 mediante la proclamación de:",
+    "opts": [
+      "Plan de Ayutla.",
+      "Plan de Tacubaya.",
+      "Plan de Tuxtepec.",
+      "Plan de Iguala."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Plan de Tuxtepec (1876) enarboló el principio de la no reelección y sirvió para derrocar al gobierno de Sebastián Lerdo de Tejada."
+  },
+  {
+    "q": "19. ¿Cuál fue una diferencia fundamental entre el proyecto político de los liberales republicanos y el del Segundo Imperio?",
+    "opts": [
+      "Los republicanos defendían una monarquía hereditaria, mientras Maximiliano proponía una república federal.",
+      "Los republicanos defendían la continuidad de la República y la Constitución, mientras el Imperio establecía una monarquía apoyada por Francia.",
+      "Ambos proyectos rechazaban cualquier forma de organización constitucional.",
+      "El gobierno republicano pretendía restablecer el dominio político español."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El contraste estribaba en la defensa soberana del sistema republicano e institucional frente a la imposición de una monarquía extranjera tutelada."
+  },
+  {
+    "q": "20. Analiza las afirmaciones sobre la Reforma liberal y la Restauración de la República:\nI. Las Leyes de Reforma fortalecieron la autoridad civil frente a la Iglesia.\nII. La batalla de Puebla ocurrió durante la intervención francesa.\nIII. Maximiliano fue fusilado después de la caída del Imperio.\nIV. Sebastián Lerdo de Tejada incorporó las Leyes de Reforma a la Constitución en 1873.\n¿Cuáles son correctas?",
+    "opts": [
+      "I y II",
+      "II y III",
+      "I, III y IV",
+      "I, II, III y IV"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Todas las afirmaciones son correctas y describen con precisión aspectos fundamentales de este periodo histórico nacional."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 9";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Gobierno de Benito Juárez, Intervención francesa y Restauración de la República</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 9";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Benito Juárez, Intervención francesa y Restauración<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Gobierno de Benito Juárez, Intervención francesa y Restauración de la República",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Gobierno de Benito Juárez, Intervención francesa y Restauración de la República",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

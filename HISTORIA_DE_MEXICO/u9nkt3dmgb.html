@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 20</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "20. La política neoliberal en México y la globalización (1982-2000) (Tema 20)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Qué medida económica se asocia con el inicio de la política neoliberal en México durante el gobierno de Miguel de la Madrid?",
+    "opts": [
+      "La nacionalización generalizada de empresas privadas.",
+      "El establecimiento de una economía cerrada al comercio exterior.",
+      "La ampliación de subsidios para mantener todas las empresas estatales.",
+      "La reducción de la intervención económica directa del Estado y la apertura comercial."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Desde 1982, el gobierno impulsó cambios orientados a la estabilización económica, la apertura al comercio internacional y una menor participación directa del Estado en diversas actividades productivas."
+  },
+  {
+    "q": "2. En 1982, México enfrentó una crisis de deuda externa e inflación. El gobierno adoptó medidas de austeridad y renegoció compromisos. ¿Qué orientación económica reflejaban estas acciones?",
+    "opts": [
+      "La sustitución del comercio exterior por el autoconsumo.",
+      "El ajuste macroeconómico y la reorganización de la economía para enfrentar la crisis.",
+      "La eliminación de todas las relaciones financieras con el extranjero.",
+      "La expansión del gasto público sin restricciones presupuestarias."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El gobierno de Miguel de la Madrid aplicó políticas de ajuste para enfrentar la crisis de deuda, contener desequilibrios macroeconómicos y restablecer el acceso al financiamiento internacional."
+  },
+  {
+    "q": "3. ¿En qué año ingresó México al Acuerdo General sobre Aranceles Aduaneros y Comercio (GATT), antecedente de la Organización Mundial del Comercio?",
+    "opts": [
+      "1982",
+      "1990",
+      "1986",
+      "1994"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "México ingresó al GATT en 1986, compromiso que representó un paso importante en la liberalización comercial y la integración de su economía al mercado internacional."
+  },
+  {
+    "q": "4. Una empresa mexicana comenzó a enfrentar una mayor cantidad de productos importados después de la apertura comercial. ¿Qué efecto económico podía derivarse directamente de ese cambio?",
+    "opts": [
+      "Un aumento de la competencia que podía obligarla a mejorar costos, precios y productividad.",
+      "La desaparición automática de todas las importaciones.",
+      "La eliminación de la necesidad de invertir en tecnología.",
+      "La garantía de que todas las empresas nacionales obtendrían mayores ganancias."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La apertura comercial expuso a las empresas nacionales a una competencia internacional más intensa. Sus efectos dependieron de factores como la productividad, la tecnología y la adaptación."
+  },
+  {
+    "q": "5. ¿Cuál fue una característica de la política económica de Carlos Salinas de Gortari (1988-1994)?",
+    "opts": [
+      "La recuperación del modelo de sustitución de importaciones mediante el cierre comercial.",
+      "La eliminación de la inversión extranjera en sectores productivos.",
+      "La expansión permanente de empresas estatales mediante nuevas nacionalizaciones.",
+      "La privatización de empresas públicas y la profundización de la apertura económica."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El gobierno de Salinas continuó las reformas neoliberales mediante privatizaciones, liberalización económica y una mayor integración de México a los mercados internacionales."
+  },
+  {
+    "q": "6. Durante el gobierno de Carlos Salinas se privatizaron empresas públicas. ¿Cuál fue uno de los principales argumentos utilizados para justificar estas políticas?",
+    "opts": [
+      "Garantizar que el Estado administrara directamente todas las actividades productivas.",
+      "Reducir la participación empresarial del Estado y promover la eficiencia y la inversión privada.",
+      "Impedir la entrada de capital privado nacional y extranjero.",
+      "Sustituir la competencia económica por monopolios públicos en todas las ramas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las privatizaciones se justificaron oficialmente como una forma de reducir el tamaño empresarial del Estado, obtener recursos y favorecer la eficiencia y la inversión privada."
+  },
+  {
+    "q": "7. ¿Qué tratado comercial fue firmado por México, Estados Unidos y Canadá durante el gobierno de Carlos Salinas de Gortari?",
+    "opts": [
+      "Tratado de Libre Comercio de América del Norte (TLCAN).",
+      "Tratado de Maastricht.",
+      "Tratado de Versalles.",
+      "Tratado de Roma."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El TLCAN fue firmado en 1992 por México, Estados Unidos y Canadá, y entró en vigor el 1 de enero de 1994 para establecer reglas de libre comercio entre los tres países."
+  },
+  {
+    "q": "8. El TLCAN entró en vigor el 1 de enero de 1994. Una empresa manufacturera mexicana comenzó a importar insumos y exportar a Canadá. ¿Qué proceso económico ilustra el caso?",
+    "opts": [
+      "La autarquía económica, basada en prescindir de los mercados externos.",
+      "La sustitución completa de la inversión privada por inversión estatal.",
+      "La integración comercial regional mediante la reducción de barreras al intercambio.",
+      "La desaparición de las diferencias económicas entre los países participantes."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El TLCAN promovió la integración de los mercados de los tres países mediante reglas comerciales comunes y la reducción gradual de barreras al intercambio."
+  },
+  {
+    "q": "9. ¿Qué cambio en la propiedad de la tierra se relaciona con la reforma al artículo 27 constitucional de 1992?",
+    "opts": [
+      "La prohibición absoluta de cualquier transmisión de derechos parcelarios.",
+      "La desaparición inmediata de todos los ejidos.",
+      "La restitución de todas las haciendas existentes antes de la Revolución mexicana.",
+      "La modificación del régimen ejidal para permitir la transmisión de derechos y la adopción del dominio pleno."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La reforma de 1992 modificó el régimen agrario, puso fin al reparto agrario como obligación permanente y permitió nuevas modalidades de asociación y dominio pleno sobre parcelas ejidales."
+  },
+  {
+    "q": "10. El gobierno de Carlos Salinas impulsó el Programa Nacional de Solidaridad (PRONASOL) al tiempo que promovía privatizaciones y apertura. ¿Cómo coexistieron estas medidas?",
+    "opts": [
+      "El gobierno abandonó toda intervención social y eliminó los programas contra la pobreza.",
+      "Las políticas sociales focalizadas coexistieron con reformas orientadas al mercado y a la reducción de la participación empresarial del Estado.",
+      "PRONASOL tuvo como objetivo nacionalizar las empresas privatizadas.",
+      "La política social sustituyó por completo al comercio internacional como estrategia económica."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "PRONASOL financió obras y proyectos sociales para comunidades con carencias, mientras se profundizaba la liberalización económica, formando ambas parte de la estrategia del sexenio."
+  },
+  {
+    "q": "11. ¿Qué movimiento armado apareció públicamente en Chiapas el 1 de enero de 1994, el mismo día en que entró en vigor el TLCAN?",
+    "opts": [
+      "Movimiento de Regeneración Nacional.",
+      "Ejército Constitucionalista.",
+      "Ejército Zapatista de Liberación Nacional (EZLN).",
+      "Partido Liberal Mexicano."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El EZLN se levantó en armas en Chiapas el 1 de enero de 1994, denunciando la marginación indígena, la desigualdad y la falta de democracia."
+  },
+  {
+    "q": "12. El levantamiento del EZLN coincidió con la entrada en vigor del TLCAN, cuestionando las condiciones de vida indígenas y el modelo económico. ¿Qué interpretación histórica es adecuada?",
+    "opts": [
+      "El levantamiento fue exclusivamente una protesta contra la importación agrícola, sin demandas políticas.",
+      "El EZLN surgió para promover la privatización de las tierras comunales.",
+      "El conflicto demostró que todas las comunidades indígenas tenían idénticas demandas y estrategias.",
+      "El levantamiento visibilizó desigualdades históricas y cuestionó el modelo político y económico desde las demandas indígenas y democráticas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El EZLN articuló demandas de justicia, reconocimiento indígena y democratización. Su aparición coincidió con el TLCAN, pero el conflicto tuvo raíces sociales y políticas profundas."
+  },
+  {
+    "q": "13. ¿Qué acontecimiento político marcó las elecciones presidenciales mexicanas de 1988?",
+    "opts": [
+      "La victoria presidencial de Vicente Fox.",
+      "La controvertida interrupción del sistema de cómputo electoral, conocida como “caída del sistema”, y las acusaciones de fraude.",
+      "La elección directa del presidente por el Congreso.",
+      "La desaparición del PRI antes de los comicios."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La elección presidencial de 1988, ganada oficialmente por Carlos Salinas de Gortari, estuvo marcada por graves cuestionamientos sobre el conteo y la transparencia electoral."
+  },
+  {
+    "q": "14. En 1988, Cuauhtémoc Cárdenas reunió a opositores al PRI y obtuvo un apoyo significativo, continuando las críticas sobre la transparencia. ¿Qué consecuencia política se relaciona?",
+    "opts": [
+      "El fortalecimiento de las demandas de democratización y de condiciones electorales más confiables.",
+      "La eliminación de toda oposición partidista durante la década siguiente.",
+      "La instauración inmediata de la alternancia presidencial.",
+      "La cancelación definitiva de las elecciones legislativas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La controversia de 1988 profundizó la crisis de legitimidad del sistema electoral y fortaleció las exigencias de reformas para garantizar mayor competencia y confianza."
+  },
+  {
+    "q": "15. ¿Qué partido político se fundó en 1989, con la participación de Cuauhtémoc Cárdenas y otras fuerzas opositoras?",
+    "opts": [
+      "Partido Nacional Revolucionario.",
+      "Partido de la Revolución Mexicana.",
+      "Partido de la Revolución Democrática (PRD).",
+      "Partido Acción Nacional."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El PRD se fundó en 1989 a partir de la convergencia de la Corriente Democrática y diversas organizaciones de izquierda, convirtiéndose en importante fuerza de oposición."
+  },
+  {
+    "q": "16. En 1996 se aprobó una reforma electoral que fortaleció la autonomía de la autoridad electoral. ¿Qué institución se encontraba en el centro de la organización de las elecciones federales?",
+    "opts": [
+      "Secretaría de Hacienda y Crédito Público.",
+      "Suprema Corte de Justicia de la Nación como organizadora directa.",
+      "Secretaría de la Defensa Nacional.",
+      "Instituto Federal Electoral (IFE)."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El IFE organizaba las elecciones federales y la reforma de 1996 fortaleció su autonomía respecto del gobierno, modificando también el financiamiento y la competencia."
+  },
+  {
+    "q": "17. ¿Qué hecho electoral de 1997 mostró un cambio significativo en la distribución del poder político federal durante el gobierno de Ernesto Zedillo?",
+    "opts": [
+      "El PRI perdió la mayoría absoluta en la Cámara de Diputados.",
+      "El PRI obtuvo todos los escaños de la Cámara de Diputados.",
+      "Se cancelaron las elecciones para elegir legisladores.",
+      "El presidente dejó de ser elegido mediante sufragio popular."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "En las elecciones federales de 1997, el PRI perdió la mayoría absoluta en la Cámara de Diputados, fortaleciendo el papel de la oposición en el Congreso."
+  },
+  {
+    "q": "18. En 1997, Cuauhtémoc Cárdenas ganó la jefatura de Gobierno del DF y el PRI perdió la mayoría en Diputados. ¿Qué tendencia política reflejan ambos resultados?",
+    "opts": [
+      "La desaparición de los gobiernos locales electos.",
+      "La creciente competencia electoral y el avance de las fuerzas opositoras.",
+      "El establecimiento de un sistema político sin partidos.",
+      "La recuperación del control legislativo absoluto por parte del PRI."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Los resultados de 1997 evidenciaron mayor pluralidad política y una reducción del predominio del PRI en espacios clave del gobierno y la representación legislativa."
+  },
+  {
+    "q": "19. ¿Qué crisis económica comenzó en México en diciembre de 1994, al inicio del gobierno de Ernesto Zedillo?",
+    "opts": [
+      "La crisis provocada por la nacionalización petrolera de 1938.",
+      "La crisis financiera internacional de 2008.",
+      "La crisis de deuda de 1982.",
+      "La crisis del peso, asociada con una fuerte devaluación y salidas de capital."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La crisis de diciembre de 1994 incluyó una fuerte depreciación del peso, fuga de capitales y una profunda recesión económica en 1995."
+  },
+  {
+    "q": "20. En 2000, Vicente Fox ganó la elección presidencial y puso fin a más de siete décadas de gobiernos del partido oficial. ¿Cuál fue la principal repercusión política?",
+    "opts": [
+      "La instauración de un gobierno militar sin elecciones.",
+      "La desaparición de todos los partidos de oposición.",
+      "La alternancia partidista en la Presidencia de la República.",
+      "La restauración del sistema de partido único."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La victoria de Vicente Fox en 2000 representó la primera alternancia en la Presidencia desde la consolidación del partido oficial, constituyendo un hito democrático."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 20";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>La política neoliberal en México y la globalización</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 20";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> La política neoliberal en México y la globalización (1982-2000)<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "La política neoliberal en México y la globalización (1982-2000)",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — La política neoliberal en México y la globalización (1982-2000)",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

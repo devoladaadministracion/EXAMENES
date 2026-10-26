@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 15</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "15. La Reconstrucción Nacional (1920-1940): Del caudillismo al presidencialismo y el Maximato (Tema 15)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Quién asumió la presidencia de México en 1920, después de la caída del gobierno de Venustiano Carranza?",
+    "opts": [
+      "Plutarco Elías Calles",
+      "Álvaro Obregón",
+      "Emilio Portes Gil",
+      "Pascual Ortiz Rubio"
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Álvaro Obregón llegó a la presidencia en 1920 tras el triunfo del movimiento de Agua Prieta, que desconoció a Carranza."
+  },
+  {
+    "q": "2. Durante la década de 1920, los líderes revolucionarios ejercían influencia basada en su prestigio militar y redes de lealtad. ¿Qué problema representaba esto para el Estado?",
+    "opts": [
+      "La desaparición inmediata de los conflictos entre los grupos revolucionarios.",
+      "La subordinación automática del Ejército a las instituciones civiles.",
+      "La eliminación de la competencia por el control de la presidencia.",
+      "La dependencia de las decisiones políticas respecto al poder personal de los caudillos."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El caudillismo dificultaba la consolidación institucional al condicionar la estabilidad a la autoridad personal y militar de los líderes revolucionarios."
+  },
+  {
+    "q": "3. ¿Cuál fue una de las principales medidas impulsadas por José Vasconcelos durante el gobierno de Álvaro Obregón?",
+    "opts": [
+      "La creación de la Secretaría de Educación Pública en 1921.",
+      "La promulgación de la Constitución de 1917.",
+      "La fundación del Partido Nacional Revolucionario en 1929.",
+      "La nacionalización de la industria petrolera en 1938."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "José Vasconcelos asumió la titularidad de la recién creada Secretaría de Educación Pública (SEP) en 1921, impulsando la educación federal y cultural."
+  },
+  {
+    "q": "4. El gobierno de Álvaro Obregón buscó consolidar su autoridad mediante acuerdos con sectores obreros y campesinos, enfrentando conflictos. ¿Qué proceso refleja esta situación?",
+    "opts": [
+      "La sustitución inmediata del poder militar por una democracia plenamente consolidada.",
+      "La eliminación de las organizaciones políticas regionales mediante elecciones competitivas.",
+      "La construcción gradual de un nuevo orden estatal mediante negociación y concentración del poder.",
+      "La desaparición de las diferencias ideológicas entre los antiguos revolucionarios."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La reconstrucción nacional requirió negociar con múltiples sectores y fortalecer al gobierno central, aunque la estabilidad aún dependía de pactos e intermediación de caudillos."
+  },
+  {
+    "q": "5. ¿Qué acontecimiento puso fin al mandato presidencial de Álvaro Obregón en 1928?",
+    "opts": [
+      "Su renuncia después de la rebelión de Agua Prieta.",
+      "Su asesinato, ocurrido después de ser reelegido para la presidencia.",
+      "Su derrota electoral frente a Pascual Ortiz Rubio.",
+      "Su destitución por el Congreso Constituyente."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Álvaro Obregón ganó las elecciones presidenciales de 1928, pero fue asesinado antes de tomar posesión del cargo."
+  },
+  {
+    "q": "6. En 1926 comenzó la Guerra Cristera, un conflicto armado relacionado con las tensiones entre el gobierno y sectores católicos. ¿Cuál fue una causa central del enfrentamiento?",
+    "opts": [
+      "La oposición del gobierno a toda forma de propiedad privada rural.",
+      "La invasión militar estadounidense del territorio mexicano.",
+      "La decisión de los campesinos de abolir la Constitución de 1917.",
+      "La aplicación de disposiciones anticlericales y las medidas gubernamentales sobre el culto."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El conflicto cristero estalló debido al rigor con que el gobierno de Calles aplicó los artículos constitucionales relativos al clero y a la regulación estricta del culto."
+  },
+  {
+    "q": "7. ¿Quién fue presidente de México inmediatamente después de la muerte de Álvaro Obregón, durante el periodo provisional de 1928 a 1930?",
+    "opts": [
+      "Emilio Portes Gil.",
+      "Abelardo L. Rodríguez.",
+      "Pascual Ortiz Rubio.",
+      "Lázaro Cárdenas del Río."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Emilio Portes Gil asumió la presidencia interina o provisional tras el magnicidio de Obregón, gobernando entre 1928 y 1930."
+  },
+  {
+    "q": "8. Después del asesinato de Obregón, Calles afirmó que México debía pasar de país de caudillos a nación de instituciones. ¿Qué medida política se relaciona con esto?",
+    "opts": [
+      "La restauración del sistema monárquico.",
+      "La eliminación de todos los partidos políticos mediante una prohibición permanente.",
+      "La creación del Partido Nacional Revolucionario en 1929.",
+      "La disolución del gobierno federal y la autonomía de los estados."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Para encauzar la lucha por el poder por vías pacíficas e institucionales, Calles impulsó la fundación del PNR en 1929."
+  },
+  {
+    "q": "9. ¿En qué año se fundó el Partido Nacional Revolucionario (PNR)?",
+    "opts": [
+      "1924",
+      "1926",
+      "1934",
+      "1929"
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El PNR fue constituido formalmente el 4 de marzo de 1929 bajo la égida de Plutarco Elías Calles."
+  },
+  {
+    "q": "10. Un historiador señala que, entre 1928 y 1934, México tuvo presidentes distintos, pero Calles mantuvo influencia decisiva en la política. ¿Qué concepto explica este periodo?",
+    "opts": [
+      "Porfiriato.",
+      "Maximato.",
+      "República Restaurada.",
+      "Segundo Imperio."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El Maximato comprende el periodo en que Plutarco Elías Calles fungió como «Jefe Máximo de la Revolución», tutelando a los presidentes Portes Gil, Ortiz Rubio y Rodríguez."
+  },
+  {
+    "q": "11. ¿Cuál de los siguientes presidentes gobernó México durante el Maximato?",
+    "opts": [
+      "Manuel Ávila Camacho.",
+      "Adolfo de la Huerta.",
+      "Pascual Ortiz Rubio.",
+      "Venustiano Carranza."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Pascual Ortiz Rubio ocupó la presidencia de 1930 a 1932, dentro del periodo conocido como el Maximato."
+  },
+  {
+    "q": "12. Pascual Ortiz Rubio renunció a la presidencia en 1932 debido a tensiones políticas y a la influencia de Calles. ¿Qué consecuencia tuvo su salida?",
+    "opts": [
+      "Abelardo L. Rodríguez asumió la presidencia para concluir el periodo presidencial.",
+      "Lázaro Cárdenas inició inmediatamente una reforma agraria nacional.",
+      "Plutarco Elías Calles asumió formalmente la presidencia constitucional.",
+      "El Congreso restauró la Constitución centralista de 1836."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Tras la dimisión de Ortiz Rubio, el Congreso nombró a Abelardo L. Rodríguez como presidente sustituto para concluir el sexenio (1932-1934)."
+  },
+  {
+    "q": "13. ¿Qué característica distinguió al gobierno de Abelardo L. Rodríguez (1932-1934)?",
+    "opts": [
+      "La instauración de una monarquía constitucional.",
+      "La disolución del Partido Nacional Revolucionario.",
+      "La abolición de la Constitución de 1917.",
+      "La continuidad de la reconstrucción institucional y de reformas económicas y sociales."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El gobierno de Rodríguez profundizó las reformas laborales, fijó el salario mínimo y promovió la legislación educativa (educación socialista)."
+  },
+  {
+    "q": "14. El PNR agrupó a los grupos revolucionarios, pero la influencia de Calles siguió siendo dominante. ¿Cuál fue la principal contradicción de este proceso?",
+    "opts": [
+      "El partido promovía la autonomía absoluta de cada dirigente regional.",
+      "La institucionalización política coexistía con una concentración real del poder en un solo dirigente.",
+      "El partido eliminó a los militares y entregó el gobierno a la Iglesia.",
+      "La organización sustituyó la presidencia por un sistema parlamentario."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Aunque se creó una estructura partidista e institucional, la voluntad del Jefe Máximo (Calles) seguía dictando las directrices fundamentales del Estado."
+  },
+  {
+    "q": "15. ¿Quién fue el presidente de México que inició su mandato en diciembre de 1934 y puso fin definitivo al Maximato?",
+    "opts": [
+      "Emilio Portes Gil.",
+      "Pascual Ortiz Rubio.",
+      "Lázaro Cárdenas del Río.",
+      "Abelardo L. Rodríguez."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Lázaro Cárdenas asumió la presidencia en diciembre de 1934 y consolidó su poder político, desbancando la tutela de Calles."
+  },
+  {
+    "q": "16. Cárdenas mantuvo inicialmente a figuras callistas, pero después fortaleció su autoridad y actuó en contra de los intereses del Jefe Máximo. ¿Qué hecho simboliza la ruptura definitiva?",
+    "opts": [
+      "La promulgación de la Constitución de 1917.",
+      "La creación del Partido Nacional Revolucionario en 1929.",
+      "La renuncia de Pascual Ortiz Rubio en 1932.",
+      "La expulsión de Plutarco Elías Calles de México en 1936."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La expulsión y destierro de Plutarco Elías Calles en abril de 1936 marcó el fin absoluto de su influencia y consolidó el poder del presidente Cárdenas."
+  },
+  {
+    "q": "17. ¿Cuál fue una de las principales diferencias entre el caudillismo posterior a la Revolución y el presidencialismo que se consolidó después?",
+    "opts": [
+      "El presidencialismo concentró la autoridad en la institución presidencial y redujo la dependencia de líderes personales.",
+      "El caudillismo se basaba en elecciones plenamente competitivas y el presidencialismo eliminó la administración.",
+      "El presidencialismo transfirió la dirección del país a gobiernos extranjeros.",
+      "El caudillismo eliminó al Ejército y el presidencialismo lo hizo único poder."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El paso al presidencialismo institucionalizó el poder en la figura del presidente y los órganos del Estado, superando la dependencia de los caudillos armados."
+  },
+  {
+    "q": "18. Analiza la secuencia histórica: 1928 (asesinato de Obregón), 1929 (fundación del PNR), 1934 (inicio del gobierno de Cárdenas), 1936 (expulsión de Calles). ¿Qué interpretación es correcta?",
+    "opts": [
+      "La secuencia demuestra que el poder presidencial desapareció y fue sustituido por gobiernos estatales.",
+      "Los acontecimientos reflejan el paso de la competencia entre caudillos hacia la institucionalización y el fortalecimiento de la presidencia frente a Calles.",
+      "Los acontecimientos marcaron la restauración del porfiriato sin cambios.",
+      "La fundación del PNR provocó la desaparición inmediata de la influencia de Calles."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Esta secuencia cronológica detalla la transición institucional desde la crisis sucesoria de 1928 hasta la hegemonía presidencial lograda por Cárdenas en 1936."
+  },
+  {
+    "q": "19. ¿Cuál fue el nombre del partido político fundado en 1929 que posteriormente se transformó en el Partido de la Revolución Mexicana (PRM) durante el gobierno de Cárdenas?",
+    "opts": [
+      "Partido Acción Nacional.",
+      "Partido Comunista Mexicano.",
+      "Partido Nacional Revolucionario.",
+      "Partido Liberal Mexicano."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Partido Nacional Revolucionario (PNR) fue reorganizado en 1938 por Cárdenas bajo el nombre de Partido de la Revolución Mexicana (PRM), estructurado por sectores."
+  },
+  {
+    "q": "20. Un estudiante sostiene que el Maximato terminó en 1934 porque Calles dejó de influir al asumir Cárdenas la presidencia. ¿Cuál es la corrección histórica más precisa?",
+    "opts": [
+      "Es correcto, porque el Maximato concluyó el día en que Ortiz Rubio renunció.",
+      "Es incorrecto, porque Calles fue presidente constitucional de 1934 a 1936.",
+      "Es correcto, porque Cárdenas asumió tras la expulsión de Calles.",
+      "Es incorrecto, porque aunque Cárdenas asumió en 1934, la influencia de Calles persistió inicialmente y la ruptura decisiva ocurrió en 1936."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Maximato se extiende formalmente de 1928 a 1934, pero la injerencia de Calles persistió durante los primeros 18 meses del gobierno cardenista hasta su destierro en 1936."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 15";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>La Reconstrucción Nacional (1920-1940)</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 15";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> La Reconstrucción Nacional (1920-1940)<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "La Reconstrucción Nacional (1920-1940). Del caudillismo al presidencialismo y el Maximato",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — La Reconstrucción Nacional (1920-1940)",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

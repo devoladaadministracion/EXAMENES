@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia de México Tema 31</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia de México";
+const EXAM_TEMA      = "31. El papel del ciudadano dentro del Estado mexicano (Tema 31)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1ftPpCDdDCJkZEG9KNrqfsVN1YiS560n1";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (30 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. De acuerdo con la Constitución Política de los Estados Unidos Mexicanos, ¿cómo se constituye la forma de gobierno de México?",
+    "opts": [
+      "República representativa, democrática, laica y federal.",
+      "Monarquía constitucional con división territorial autónoma.",
+      "República centralista con soberanía concentrada en el Ejecutivo.",
+      "Federación parlamentaria con gobierno hereditario."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El artículo 40 constitucional establece que México es una república representativa, democrática, laica y federal, integrada por estados libres y soberanos[cite: 20]."
+  },
+  {
+    "q": "2. Un ciudadano afirma que, por ser México una república federal, los gobiernos estatales pueden desconocer cualquier disposición federal. ¿Cuál es la interpretación correcta?",
+    "opts": [
+      "Los estados pueden modificar unilateralmente la Constitución federal.",
+      "Los estados son independientes de la Federación en todos los ámbitos.",
+      "La soberanía estatal permite ignorar los derechos humanos reconocidos constitucionalmente.",
+      "Las entidades federativas cuentan con autonomía en su régimen interior, pero deben respetar la Constitución federal."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El federalismo distribuye competencias; la autonomía de las entidades federativas no las exime de respetar la Constitución federal ni las normas que de ella derivan[cite: 20]."
+  },
+  {
+    "q": "3. ¿Cuál es la función principal del Poder Legislativo federal en México?",
+    "opts": [
+      "Ejecutar las leyes y dirigir la administración pública federal.",
+      "Interpretar definitivamente la Constitución en todos los procedimientos judiciales.",
+      "Elaborar y aprobar leyes, además de ejercer otras facultades constitucionales.",
+      "Organizar exclusivamente los procesos electorales estatales."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Poder Legislativo federal (Congreso de la Unión) tiene entre sus funciones principales discutir y aprobar leyes, así como facultades presupuestarias y de control[cite: 20]."
+  },
+  {
+    "q": "4. Una controversia constitucional requiere determinar si una norma general contradice la Constitución. ¿Qué poder del Estado resuelve controversias jurídicas mediante órganos independientes?",
+    "opts": [
+      "Poder Ejecutivo.",
+      "Poder Judicial.",
+      "Poder Legislativo.",
+      "Poder electoral administrativo."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El Poder Judicial ejerce funciones jurisdiccionales y resuelve controversias sobre la constitucionalidad de normas y actos mediante mecanismos de control constitucional[cite: 20]."
+  },
+  {
+    "q": "5. ¿Qué principio establece que la autoridad pública debe ejercer sus atribuciones conforme a las normas jurídicas vigentes?",
+    "opts": [
+      "Soberanía popular.",
+      "Representación política.",
+      "Federalismo fiscal.",
+      "Estado de derecho."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Estado de derecho implica que autoridades y particulares están sujetos al orden jurídico, debiendo el poder público ajustarse a la Constitución y leyes[cite: 20]."
+  },
+  {
+    "q": "6. Una autoridad municipal impone una sanción sin fundamento jurídico y sin respetar el procedimiento correspondiente. ¿Qué principio constitucional se encuentra comprometido?",
+    "opts": [
+      "Legalidad y seguridad jurídica.",
+      "Libertad de asociación política.",
+      "Soberanía de las entidades federativas.",
+      "Representación proporcional."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los artículos 14 y 16 constitucionales establecen garantías de debido proceso, legalidad, fundamentación y motivación en los actos de autoridad[cite: 20]."
+  },
+  {
+    "q": "7. ¿Qué establece fundamentalmente el artículo 39 de la Constitución mexicana?",
+    "opts": [
+      "Que el Poder Judicial determina la composición del Congreso.",
+      "Que la soberanía nacional reside esencial y originariamente en el pueblo.",
+      "Que los partidos políticos ejercen la soberanía de manera exclusiva.",
+      "Que el presidente de la República puede modificar libremente la Constitución."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El artículo 39 señala que la soberanía nacional reside esencial y originariamente en el pueblo, del cual dimana todo poder público instituido para su beneficio[cite: 20]."
+  },
+  {
+    "q": "8. Un grupo ciudadano propone modificar la integración de una institución pública mediante una reforma constitucional. ¿Cuál procedimiento corresponde según el artículo 135?",
+    "opts": [
+      "La aprobación exclusiva del presidente de la República.",
+      "La decisión de la Suprema Corte sin intervención legislativa.",
+      "La aprobación por el Congreso de la Unión y por la mayoría de las legislaturas de las entidades federativas.",
+      "La aprobación mediante votación municipal sin participación del Congreso."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El artículo 135 requiere el voto de las dos terceras partes del Congreso de la Unión y la aprobación de la mayoría de las legislaturas estatales y de la CDMX[cite: 20]."
+  },
+  {
+    "q": "9. ¿Qué derecho reconoce el artículo 6.º de la Constitución mexicana?",
+    "opts": [
+      "La libertad de comercio sin regulación alguna.",
+      "El derecho exclusivo de los partidos a difundir información.",
+      "La libertad de expresión y el acceso a la información, en los términos constitucionales.",
+      "La facultad de las autoridades para censurar cualquier crítica."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El artículo 6.º protege la manifestación de ideas, el derecho a la información y el acceso a la información pública bajo las condiciones constitucionales[cite: 20]."
+  },
+  {
+    "q": "10. Una dependencia federal niega a un ciudadano información sobre recursos públicos sin justificar legalmente la reserva. ¿Qué principio y derecho están relacionados?",
+    "opts": [
+      "El derecho exclusivo de los legisladores a conocer el presupuesto.",
+      "La autonomía absoluta de las dependencias federales.",
+      "La libertad de contratación entre particulares.",
+      "El derecho de acceso a la información pública y la transparencia gubernamental."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El artículo 6.º reconoce el derecho de acceso a la información pública; las autoridades solo pueden reservarla cuando exista un fundamento legal justificado[cite: 20]."
+  },
+  {
+    "q": "11. ¿Qué derecho protege principalmente el artículo 9.º de la Constitución mexicana?",
+    "opts": [
+      "La libertad de reunión y asociación pacífica con objeto lícito.",
+      "El derecho a recibir educación superior gratuita en cualquier institución privada.",
+      "La facultad de los ciudadanos para suspender unilateralmente las leyes.",
+      "La libertad de las autoridades para disolver reuniones críticas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El artículo 9.º protege el derecho de asociarse o reunirse pacíficamente con cualquier objeto lícito, impidiendo que reuniones de protesta sean disueltas por críticas[cite: 20]."
+  },
+  {
+    "q": "12. Un grupo se reúne pacíficamente para solicitar mejores servicios públicos y una autoridad pretende disolverla por críticas a su gestión. ¿Cuál es la interpretación correcta?",
+    "opts": [
+      "La autoridad puede disolverla siempre que exista una crítica a su desempeño.",
+      "La reunión está protegida por el artículo 9.º, siempre que se cumplan las condiciones constitucionales y legales.",
+      "El derecho de reunión solo protege actos organizados por partidos políticos.",
+      "La crítica política elimina automáticamente la protección constitucional."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El derecho de reunión pacífica protege la organización colectiva para fines lícitos; la crítica a autoridades no justifica la supresión de este derecho[cite: 20]."
+  },
+  {
+    "q": "13. ¿Cuál es la finalidad principal del artículo 35 constitucional respecto de los ciudadanos mexicanos?",
+    "opts": [
+      "Establecer atribuciones exclusivas de los gobiernos municipales.",
+      "Regular únicamente las obligaciones tributarias de las empresas.",
+      "Reconocer derechos políticos, como votar y poder ser votado en los términos constitucionales y legales.",
+      "Determinar facultades jurisdiccionales de la Suprema Corte."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El artículo 35 reconoce derechos ciudadanos como votar en elecciones, ser votado, asociarse políticamente y ejercer otros mecanismos de participación[cite: 20]."
+  },
+  {
+    "q": "14. Un ciudadano cumple los requisitos y vota en una elección federal. ¿Qué principio democrático se materializa principalmente?",
+    "opts": [
+      "La subordinación de los ciudadanos al Poder Judicial.",
+      "La concentración de la soberanía en los partidos políticos.",
+      "La eliminación de la representación política.",
+      "La participación de la ciudadanía en la elección de sus representantes."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El voto permite que la ciudadanía intervenga en la integración de órganos representativos, siendo un mecanismo fundamental de participación democrática[cite: 20]."
+  },
+  {
+    "q": "15. ¿Qué transformación caracteriza la apertura democrática en México durante las últimas décadas del siglo XX?",
+    "opts": [
+      "La eliminación permanente de los partidos de oposición.",
+      "La ampliación gradual de la competencia electoral y de las condiciones para la pluralidad política.",
+      "La prohibición de la participación ciudadana en elecciones.",
+      "La sustitución de procesos electorales por decisiones militares."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La apertura democrática mexicana avanzó mediante reformas electorales, pluralidad partidista y una competencia creciente que propició la alternancia[cite: 20]."
+  },
+  {
+    "q": "16. ¿Cuál fue una consecuencia importante de la reforma política de 1977 en México?",
+    "opts": [
+      "Se estableció la elección directa del presidente por gobernadores.",
+      "Se prohibió la representación de partidos minoritarios en el Congreso.",
+      "Se amplió la participación de fuerzas políticas mediante cambios en las reglas de representación y el registro de partidos.",
+      "Se eliminó la Cámara de Diputados."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La reforma de 1977 amplió vías de participación partidista y fortaleció la representación proporcional en la Cámara de Diputados[cite: 20]."
+  },
+  {
+    "q": "17. ¿Qué institución sustituyó a la Comisión Federal Electoral en 1990 para organizar las elecciones federales?",
+    "opts": [
+      "Instituto Federal Electoral (IFE).",
+      "CNDH.",
+      "Tribunal Federal de Conciliación y Arbitraje.",
+      "Banco de México."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El IFE fue creado en 1990 para organizar comicios federales, transformándose en 2014 en el Instituto Nacional Electoral (INE)[cite: 20]."
+  },
+  {
+    "q": "18. Un ciudadano considera que se vulneraron sus derechos político-electorales y busca impugnarlos jurídicamente. ¿Qué institución resuelve estas controversias?",
+    "opts": [
+      "Secretaría de Gobernación.",
+      "CNDH.",
+      "Banco de México.",
+      "Tribunal Electoral del Poder Judicial de la Federación."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Tribunal Electoral del Poder Judicial de la Federación es la máxima autoridad jurisdiccional en materia electoral para resolver medios de impugnación[cite: 20]."
+  },
+  {
+    "q": "19. ¿Qué requisito caracteriza al sufragio en una democracia representativa mexicana?",
+    "opts": [
+      "Que sea público y permita identificar la preferencia de cada persona.",
+      "Que sea universal, libre, secreto y directo, conforme al marco electoral.",
+      "Que solo puedan ejercerlo afiliados a partidos políticos.",
+      "Que las autoridades puedan modificar libremente el sentido del voto."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El sufragio debe ejercerse de manera libre, universal, secreta y directa para salvaguardar la voluntad ciudadana protegida por la ley[cite: 20]."
+  },
+  {
+    "q": "20. Un ciudadano detecta propaganda que vulnera las reglas electorales, documenta los hechos y presenta una queja. ¿Qué aspecto de la participación democrática representa?",
+    "opts": [
+      "La sustitución de autoridades electorales por particulares.",
+      "La facultad ciudadana para imponer sanciones electorales directas.",
+      "La vigilancia ciudadana y el uso de mecanismos institucionales para proteger la legalidad electoral.",
+      "La eliminación de garantías procesales de los partidos."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La participación democrática abarca la vigilancia electoral y la presentación de denuncias ante autoridades competentes para tutelar la legalidad[cite: 20]."
+  },
+  {
+    "q": "21. ¿Cuál es un ejemplo de participación ciudadana en el entorno económico?",
+    "opts": [
+      "Organizar una consulta comunitaria sobre el uso del presupuesto local y las prioridades de inversión.",
+      "Impedir que consumidores conozcan precios.",
+      "Prohibir que comunidades presenten propuestas de desarrollo.",
+      "Sustituir instituciones financieras mediante decisiones individuales."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La participación económica local incluye presupuestos participativos, vigilancia del gasto público y propuestas sobre infraestructura y desarrollo local[cite: 20]."
+  },
+  {
+    "q": "22. Un municipio implementa un presupuesto participativo donde habitantes proponen y votan proyectos comunitarios. ¿Qué principio se fortalece?",
+    "opts": [
+      "La centralización de decisiones en el gobierno federal.",
+      "La eliminación de responsabilidades municipales.",
+      "La sustitución de elecciones constitucionales por asambleas.",
+      "La intervención directa de la ciudadanía en la definición de prioridades de gasto público."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El presupuesto participativo empodera a la población en la selección de obras públicas financiadas con erario, conforme a la normatividad aplicable[cite: 20]."
+  },
+  {
+    "q": "23. ¿Qué función cumple la sociedad civil en el funcionamiento del Estado mexicano?",
+    "opts": [
+      "Reemplazar de manera permanente a los poderes públicos.",
+      "Participar en la identificación de problemas, defensa de derechos y vigilancia de la actuación gubernamental.",
+      "Eliminar las diferencias de opinión social.",
+      "Ejercer de forma exclusiva facultades de órganos electorales."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La sociedad civil agrupa a ciudadanos que participan en asuntos públicos, promueven derechos y vigilan al poder sin suplantar al Estado[cite: 20]."
+  },
+  {
+    "q": "24. Una organización vecinal detecta deficiencias en transporte, reúne testimonios y presenta propuestas ante autoridades locales. ¿Qué resultado democrático favorece?",
+    "opts": [
+      "Transferir competencias municipales a la organización.",
+      "Eliminar obligaciones legales de concesionarios.",
+      "La incorporación de necesidades ciudadanas en el análisis y mejora de políticas públicas.",
+      "Sustituir procedimientos de contratación pública."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La organización vecinal aporta evidencia sobre problemas cotidianos, ayudando a las autoridades a optimizar las políticas públicas en su ámbito[cite: 20]."
+  },
+  {
+    "q": "25. ¿Qué obligación constitucional establece el artículo 31, fracción IV, para los mexicanos?",
+    "opts": [
+      "Contribuir al gasto público de la Federación, estados, CDMX y municipios de manera proporcional y equitativa dispuesta por las leyes.",
+      "Afiliarse obligatoriamente a un partido político.",
+      "Participar en todas las consultas ciudadanas.",
+      "Desempeñar un cargo público en cada periodo."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El artículo 31, fracción IV, fija el deber ciudadano de sufragar los gastos públicos de forma proporcional y equitativa conforme a las leyes fiscales[cite: 20]."
+  },
+  {
+    "q": "26. Una persona exige servicios públicos pero rechaza contribuir al gasto fiscal por no participar directamente en decisiones. ¿Qué interpretación es más adecuada?",
+    "opts": [
+      "Los servicios públicos dependen de donaciones privadas.",
+      "El pago fiscal elimina el derecho a cuestionar al gobierno.",
+      "La ciudadanía solo implica derechos y no obligaciones jurídicas.",
+      "La ciudadanía comprende derechos y obligaciones; las contribuciones financian el gasto público y la participación exige rendición de cuentas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La condición ciudadana une derechos y obligaciones; las contribuciones sostienen los servicios colectivos y la contraloría social vigila su uso[cite: 20]."
+  },
+  {
+    "q": "27. ¿Cuál de las siguientes acciones constituye una forma de participación ciudadana en el entorno social?",
+    "opts": [
+      "Restringir la organización comunitaria.",
+      "Colaborar en una asociación vecinal para promover mejoras en los servicios públicos.",
+      "Delegar decisiones comunitarias exclusivamente en empresas privadas.",
+      "Impedir que ciudadanos expresen necesidades colectivas."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La colaboración en asociaciones vecinales fortalece la cohesión social y canaliza mejoras para los servicios y la vida comunitaria[cite: 20]."
+  },
+  {
+    "q": "28. Un colectivo reúne información sobre rezago educativo en una comunidad y presenta propuestas a autoridades responsables. ¿Qué proceso describe mejor esta intervención?",
+    "opts": [
+      "Una sustitución de atribuciones constitucionales educativas.",
+      "Un procedimiento electoral legislativo.",
+      "Una forma de participación social que busca influir en políticas públicas mediante evidencia y propuestas.",
+      "Una resolución judicial que modifica la ley."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Los colectivos documentan carencias y formulan propuestas para mejorar programas sociales, correspondiendo la instrumentación final a las autoridades competentes[cite: 20]."
+  },
+  {
+    "q": "29. ¿Qué significa que la ciudadanía participe en una democracia más allá del ejercicio del voto?",
+    "opts": [
+      "Que puede intervenir en asuntos públicos mediante organizaciones, consultas, peticiones y vigilancia ciudadana.",
+      "Que debe renunciar a sus derechos políticos tras votar.",
+      "Que las decisiones públicas corresponden solo a partidos.",
+      "Que las autoridades no deben rendir cuentas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La participación democrática se despliega mediante vías electorales y no electorales (consultas, peticiones, contraloría social y organización comunitaria)[cite: 20]."
+  },
+  {
+    "q": "30. Habitantes de varias colonias organizan reuniones, analizan seguridad y transporte, solicitan información presupuestal y presentan prioridades al ayuntamiento. Interpretación completa:",
+    "opts": [
+      "Los habitantes adquieren facultades para aprobar leyes estatales.",
+      "La participación solo es válida si la organiza un partido.",
+      "Las propuestas ciudadanas sustituyen competencias legales del ayuntamiento.",
+      "La ciudadanía articula demandas colectivas, utiliza mecanismos de información y busca influir en decisiones públicas institucionalmente."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La organización comunitaria, la rendición de cuentas y la propuesta vecinal inciden en la gestión local sin despojar a la autoridad de sus atribuciones legales[cite: 20]."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 31";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>El papel del ciudadano dentro del Estado mexicano</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 31";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> El papel del ciudadano dentro del Estado mexicano<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "El papel del ciudadano dentro del Estado mexicano (Estructura, artículos constitucionales y participación)",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — El papel del ciudadano dentro del Estado mexicano",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>
