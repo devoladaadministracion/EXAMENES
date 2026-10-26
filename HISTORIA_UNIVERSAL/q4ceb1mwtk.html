@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia Universal Tema 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia Universal";
+const EXAM_TEMA      = "3. Pensamiento y movimientos sociales y políticos del siglo XIX (Tema 5)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1NYNHyM5xS3dVErmQCoXt8PLN08VX9atQ";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál de las siguientes características corresponde al pensamiento conservador europeo durante el siglo XIX?",
+    "opts": [
+      "La defensa de las tradiciones, la monarquía y el orden social establecido.",
+      "La promoción de la soberanía popular y la igualdad política universal.",
+      "La eliminación de los privilegios de la nobleza mediante revoluciones liberales.",
+      "La defensa de la libertad de prensa y la separación de poderes."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El conservadurismo defendía la continuidad de las instituciones tradicionales (monarquía, Iglesia) y priorizaba el orden social frente a los cambios radicales."
+  },
+  {
+    "q": "2. Después de la derrota de Napoleón, las potencias europeas se reunieron en el Congreso de Viena (1814-1815). ¿Qué principio orientó sus decisiones?",
+    "opts": [
+      "La soberanía nacional y el derecho de los pueblos a elegir su gobierno.",
+      "La restauración de las dinastías legítimas y el equilibrio entre las potencias.",
+      "La abolición de las monarquías y la instauración de repúblicas parlamentarias.",
+      "La unificación de los territorios europeos mediante gobiernos democráticos."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El Congreso de Viena buscó restaurar las monarquías tradicionales y consolidar un equilibrio político que frenara la expansión revolucionaria y francesa."
+  },
+  {
+    "q": "3. Una de las principales demandas del liberalismo político del siglo XIX fue:",
+    "opts": [
+      "La conservación de los privilegios hereditarios de la nobleza.",
+      "La subordinación del poder judicial a la autoridad religiosa.",
+      "El establecimiento de constituciones que limitaran el poder del gobernante.",
+      "La concentración de los poderes públicos en una monarquía absoluta."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El liberalismo político impulsó la creación de constituciones, derechos individuales, división de poderes y límites institucionales al gobernante."
+  },
+  {
+    "q": "4. En 1848, diversas regiones europeas experimentaron revoluciones exigiendo constituciones y libertades civiles (Primavera de los Pueblos). ¿Qué característica explica mejor su diversidad?",
+    "opts": [
+      "Todas fueron dirigidas exclusivamente por campesinos que buscaban abolir la propiedad privada.",
+      "Sus objetivos se limitaron a restablecer las monarquías absolutas anteriores a 1789.",
+      "Fueron movimientos coordinados para establecer un único gobierno socialista europeo.",
+      "Convergieron demandas liberales, sociales y nacionalistas contra el orden político establecido."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las revoluciones de 1848 combinaron demandas liberales, aspiraciones nacionalistas y reivindicaciones de carácter social frente al orden establecido."
+  },
+  {
+    "q": "5. ¿Qué diferencia fundamental existía entre el liberalismo y el conservadurismo durante el siglo XIX?",
+    "opts": [
+      "El liberalismo favorecía reformas constitucionales, mientras que el conservadurismo defendía la continuidad de las instituciones tradicionales.",
+      "El liberalismo rechazaba toda propiedad privada, mientras que el conservadurismo promovía la propiedad colectiva.",
+      "El liberalismo defendía la monarquía absoluta, mientras que el conservadurismo exigía sufragio universal.",
+      "El liberalismo buscaba eliminar las leyes, mientras que el conservadurismo pretendía establecer gobiernos sin constitución."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El liberalismo buscaba la transformación mediante constituciones y derechos, mientras el conservadurismo apostaba por la estabilidad y la tradición."
+  },
+  {
+    "q": "6. Durante la industrialización, los trabajadores enfrentaron condiciones laborales deplorables. ¿Qué relación histórica existe entre estas condiciones y el surgimiento del movimiento obrero?",
+    "opts": [
+      "Provocaron el abandono generalizado de las ciudades industriales y el regreso al feudalismo.",
+      "Favorecieron la organización colectiva de los trabajadores para exigir mejores condiciones laborales.",
+      "Eliminaron las diferencias económicas entre empresarios y trabajadores.",
+      "Originaron exclusivamente movimientos políticos que defendían el absolutismo monárquico."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La explotación fabril propició la autoorganización de la clase trabajadora en sindicatos y asociaciones de resistencia para defender sus intereses."
+  },
+  {
+    "q": "7. ¿Cuál fue una característica del ludismo, movimiento surgido en Inglaterra a comienzos del siglo XIX?",
+    "opts": [
+      "La organización de partidos obreros para conquistar el poder mediante elecciones.",
+      "La creación de cooperativas agrícolas dirigidas por el Estado.",
+      "La oposición de ciertos trabajadores a la introducción de maquinaria que amenazaba sus empleos y condiciones laborales.",
+      "La defensa de la expansión colonial como solución a la pobreza industrial."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El ludismo consistió en la destrucción sistemática de máquinas por parte de artesanos y obreros que veían en ellas una amenaza para su subsistencia."
+  },
+  {
+    "q": "8. Un historiador compara corrientes del pensamiento social: I. Comunidades cooperativas; II. Lucha de clases y explotación del proletariado; III. Reformas sociales mediante negociación. ¿Cuál es correcta?",
+    "opts": [
+      "I. Marxismo; II. liberalismo económico; III. conservadurismo.",
+      "I. Anarquismo; II. mercantilismo; III. absolutismo.",
+      "I. Conservadurismo; II. socialismo utópico; III. nacionalismo.",
+      "I. Socialismo utópico; II. marxismo; III. reformismo obrero."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El socialismo utópico diseñó cooperativas, el marxismo teorizó la lucha de clases, y el reformismo obrero buscó mejoras graduales en el sistema."
+  },
+  {
+    "q": "9. ¿Quiénes escribieron el Manifiesto del Partido Comunista, publicado en 1848?",
+    "opts": [
+      "Karl Marx y Friedrich Engels.",
+      "Adam Smith y David Ricardo.",
+      "Robert Owen y Charles Fourier.",
+      "Pierre-Joseph Proudhon y Mijaíl Bakunin."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Karl Marx y Friedrich Engels publicaron en 1848 el Manifiesto del Partido Comunista, sentando las bases del socialismo científico."
+  },
+  {
+    "q": "10. De acuerdo con el pensamiento marxista, ¿qué contradicción caracteriza principalmente a la sociedad capitalista?",
+    "opts": [
+      "El enfrentamiento entre los defensores de la monarquía y los partidarios de la república.",
+      "La oposición entre los intereses de la burguesía propietaria de los medios de producción y los del proletariado que vende su fuerza de trabajo.",
+      "La competencia entre campesinos independientes por el control de los gremios medievales.",
+      "La disputa entre los Estados nacionales por establecer una religión común."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El marxismo identifica la contradicción capitalista en el antagonismo económico entre la burguesía propietaria y el proletariado desposeído."
+  },
+  {
+    "q": "11. ¿Qué organización obrera internacional se fundó en Londres en 1864 para coordinar las luchas de los trabajadores de distintos países?",
+    "opts": [
+      "La Sociedad de Naciones.",
+      "La Santa Alianza.",
+      "La Asociación Internacional de Trabajadores.",
+      "La Liga de las Naciones Germánicas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La Asociación Internacional de Trabajadores (Primera Internacional) buscó unificar la acción política y sindical del proletariado europeo."
+  },
+  {
+    "q": "12. El nacionalismo defendió que una comunidad con identidad histórica o lingüística debía constituir una nación políticamente organizada. ¿Qué proceso refleja esta idea?",
+    "opts": [
+      "La restauración de las fronteras feudales sin considerar las identidades nacionales.",
+      "La consolidación de imperios multinacionales que rechazaban toda autonomía territorial.",
+      "La eliminación de las lenguas nacionales en favor de una cultura europea uniforme.",
+      "La unificación de territorios fragmentados que compartían una identidad nacional, como ocurrió en Italia y Alemania."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los movimientos de unificación nacional en Italia y Alemania materializaron el principio nacionalista de consolidar Estados basados en identidades compartidas."
+  },
+  {
+    "q": "13. ¿Qué personaje encabezó el proceso de unificación italiana desde la dirección política del reino de Piamonte-Cerdeña?",
+    "opts": [
+      "Otto von Bismarck.",
+      "Camillo Benso, conde de Cavour.",
+      "Klemens von Metternich.",
+      "Napoleón III."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El conde de Cavour dirigió hábilmente la estrategia diplomática y militar que impulsó la unificación italiana en torno a Piamonte."
+  },
+  {
+    "q": "14. ¿Cuál fue el resultado más importante de la Expedición de los Mil dirigida por Giuseppe Garibaldi en 1860?",
+    "opts": [
+      "La conquista de Viena y la disolución del Imperio austríaco.",
+      "La restauración de los Estados Pontificios bajo el dominio francés.",
+      "La incorporación de Sicilia y Nápoles al proceso de unificación encabezado por Piamonte-Cerdeña.",
+      "La proclamación de Roma como capital italiana inmediatamente después de la expedición."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Garibaldi conquistó el sur de Italia (Sicilia y Nápoles) y entregó los territorios a Víctor Manuel II, consolidando el proceso unitario."
+  },
+  {
+    "q": "15. ¿En qué año se proclamó el Reino de Italia, hito fundamental de su unificación?",
+    "opts": [
+      "1815.",
+      "1848.",
+      "1871.",
+      "1861."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El Reino de Italia fue proclamado en 1861, aglutinando a la mayor parte de la península bajo la monarquía piamontesa."
+  },
+  {
+    "q": "16. ¿Cuál fue la principal estrategia empleada por Otto von Bismarck para impulsar la unificación alemana bajo el liderazgo de Prusia?",
+    "opts": [
+      "Combinar la diplomacia, el fortalecimiento militar y guerras estratégicas contra Dinamarca, Austria y Francia.",
+      "Promover una revolución socialista que aboliera la propiedad privada en los Estados alemanes.",
+      "Establecer una federación dirigida por Austria y subordinada al Congreso de Viena.",
+      "Organizar una insurrección popular para sustituir todas las monarquías alemanas por repúblicas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Bismarck empleó la vía del 'hierro y sangre', combinando la diplomacia con conflictos bélicos calculados para consolidar la hegemonía prusiana."
+  },
+  {
+    "q": "17. ¿Qué acontecimiento simbolizó la proclamación del Imperio alemán en 1871?",
+    "opts": [
+      "La firma del Tratado de Versalles que puso fin a la Primera Guerra Mundial.",
+      "La coronación de Guillermo I como emperador alemán en el Palacio de Versalles.",
+      "La creación de la Confederación Germánica después del Congreso de Viena.",
+      "La derrota de Prusia frente a Austria en la guerra de 1866."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La proclamación de Guillermo I como emperador del Segundo Reich se realizó en el Salón de los Espejos del Palacio de Versalles en 1871."
+  },
+  {
+    "q": "18. ¿Cuál fue una consecuencia de la guerra austro-prusiana de 1866 para la organización política de los territorios alemanes?",
+    "opts": [
+      "Austria asumió el liderazgo de la Confederación Alemana del Norte.",
+      "Los Estados alemanes quedaron integrados en un imperio dirigido por Francia.",
+      "Prusia consolidó su predominio y Austria quedó excluida del proceso de unificación alemana.",
+      "Se restableció el Sacro Imperio Romano Germánico bajo una monarquía electiva."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La derrota de Austria en 1866 apartó a este imperio de los asuntos alemanes, permitiendo a Prusia liderar la integración del norte."
+  },
+  {
+    "q": "19. ¿Cuál fue una diferencia importante entre los procesos de unificación de Italia y Alemania?",
+    "opts": [
+      "Italia se unificó sin intervención diplomática, mientras que Alemania rechazó el uso de la fuerza militar.",
+      "Italia fue unificada por Austria, mientras que Alemania fue unificada por Francia.",
+      "Ambos procesos se realizaron exclusivamente mediante revoluciones socialistas dirigidas por obreros.",
+      "Italia combinó la diplomacia de Cavour con las campañas de Garibaldi, mientras que Alemania fue dirigida principalmente por la política prusiana de Bismarck."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Italia integró factores diplomáticos, populares y militares (Cavour y Garibaldi), mientras que Alemania respondió a una estructuración militar y estatal desde Prusia."
+  },
+  {
+    "q": "20. Un estudiante afirma que el liberalismo, el socialismo y el nacionalismo tuvieron el mismo objetivo político en el siglo XIX. ¿Cuál evaluación histórica corrige mejor esa afirmación?",
+    "opts": [
+      "Es incorrecta: el liberalismo defendía libertades individuales y límites al poder, el socialismo cuestionaba las desigualdades de clase y el nacionalismo promovía la identidad y la autodeterminación nacional.",
+      "Es correcta: las tres corrientes buscaban exclusivamente restaurar las monarquías absolutas y los privilegios nobiliarios.",
+      "Es incorrecta: el liberalismo pretendía abolir toda propiedad privada, el socialismo defendía el absolutismo y el nacionalismo rechazaba la formación de Estados.",
+      "Es correcta: las tres corrientes defendían la desaparición de los movimientos obreros y la conservación del orden feudal."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Cada corriente ideológica del siglo XIX poseía metas específicas: el liberalismo priorizó los derechos civiles; el socialismo, la emancipación obrera; y el nacionalismo, la unidad política estatal."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 5";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Pensamiento y movimientos sociales y políticos del siglo XIX</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 5";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Pensamiento y movimientos sociales y políticos del siglo XIX<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Pensamiento y movimientos sociales y políticos del siglo XIX",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Pensamiento y movimientos sociales y políticos del siglo XIX",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>

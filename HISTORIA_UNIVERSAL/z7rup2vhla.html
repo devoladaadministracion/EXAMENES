@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Historia Universal Tema 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Historia Universal";
+const EXAM_TEMA      = "4. El imperialismo: La revolución científico-tecnológica y la expansión colonial (1870-1914) (Tema 6)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1NYNHyM5xS3dVErmQCoXt8PLN08VX9atQ";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (20 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál de los siguientes avances tecnológicos fue fundamental para el desarrollo de la Segunda Revolución Industrial durante la segunda mitad del siglo XIX?",
+    "opts": [
+      "La invención de la imprenta de tipos móviles.",
+      "La difusión del arado de hierro en la agricultura medieval.",
+      "El desarrollo de la electricidad y del motor de combustión interna.",
+      "La introducción de la máquina de vapor durante la primera Revolución Industrial."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La electricidad y el motor de combustión interna impulsaron nuevas formas de producción, transporte y comunicación durante la Segunda Revolución Industrial."
+  },
+  {
+    "q": "2. A finales del siglo XIX, las industrias europeas incrementaron su producción gracias a nuevos procesos de fabricación, fuentes de energía y medios de transporte. ¿Qué relación explica mejor cómo estos avances favorecieron el imperialismo?",
+    "opts": [
+      "La reducción de la producción industrial disminuyó la necesidad de materias primas extranjeras.",
+      "La expansión industrial aumentó la demanda de materias primas, mercados y oportunidades de inversión en otros territorios.",
+      "La sustitución de la industria por la agricultura eliminó la competencia económica entre potencias.",
+      "La mecanización provocó que las potencias abandonaran sus colonias para concentrarse en el comercio local."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La industrialización elevó la demanda de materias primas, mercados para manufacturas e inversión de capitales, impulsando la expansión imperialista."
+  },
+  {
+    "q": "3. ¿Cuál fue una característica de la revolución científico-tecnológica de finales del siglo XIX?",
+    "opts": [
+      "El predominio exclusivo de la energía hidráulica y la desaparición de los combustibles fósiles.",
+      "La sustitución de la producción industrial por talleres artesanales.",
+      "El abandono de la investigación científica en favor de técnicas tradicionales.",
+      "La aplicación de nuevos conocimientos científicos a la industria y al desarrollo tecnológico."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Durante la Segunda Revolución Industrial se estrechó la relación entre ciencia e industria, destacando avances en química, electricidad y metalurgia."
+  },
+  {
+    "q": "4. La expansión de los ferrocarriles y de los barcos de vapor permitió transportar grandes volúmenes de mercancías a menores costos y en menos tiempo. ¿Cuál fue una consecuencia de estos avances para la expansión imperialista?",
+    "opts": [
+      "Facilitaron el traslado de tropas, materias primas y productos comerciales entre las metrópolis y los territorios coloniales.",
+      "Impidieron la explotación de recursos naturales en regiones alejadas de los puertos.",
+      "Eliminaron la necesidad de establecer puertos y rutas comerciales internacionales.",
+      "Redujeron la capacidad de las potencias para controlar sus posesiones ultramarinas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "Los ferrocarriles y barcos de vapor facilitaron la penetración al interior de los continentes, el transporte de recursos y el traslado militar colonial."
+  },
+  {
+    "q": "5. ¿Qué potencia europea encabezó gran parte de la expansión imperialista del siglo XIX y poseía el mayor imperio colonial del mundo al comenzar el siglo XX?",
+    "opts": [
+      "Bélgica.",
+      "Portugal.",
+      "Gran Bretaña.",
+      "Italia."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Gran Bretaña construyó el mayor imperio colonial del mundo, respaldada por su poderío industrial, comercial y naval."
+  },
+  {
+    "q": "6. Una potencia industrial establece el control político de un territorio extranjero, explota sus recursos y organiza su economía para abastecer a las fábricas de la metrópoli. ¿Qué fenómeno describe esta situación?",
+    "opts": [
+      "La descolonización.",
+      "El imperialismo colonial.",
+      "El aislacionismo económico.",
+      "El nacionalismo de liberación."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El imperialismo colonial implicó el dominio político, militar y económico de las potencias sobre territorios extracontinentales."
+  },
+  {
+    "q": "7. ¿Cuál fue uno de los principales objetivos de la Conferencia de Berlín de 1884-1885?",
+    "opts": [
+      "Establecer la independencia de las colonias africanas bajo gobiernos elegidos por sus habitantes.",
+      "Prohibir la expansión europea en África y preservar los Estados africanos existentes.",
+      "Unificar todos los territorios africanos bajo la autoridad del Imperio otomano.",
+      "Establecer reglas entre las potencias europeas para la ocupación y el reparto colonial de África."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La Conferencia de Berlín fijó normas para regular la ocupación territorial europea en África sin participación de representantes africanos."
+  },
+  {
+    "q": "8. A finales del siglo XIX, la competencia por territorios y recursos generó tensiones diplomáticas entre potencias europeas. ¿Cuál fue una consecuencia de esta rivalidad?",
+    "opts": [
+      "La desaparición inmediata de las disputas entre las potencias europeas.",
+      "La formación de un gobierno africano unificado que impidió toda ocupación extranjera.",
+      "El incremento de las tensiones internacionales por el reparto territorial y la influencia económica.",
+      "La renuncia general de las potencias a establecer protectorados y colonias."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La lucha por colonias y mercados intensificó las fricciones internacionales, creando un clima de rivalidad previa a la Primera Guerra Mundial."
+  },
+  {
+    "q": "9. ¿Qué territorio africano fue objeto de una intensa rivalidad entre Francia y Gran Bretaña durante el incidente de Fachoda de 1898?",
+    "opts": [
+      "Sudán, en la región de Fachoda.",
+      "Argelia, en la costa mediterránea.",
+      "Namibia, en el suroeste africano.",
+      "Madagascar, en el océano Índico."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El incidente de Fachoda (Sudán) enfrentó los planes expansionistas de Francia y Gran Bretaña, resolviéndose diplomáticamente con la retirada francesa."
+  },
+  {
+    "q": "10. Un país europeo busca controlar una ruta marítima hacia Asia y proteger sus intereses comerciales y militares. ¿Qué territorio tuvo especial importancia para Gran Bretaña por su ubicación junto al canal de Suez?",
+    "opts": [
+      "Congo.",
+      "Etiopía.",
+      "Etiopía.",
+      "Egipto."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Egipto y el canal de Suez (inaugurado en 1869) fueron clave para la ruta hacia la India; Gran Bretaña lo ocupó en 1882 para asegurar dicho paso."
+  },
+  {
+    "q": "11. ¿Cuál fue una característica del imperialismo europeo en Asia durante el siglo XIX?",
+    "opts": [
+      "La desaparición de la competencia comercial entre las potencias.",
+      "El establecimiento de un único Estado asiático independiente que controló el comercio europeo.",
+      "La renuncia europea a intervenir en los asuntos políticos de la región.",
+      "La imposición de dominio colonial o de influencia económica y política sobre diversos territorios asiáticos."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las potencias impusieron colonias, protectorados, concesiones y esferas de influencia en diversas regiones de Asia."
+  },
+  {
+    "q": "12. Durante el siglo XIX, Gran Bretaña vendía opio en China, generando conflictos. ¿Cuál fue una consecuencia de la derrota china en la primera guerra del Opio?",
+    "opts": [
+      "La expulsión definitiva de todos los comerciantes británicos de China.",
+      "La anexión de toda China al Imperio británico.",
+      "La firma del Tratado de Nankín en 1842, que cedió Hong Kong a Gran Bretaña y abrió puertos al comercio.",
+      "La unificación política de China con Japón bajo una monarquía constitucional."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El Tratado de Nankín (1842) obligó a China a ceder Hong Kong y abrir puertos al comercio británico, socavando su soberanía."
+  },
+  {
+    "q": "13. ¿A qué país pertenecía Leopoldo II, quien controló personalmente el Estado Libre del Congo antes de pasar a la administración colonial estatal en 1908?",
+    "opts": [
+      "Francia.",
+      "Bélgica.",
+      "Alemania.",
+      "Portugal."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Leopoldo II era rey de Bélgica y mantuvo el Congo como dominio personal hasta que las denuncias de abusos forzaron la anexión estatal en 1908."
+  },
+  {
+    "q": "14. Una potencia estableció un sistema de administración colonial que mantenía a gobernantes locales subordinados a funcionarios imperiales. ¿Qué modalidad de dominio describe mejor esta práctica?",
+    "opts": [
+      "La independencia nacional.",
+      "La soberanía popular.",
+      "El aislamiento diplomático.",
+      "El gobierno indirecto."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El gobierno indirecto (indirect rule) utilizaba estructuras y autoridades nativas bajo el control y supervisión de la potencia imperial."
+  },
+  {
+    "q": "15. ¿Cuál fue una causa política del imperialismo europeo entre 1870 y 1914?",
+    "opts": [
+      "La competencia entre las potencias por el prestigio internacional, el poder estratégico y la posesión de colonias.",
+      "La desaparición de los Estados nacionales europeos.",
+      "La aceptación generalizada del principio de no intervención en otros continentes.",
+      "La renuncia de las potencias a mantener ejércitos y flotas navales."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La posesión de colonias era símbolo de prestigio geopolítico, poder militar y seguridad estratégica para las potencias europeas."
+  },
+  {
+    "q": "16. A finales del siglo XIX, Alemania incrementó su industria y desarrolló una flota naval para competir con la británica. ¿Qué efecto tuvo sobre las relaciones internacionales?",
+    "opts": [
+      "Garantizó la desaparición de la competencia colonial entre Alemania y Gran Bretaña.",
+      "Provocó la disolución de todos los imperios coloniales europeos.",
+      "Intensificó la rivalidad naval y estratégica entre Alemania y Gran Bretaña.",
+      "Impulsó una alianza permanente entre ambas potencias para eliminar sus fuerzas armadas."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La carrera armamentista naval entre Alemania y Gran Bretaña acrecentó las tensiones y el alineamiento de potencias previo a 1914."
+  },
+  {
+    "q": "17. ¿Qué país africano logró conservar su independencia frente a los intentos de colonización italiana durante la batalla de Adua de 1896?",
+    "opts": [
+      "Congo.",
+      "Etiopía.",
+      "Argelia.",
+      "Angola."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Etiopía, bajo el mando de Menelik II, derrotó a Italia en la batalla de Adua (1896), preservando con éxito su soberanía."
+  },
+  {
+    "q": "18. ¿Cuál de las siguientes relaciones entre potencia imperialista y territorio colonial es correcta?",
+    "opts": [
+      "Francia — India.",
+      "Alemania — Filipinas.",
+      "Portugal — Egipto.",
+      "Gran Bretaña — India."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La India fue la posesión colonial más lucrativa y estratégica del Imperio británico, conocida como la «joya de la Corona»."
+  },
+  {
+    "q": "19. ¿Qué relación existió entre el nacionalismo europeo y la expansión imperialista de finales del siglo XIX?",
+    "opts": [
+      "El nacionalismo impulsó en ciertos países la idea de que poseer colonias demostraba grandeza y poder nacional.",
+      "El nacionalismo eliminó la competencia entre las potencias y favoreció la independencia inmediata de las colonias.",
+      "El nacionalismo defendió exclusivamente la desaparición de los Estados europeos.",
+      "El nacionalismo impidió que los gobiernos utilizaran argumentos patrióticos para justificar la expansión territorial."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El nacionalismo exacerbado se imbricó con el chovinismo y el militarismo, presentando la expansión imperial como prueba de pujanza nacional."
+  },
+  {
+    "q": "20. ¿Qué interpretación explica mejor cómo los imperios coloniales y las inversiones militares se relacionaron con el estallido de la Primera Guerra Mundial?",
+    "opts": [
+      "El reparto colonial fue la única causa directa de la guerra y eliminó las diferencias políticas.",
+      "La competencia imperialista fortaleció la cooperación entre todos los Estados europeos.",
+      "Las rivalidades coloniales, la competencia armamentista y los sistemas de alianzas contribuyeron a un clima de tensión que facilitó el conflicto en 1914.",
+      "La expansión colonial provocó que las potencias abandonaran sus intereses estratégicos en Europa."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El imperialismo, sumado al nacionalismo y al sistema de alianzas militares, generó un escenario de alta tensión que desembocó en la Gran Guerra."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 6";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>El imperialismo</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 6";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> El imperialismo<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "El imperialismo",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — El imperialismo",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>
