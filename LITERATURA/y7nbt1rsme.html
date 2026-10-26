@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Literatura Tema 2: El texto periodístico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root {
+    --navy-dark: #0a192f; --navy-main: #112240; --navy-light: #233554;
+    --gold-brand: #C89200; --gold-hover: #a67900; --text-white: #f8fafc;
+    --card-bg: #ffffff; --text-dark: #1e293b; --success: #15803d; --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif; background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover; background-position: center; background-attachment: fixed;
+    margin: 0; padding: 0; color: var(--text-dark); -webkit-user-select: none; user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; outline: none; }
+  input[type=text]:focus { border-color: var(--gold-brand); }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: #8892b0; font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box { margin-top: 10px; padding: 10px 14px; background: #f8fafc; border-left: 3px solid var(--gold-brand); border-radius: 4px; font-size: 0.88em; color: #334155; line-height: 1.5; }
+  .btn-report-float { position: fixed; bottom: 20px; right: 20px; z-index: 1000; background-color: var(--danger); color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 0.88em; font-weight: 600; box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); border: none; cursor: pointer; }
+  .report-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px; }
+  .report-modal-content { background: #fff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); }
+  .report-modal-content textarea { width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px; padding: 10px; font-family: inherit; margin: 10px 0 15px; resize: none; outline: none; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+<div class="network-status" id="netStatus"><div class="status-dot" id="netDot"></div><span id="netText">Conectado</span></div>
+<div class="container">
+  <div class="hero-banner-wrap"><img id="bannerImage" src="" alt="Banner"></div>
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap"><summary>🗺️ Ver mapa de preguntas</summary><div id="palette"></div></details>
+      <div class="qMeta"><span id="metaMateriaTema">Evaluación</span><span id="qCounter" style="white-space: nowrap;"></span></div>
+      <div class="qText" id="qText"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;"><button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button></div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+<script>
+const EXAM_MATERIA   = "Literatura";
+const EXAM_TEMA      = "1.3 El texto periodístico (Examen 2)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1SCjanIDihhIZxj9rdLamZpYyoomgaQNE";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+const questions = [
+  {
+    "q": "1. ¿Cuál es el propósito principal de una nota informativa dentro del discurso periodístico?",
+    "opts": [
+      "Expresar la opinión personal del periodista sobre un acontecimiento.",
+      "Informar acerca de hechos de interés público de manera clara y verificable.",
+      "Convencer al lector de adoptar una postura ante un problema social.",
+      "Interpretar las causas de un acontecimiento desde una perspectiva subjetiva."
+    ],
+    "correct": 1,
+    "exp": "La nota informativa tiene como propósito comunicar hechos de interés público mediante información verificable[cite: 40], procurando distinguir los datos de las opiniones del periodista."
+  },
+  {
+    "q": "2. Lee el siguiente fragmento:<br><br><em>\"El Instituto Nacional de Antropología e Historia informó que un equipo de especialistas identificó nuevas estructuras arqueológicas durante las exploraciones realizadas en una zona del sureste mexicano\".</em><br><br>¿Qué función lingüística predomina en el fragmento?",
+    "opts": [
+      "Apelativa",
+      "Emotiva",
+      "Poética",
+      "Referencial"
+    ],
+    "correct": 3,
+    "exp": "La función referencial se centra en transmitir información sobre hechos o acontecimientos[cite: 40]. En el fragmento se comunica un hallazgo atribuido a una institución, sin expresar sentimientos ni solicitar acciones al lector."
+  },
+  {
+    "q": "3. ¿Cuál de los siguientes conjuntos de preguntas corresponde a los elementos informativos básicos que una nota periodística busca responder?",
+    "opts": [
+      "¿Qué?, ¿quién?, ¿cuándo?, ¿dónde?, ¿cómo? y ¿por qué?",
+      "¿Qué?, ¿cuál?, ¿cuánto?, ¿para qué?, ¿de quién? y ¿hacia quién?",
+      "¿Quién?, ¿cuánto?, ¿para quién?, ¿desde cuándo?, ¿con qué? y ¿hacia dónde?",
+      "¿Qué?, ¿de quién?, ¿para qué?, ¿cuál?, ¿con quién? y ¿hasta cuándo?"
+    ],
+    "correct": 0,
+    "exp": "Las preguntas fundamentales de la nota informativa permiten identificar el acontecimiento, sus protagonistas, el momento, el lugar, las circunstancias y sus causas[cite: 40, 41]."
+  },
+  {
+    "q": "4. En una nota periodística, ¿qué elemento presenta de manera breve el acontecimiento principal y busca atraer la atención del lector?",
+    "opts": [
+      "Cuerpo",
+      "Fuente",
+      "Titular",
+      "Cierre"
+    ],
+    "correct": 2,
+    "exp": "El titular sintetiza el hecho central de la noticia y permite al lector identificar rápidamente su contenido[cite: 41]. Debe guardar correspondencia con la información desarrollada."
+  },
+  {
+    "q": "5. Lee el siguiente fragmento:<br><br><em>\"Las autoridades municipales anunciaron la apertura de tres centros de atención médica que comenzarán a funcionar el próximo lunes en distintas colonias de la ciudad\".</em><br><br>¿Cuál es el propósito comunicativo predominante?",
+    "opts": [
+      "Dar a conocer una medida relacionada con los servicios de salud.",
+      "Persuadir a los ciudadanos para que acudan a los centros médicos.",
+      "Criticar las decisiones administrativas de las autoridades municipales.",
+      "Describir las instalaciones de los nuevos centros de atención."
+    ],
+    "correct": 0,
+    "exp": "El fragmento comunica un acontecimiento de interés público relacionado con la apertura de servicios médicos. Su finalidad principal es informar[cite: 41]."
+  },
+  {
+    "q": "6. ¿Cuál de los siguientes enunciados presenta un uso predominantemente referencial del lenguaje periodístico?",
+    "opts": [
+      "¡Es indignante que las autoridades hayan permitido semejante situación!",
+      "La ciudad despertó envuelta en un manto de tristeza interminable.",
+      "Los habitantes deberían exigir inmediatamente mejores servicios.",
+      "Protección Civil reportó el cierre de dos avenidas debido a las inundaciones."
+    ],
+    "correct": 3,
+    "exp": "La opción correcta comunica un hecho atribuido a una fuente identificable[cite: 41, 42]. Las demás expresan una valoración, emplean lenguaje figurado o buscan influir en la conducta."
+  },
+  {
+    "q": "7. En la estructura tradicional de una nota informativa, ¿qué función cumple la entrada o lead?",
+    "opts": [
+      "Presentar exclusivamente los antecedentes históricos del acontecimiento.",
+      "Concentrar los datos esenciales del hecho noticioso.",
+      "Desarrollar las opiniones personales del periodista.",
+      "Incorporar únicamente testimonios de los participantes."
+    ],
+    "correct": 1,
+    "exp": "La entrada o entradilla (lead) presenta los datos más relevantes del acontecimiento, permitiendo comprender el hecho principal desde el inicio[cite: 42]."
+  },
+  {
+    "q": "8. Lee la siguiente nota:<br><br><em>\"El miércoles 12 de agosto, un grupo de investigadores presentó los resultados de un estudio sobre la calidad del agua en una universidad pública de Guadalajara\".</em><br><br>¿Qué información responde a la pregunta periodística «¿dónde?»?",
+    "opts": [
+      "El miércoles 12 de agosto.",
+      "Un grupo de investigadores.",
+      "En una universidad pública de Guadalajara.",
+      "Los resultados de un estudio sobre la calidad del agua."
+    ],
+    "correct": 2,
+    "exp": "La pregunta «¿dónde?» permite identificar el lugar en el que ocurrió el acontecimiento: una universidad pública de Guadalajara[cite: 42]."
+  },
+  {
+    "q": "9. ¿Cuál es el criterio principal para jerarquizar la información mediante la estructura de pirámide invertida?",
+    "opts": [
+      "Presentar primero los datos más relevantes y después la información complementaria.",
+      "Organizar los acontecimientos únicamente según su orden cronológico.",
+      "Reservar el acontecimiento principal para el último párrafo.",
+      "Distribuir los datos de acuerdo con la extensión de las declaraciones."
+    ],
+    "correct": 0,
+    "exp": "La pirámide invertida organiza la noticia de mayor a menor relevancia informativa; los datos esenciales van al principio y los detalles después[cite: 42, 43]."
+  },
+  {
+    "q": "10. Un periodista dispone de datos sobre un sismo: 1. Magnitud y epicentro, 2. Color del uniforme de emergencias, 3. Número de afectados, 4. Recomendaciones oficiales. ¿Qué datos reciben mayor prioridad?",
+    "opts": [
+      "1 y 2.",
+      "2 y 3.",
+      "2 y 4.",
+      "1, 3 y 4."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La jerarquización periodística privilegia los datos que permiten comprender el hecho y sus consecuencias: la magnitud, el epicentro, las afectaciones y las recomendaciones[cite: 43]."
+  },
+  {
+    "q": "11. Lee el fragmento:<br><br><em>\"Una tormenta intensa provocó inundaciones en cinco colonias de la ciudad durante la madrugada del martes. Las autoridades informaron que varias familias fueron trasladadas temporalmente a refugios\".</em><br><br>¿Qué pregunta periodística no se responde de manera inequívoca en la explicación del texto?",
+    "opts": [
+      "¿Qué ocurrió?",
+      "¿Cuándo ocurrió?",
+      "¿Por qué se produjeron las inundaciones?",
+      "¿Dónde ocurrió?"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Aunque se menciona que una tormenta provocó las inundaciones (su causa inmediata)[cite: 43, 44], el texto no detalla pormenores profundos de origen. (Nota: reactivo adaptado según clave oficial del documento)."
+  },
+  {
+    "q": "12. ¿Cuál de las siguientes opciones describe correctamente la función del cuerpo de una nota informativa?",
+    "opts": [
+      "Presentar únicamente el nombre del medio de comunicación.",
+      "Desarrollar los detalles, antecedentes y datos complementarios del acontecimiento.",
+      "Sustituir los hechos por las opiniones personales del periodista.",
+      "Repetir exclusivamente el contenido del titular sin agregar información."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El cuerpo desarrolla la información presentada en la entrada mediante detalles, antecedentes, declaraciones y datos contextuales[cite: 44]."
+  },
+  {
+    "q": "13. Lee los titulares:<br>1. \"Autoridades inauguran una nueva biblioteca pública...\"<br>2. \"¡Por fin! Las autoridades hacen algo verdaderamente útil...\"<br>3. \"Inicia campaña de vacunación gratuita...\"<br>4. \"La vergonzosa administración vuelve a demostrar su incompetencia\".<br><br>¿Cuáles presentan predominio de la función referencial?",
+    "opts": [
+      "1 y 2.",
+      "2 y 4.",
+      "3 y 4.",
+      "1 y 3."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Los titulares 1 y 3 comunican acontecimientos objetivos sin valoraciones explícitas, a diferencia de los juicios subjetivos de 2 y 4[cite: 44]."
+  },
+  {
+    "q": "14. En el proceso de elaboración de una nota periodística, ¿qué significa seleccionar la información?",
+    "opts": [
+      "Elegir los datos pertinentes y relevantes para comunicar el acontecimiento.",
+      "Repetir las declaraciones de una misma fuente para reforzar su importancia.",
+      "Ordenar exclusivamente los acontecimientos de manera cronológica.",
+      "Eliminar cualquier información que contradiga la opinión del periodista."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La selección informativa consiste en determinar qué datos son pertinentes, verificables y relevantes con criterios periodísticos[cite: 44, 45]."
+  },
+  {
+    "q": "15. Lee el fragmento:<br><br><em>\"El gobierno municipal inauguró ayer un parque público de dos hectáreas...\".</em><br><br>¿Qué pregunta periodística responde la expresión «ayer»?",
+    "opts": [
+      "¿Dónde?",
+      "¿Cómo?",
+      "¿Cuándo?",
+      "¿Por qué?"
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La expresión «ayer» funciona como una referencia temporal que indica cuándo ocurrió el acontecimiento[cite: 45]."
+  },
+  {
+    "q": "16. ¿Cuál de las siguientes situaciones constituye una omisión informativa capaz de modificar sustancialmente la interpretación de una noticia?",
+    "opts": [
+      "No mencionar el color de las paredes del edificio.",
+      "Excluir la descripción de la vestimenta de los asistentes.",
+      "No incorporar detalles decorativos del lugar.",
+      "Suprimir que un aumento salarial anunciado será inferior a la inflación del periodo."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Excluir la relación entre el aumento salarial y la inflación impide valorar adecuadamente el verdadero cambio en el poder adquisitivo[cite: 45]."
+  },
+  {
+    "q": "17. Lee el fragmento:<br><br><em>\"El programa de reforestación permitió plantar cinco mil árboles durante el último trimestre. La iniciativa contó con la participación de estudiantes...\"</em><br><br>¿Cuál titular sintetiza mejor la información principal?",
+    "opts": [
+      "Estudiantes participan en diversas actividades comunitarias.",
+      "Plantan cinco mil árboles mediante un programa de reforestación.",
+      "Autoridades locales organizan reuniones con asociaciones civiles.",
+      "Organizaciones civiles anuncian nuevos proyectos ambientales."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El titular correcto recupera el acontecimiento central (plantar cinco mil árboles) y su dato cuantitativo más relevante[cite: 45, 46]."
+  },
+  {
+    "q": "18. En una nota periodística, la reiteración de determinada información puede producir principalmente el siguiente efecto:",
+    "opts": [
+      "Destacar un dato o aspecto del acontecimiento mediante su repetición.",
+      "Garantizar que todas las fuentes reciban la misma importancia.",
+      "Eliminar la necesidad de verificar los hechos presentados.",
+      "Convertir automáticamente una noticia en un texto literario."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La reiteración consiste en repetir términos o ideas para enfatizar determinados aspectos de la noticia[cite: 46]."
+  },
+  {
+    "q": "19. Un periodista redacta sobre un accidente vial (lesionados, hora, retiro de vehículos, música que escuchaba el conductor). Si usa pirámide invertida, ¿qué va al inicio?",
+    "opts": [
+      "La actividad que realizaba el conductor.",
+      "El procedimiento para retirar los vehículos.",
+      "La hora exacta en que comenzó la circulación.",
+      "El accidente y el número de personas lesionadas."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La pirámide invertida prioriza el acontecimiento principal y sus consecuencias más graves, como el número de personas lesionadas[cite: 46]."
+  },
+  {
+    "q": "20. ¿Cuál de las siguientes afirmaciones establece correctamente la relación entre el propósito informativo y la función referencial?",
+    "opts": [
+      "El propósito informativo requiere que el periodista manifieste sus sentimientos.",
+      "La función referencial permite sustituir los hechos por interpretaciones personales.",
+      "El propósito informativo busca comunicar hechos y la función referencial centra el mensaje en ellos.",
+      "La función referencial se utiliza exclusivamente en textos científicos."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El propósito informativo da a conocer acontecimientos, mientras que la función referencial orienta el mensaje hacia los hechos objetivos[cite: 46, 47]."
+  },
+  {
+    "q": "21. Lee las versiones: 1) «Más de dos mil personas participaron en una manifestación...» 2) «Un grupo de manifestantes provocó interrupciones en la circulación...». ¿Qué explica la diferencia?",
+    "opts": [
+      "El uso de una organización narrativa frente a una descriptiva.",
+      "La sustitución de la función referencial por la metalingüística.",
+      "La modificación del tiempo verbal para cambiar la cronología.",
+      "La selección y jerarquización de distintos aspectos del mismo acontecimiento."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La selección y jerarquización determinan qué información recibe mayor importancia: el motivo de la protesta o las consecuencias viales[cite: 47]."
+  },
+  {
+    "q": "22. Una nota informativa presenta el cierre de carretera, rutas alternas, antecedentes de lluvias y labores de limpieza. ¿Qué principio de organización textual se identifica?",
+    "opts": [
+      "La disposición de los datos según su relevancia informativa.",
+      "La narración de los acontecimientos desde el más antiguo.",
+      "La presentación de opiniones antes de comunicar los hechos.",
+      "La organización mediante una comparación."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La estructura prioriza el hecho principal y la información útil, seguida de antecedentes y detalles complementarios (pirámide invertida)[cite: 47, 48]."
+  },
+  {
+    "q": "23. Lee el fragmento:<br><br><em>\"El ayuntamiento informó que durante el primer semestre disminuyeron 15% los accidentes... Sin embargo, el informe no incluye datos sobre los criterios utilizados\".</em><br><br>¿Qué elemento resulta indispensable para evaluar la información?",
+    "opts": [
+      "La opinión personal del periodista.",
+      "La descripción de los vehículos oficiales.",
+      "La metodología empleada para obtener y comparar los datos.",
+      "La cantidad de fotografías que acompañan la publicación."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "Para interpretar una disminución porcentual es necesario conocer cómo se recopilaron y compararon los datos (metodología)[cite: 48]."
+  },
+  {
+    "q": "24. Un periódico publica notas sobre un problema ambiental destacando pérdidas económicas pero omitiendo consecuencias sanitarias. ¿Qué procedimientos se observan?",
+    "opts": [
+      "Adecuación lingüística y organización cronológica.",
+      "Reiteración de los efectos económicos y omisión relativa de las consecuencias sanitarias.",
+      "Uso de la función poética y recursos literarios.",
+      "Organización dialogada y predominio de la función fática."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La reiteración da visibilidad constante a las pérdidas económicas, mientras la omisión relativa reduce la atención sobre el impacto sanitario[cite: 48, 49]."
+  },
+  {
+    "q": "25. Lee la nota informativa sobre la construcción de un nuevo hospital regional y sus plazos. ¿Cuál afirmación describe correctamente el tratamiento periodístico?",
+    "opts": [
+      "Predomina la función emotiva porque se presenta una valoración favorable.",
+      "La información está organizada cronológicamente desde los antecedentes.",
+      "El texto omite el acontecimiento principal y destaca información secundaria.",
+      "Predomina la función referencial y se jerarquizan el anuncio principal, sus características y plazos."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Predomina la función referencial porque transmite datos objetivos sobre el proyecto oficial sin expresar juicios personales[cite: 49]."
+  }
+];
+
+let currentIndex = 0, studentName = "", studentGroup = "", answers = new Array(questions.length).fill(null), finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 1.3";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>El texto periodístico</em>). Consta de <strong>" + questions.length + " reactivos</strong>.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 1.3";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot'), text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const n = document.getElementById('studentNameInput'), g = document.getElementById('studentGroupInput');
+  if (!n.value.trim() || !g.value.trim()) { alert("Por favor completa tu Nombre y Grupo."); return; }
+  studentName = n.value.trim(); studentGroup = g.value.trim();
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+  buildPalette(); renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+  const optWrap = document.getElementById('qOptions'); optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  if (window.MathJax) MathJax.typesetPromise([document.getElementById('questionCard')]).catch(err => {});
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+function buildPalette() {
+  const palette = document.getElementById('palette'); palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button'); btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i; palette.appendChild(btn);
+  });
+}
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) { btn.classList.toggle('answered', answers[i] !== null); btn.classList.toggle('current', i === currentIndex); }
+  });
+}
+function confirmSubmit() {
+  const unas = answers.filter(a => a === null).length;
+  if (confirm(unas > 0 ? "Tienes " + unas + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) finishExam();
+}
+function finishExam() {
+  if (finished) return; finished = true;
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+  let totalCorrect = 0, reviewData = [];
+  questions.forEach((q, i) => {
+    const userAns = answers[i], isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++;
+    reviewData.push({ num: i + 1, text: q.q, opts: q.opts, correctIdx: q.correct, userIdx: userAns, isCorrect: isCorrect, exp: q.exp || "" });
+  });
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> El texto periodístico<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+  window._reviewData = reviewData; renderReview();
+  sendDataToGoogleSheets({ fecha: new Date().toLocaleDateString(), materia: EXAM_MATERIA, tema: "El texto periodístico", nombre: studentName, grupo: studentGroup, puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)" });
+}
+function renderReview() {
+  const list = document.getElementById('reviewList'); list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+    let answerLine = '';
+    if (r.userIdx === null) answerLine = '<div class="yourAns">No respondida. Correcta: <span class="correctAns">' + correctText + '</span></div>';
+    else if (r.isCorrect) answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    else answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br>Correcta: <span class="correctAns">' + correctText + '</span></div>';
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + (r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '');
+    list.appendChild(div);
+  });
+  if (window.MathJax) MathJax.typesetPromise([list]).catch(err => {});
+}
+function toggleReview() {
+  const list = document.getElementById('reviewList'), btn = document.getElementById('reviewToggleBtn'), show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none'; btn.textContent = show ? 'Ocultar revisión' : '🔍 Ver revisión detallada y explicaciones';
+}
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+  fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) })
+  .then(() => { syncEl.className = "sync-status ok"; syncEl.textContent = "Calificación enviada con éxito"; })
+  .catch(err => { syncEl.className = "sync-status err"; syncEl.textContent = "⚠️ Error al registrar: " + err.message; });
+}
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación."); return; }
+  const btn = document.getElementById('btnSendReport'); btn.disabled = true; btn.textContent = "Enviando...";
+  fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ tipo: "reporte_error", fecha: new Date().toLocaleDateString(), examen: EXAM_MATERIA + " — El texto periodístico", nombre: studentName || "Anónimo", grupo: studentGroup || "Sin grupo", ubicacion: "Reactivo " + (currentIndex + 1), comentario: comment }) })
+  .then(() => { alert("✅ Reporte enviado."); closeReportModal(); })
+  .catch(err => { alert("⚠️ Error: " + err.message); })
+  .finally(() => { btn.disabled = false; btn.textContent = "Enviar reporte"; });
+}
+</script>
+</body>
+</html>

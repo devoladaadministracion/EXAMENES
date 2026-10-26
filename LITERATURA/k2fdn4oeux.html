@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluación — Literatura Tema 10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+  :root {
+    --navy-dark: #0a192f;
+    --navy-main: #112240;
+    --navy-light: #233554;
+    --gold-brand: #C89200;
+    --gold-hover: #a67900;
+    --text-white: #f8fafc;
+    --text-muted: #8892b0;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --success: #15803d;
+    --danger: #b91c1c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0a192f;
+    background-image: url('https://lh3.googleusercontent.com/d/1wkdatYNVsMiU8K9p5O2KXFvS9gnz3Y5_');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 15px 50px; }
+  .network-status {
+    position: fixed; top: 12px; left: 12px; z-index: 1000;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(17, 34, 64, 0.92); color: #fff;
+    padding: 6px 14px; border-radius: 999px; font-size: 0.8em; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; background-color: var(--success); }
+  .status-dot.offline { background-color: var(--danger); }
+  .hero-banner-wrap { width: 100%; border-radius: 12px 12px 0 0; overflow: hidden; border-top: 5px solid var(--gold-brand); background: var(--navy-main); }
+  .hero-banner-wrap img { width: 100%; height: auto; display: block; }
+  .card { background: var(--card-bg); border-radius: 0 0 12px 12px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .card-standalone { border-radius: 12px; border-top: 5px solid var(--gold-brand); margin-top: 20px; }
+  h2 { margin-top: 0; color: var(--navy-main); font-size: 1.25em; }
+  .alert-box { background: #fffbeb; border-left: 4px solid var(--gold-brand); padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; color: #92400e; font-weight: 600; }
+  label { font-weight: 600; font-size: 0.9em; color: var(--navy-main); display: block; margin-top: 12px; }
+  input[type=text] { width: 100%; padding: 12px 14px; font-size: 0.95em; border: 2px solid #cbd5e1; border-radius: 8px; margin-top: 6px; }
+  input[type=text]:focus { border-color: var(--gold-brand); outline: none; }
+  button { cursor: pointer; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1em; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-gold { background-color: #C89200; color: #ffffff; width: 100%; font-size: 1.1em; padding: 14px; margin-top: 20px; }
+  .btn-gold:hover { background-color: var(--gold-hover); }
+  .btn-secondary { background: #e2e8f0; color: var(--navy-main); }
+  .btn-secondary:hover { background: #cbd5e1; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  #examScreen, #resultScreen { display: none; }
+  .exam-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--navy-main); color: var(--text-white); padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--gold-brand); margin-bottom: 15px; }
+  .progressBarWrap { background: var(--navy-light); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 18px; }
+  #progressBar { height: 100%; background: linear-gradient(90deg, #a67900, var(--gold-brand)); width: 0%; transition: width 0.25s ease; }
+  .qMeta { display: flex; justify-content: space-between; color: var(--gold-brand); font-size: 0.85em; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; gap: 10px; }
+  .qText { font-size: 1.12em; margin-bottom: 15px; line-height: 1.6; color: var(--navy-dark); font-weight: 600; }
+  .qImageWrap { text-align: center; margin: 15px 0 20px; }
+  .qImageWrap img { max-width: 100%; max-height: 320px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .options label { display: flex; align-items: center; padding: 13px 16px; margin-bottom: 10px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; background: #f8fafc; }
+  .options label.selected { border-color: var(--gold-brand); background: #fef9c3; font-weight: 600; }
+  .options input { margin-right: 12px; transform: scale(1.2); accent-color: var(--gold-brand); }
+  .navRow { display: flex; justify-content: space-between; margin-top: 25px; gap: 10px; flex-wrap: wrap; }
+  #palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 5px; margin: 14px 0; }
+  #palette button { padding: 8px 0; font-size: 0.85em; background: #e2e8f0; color: var(--navy-main); border-radius: 6px; }
+  #palette button.answered { background: var(--navy-main); color: var(--gold-brand); font-weight: bold; }
+  #palette button.current { outline: 3px solid var(--gold-brand); }
+  details.paletteWrap summary { cursor: pointer; font-weight: 600; color: var(--navy-main); margin-bottom: 10px; }
+  .scoreBig { font-size: 3em; font-weight: 800; color: var(--navy-main); text-align: center; margin: 15px 0 5px; }
+  .scoreBig.fail { color: var(--danger); }
+  .sync-status { padding: 12px; border-radius: 8px; margin: 15px 0; font-size: 0.9em; text-align: center; background: #f1f5f9; color: #475569; }
+  .sync-status.ok { background: #dcfce7; color: #166534; font-weight: 600; }
+  .sync-status.err { background: #fee2e2; color: #991b1b; }
+  .reviewItem { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 14px; background: #ffffff; }
+  .reviewItem.correct { border-left: 6px solid var(--success); }
+  .reviewItem.incorrect { border-left: 6px solid var(--danger); }
+  .reviewItem.blank { border-left: 6px solid #94a3b8; }
+  .reviewItem .tag { font-size: 0.75em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .reviewItem .yourAns { margin-top: 8px; font-size: 0.95em; }
+  .reviewItem .correctAns { color: var(--success); font-weight: 600; }
+  .reviewItem .wrongAns { color: var(--danger); font-weight: 600; }
+  .explanation-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-left: 3px solid var(--gold-brand);
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #334155;
+    line-height: 1.5;
+  }
+  
+  .btn-report-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background-color: var(--danger); color: #ffffff; padding: 10px 18px;
+    border-radius: 999px; font-size: 0.88em; font-weight: 600;
+    box-shadow: 0 4px 15px rgba(185, 28, 28, 0.4); display: inline-flex;
+    align-items: center; gap: 6px; border: none; cursor: pointer;
+  }
+  .report-modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 25, 47, 0.75); z-index: 2000; justify-content: center; align-items: center; padding: 15px;
+  }
+  .report-modal-content {
+    background: #ffffff; border-radius: 12px; width: 100%; max-width: 650px; padding: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-top: 5px solid var(--gold-brand); position: relative;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .report-modal-content textarea {
+    width: 100%; height: 100px; border: 2px solid #cbd5e1; border-radius: 8px;
+    padding: 10px; font-family: inherit; font-size: 0.9em; margin: 10px 0 15px; resize: none; outline: none;
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="network-status" id="netStatus">
+  <div class="status-dot" id="netDot"></div>
+  <span id="netText">Conectado</span>
+</div>
+
+<div class="container">
+  <div class="hero-banner-wrap">
+    <img id="bannerImage" src="" alt="Banner Institucional">
+  </div>
+
+  <div class="card" id="startScreen">
+    <h2 id="examTitleHeading">Evaluación de Materia</h2>
+    <div class="alert-box">⚠️ Se necesita conexión a internet para registrar tu calificación.</div>
+    <p id="examDescription" style="color: #475569; font-size: 0.92em; line-height: 1.5;"></p>
+
+    <label for="studentNameInput">Nombre completo del alumno:</label>
+    <input type="text" id="studentNameInput" placeholder="Ej. Juan Pérez García" required>
+
+    <label for="studentGroupInput">Grupo:</label>
+    <input type="text" id="studentGroupInput" placeholder="Ej. Grupo 101" required>
+
+    <button class="btn-gold" onclick="startExam()">Comenzar Evaluación</button>
+  </div>
+
+  <div id="examScreen">
+    <div class="exam-header">
+      <div>👤 <span id="displayName"></span> | <span id="displayGroup" style="opacity: 0.85;"></span></div>
+      <div style="font-size: 0.85em; color: var(--gold-brand); font-weight: 600;" id="headerMateriaTema"></div>
+    </div>
+
+    <div class="progressBarWrap"><div id="progressBar"></div></div>
+    <div class="card card-standalone" id="questionCard">
+      <details class="paletteWrap">
+        <summary>🗺️ Ver mapa de preguntas</summary>
+        <div id="palette"></div>
+      </details>
+      <div class="qMeta">
+        <span id="metaMateriaTema">Evaluación</span>
+        <span id="qCounter" style="white-space: nowrap;"></span>
+      </div>
+      <div class="qText" id="qText"></div>
+      <div id="qImageContainer" class="qImageWrap" style="display:none;"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navRow">
+        <button class="btn-secondary" id="prevBtn" onclick="goPrev()">◀ Anterior</button>
+        <button class="btn-danger" onclick="confirmSubmit()">Finalizar y Entregar</button>
+        <button class="btn-secondary" id="nextBtn" onclick="goNext()">Siguiente ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-standalone" id="resultScreen">
+    <h2>Resumen de Evaluación</h2>
+    <p id="resultDetails" style="color: #475569; font-size: 0.95em;"></p>
+    <div class="scoreBig" id="scoreBig"></div>
+    <div id="syncStatus" class="sync-status">Guardando resultados en Google Sheets...</div>
+    <div style="margin-top:25px;">
+      <button class="btn-secondary" onclick="toggleReview()" id="reviewToggleBtn">🔍 Ver revisión detallada y explicaciones</button>
+    </div>
+    <div id="reviewList" style="margin-top:20px; display:none;"></div>
+  </div>
+</div>
+
+<!-- Botón y Modal de Reporte de Errores -->
+<button class="btn-report-float" onclick="openReportModal()">⚠️ Reportar error</button>
+
+<div class="report-modal" id="reportModal">
+  <div class="report-modal-content">
+    <h3>⚠️ Reportar error o problema</h3>
+    <p style="font-size: 0.88em; color: #475569; margin-bottom: 8px;">Describe el error detectado:</p>
+    <textarea id="reportComment" placeholder="Escribe aquí tu observación..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeReportModal()">Cancelar</button>
+      <button class="btn-danger" id="btnSendReport" onclick="submitReport()">Enviar reporte</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================================
+// PANEL DE CONFIGURACIÓN PRINCIPAL
+// =========================================================
+const EXAM_MATERIA   = "Literatura";
+const EXAM_TEMA      = "10. Investigación Documental Complementaria (Examen 10)";
+const EXAM_BANNER    = "https://lh3.googleusercontent.com/d/1SCjanIDihhIZxj9rdLamZpYyoomgaQNE";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlME2gtQ4nJ_BVeB1_FsvaQa1zG8kH8Kph4wmgaNwfB354QKGcd_MDrATEiIs2CQ/exec";
+
+// =========================================================
+// BANCO DE PREGUNTAS (25 REACTIVOS CON EXPLICACIÓN)
+// =========================================================
+const questions = [
+  {
+    "q": "1. ¿Cuál es la finalidad principal de un resumen?",
+    "opts": [
+      "Reproducir literalmente todos los párrafos del texto original.",
+      "Expresar una opinión personal sobre las ideas del autor.",
+      "Presentar de manera breve y fiel las ideas principales de un texto.",
+      "Sustituir las ideas del autor por interpretaciones personales."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "El resumen sintetiza las ideas esenciales de un texto, conserva su sentido original y elimina información secundaria, ejemplos innecesarios y repeticiones."
+  },
+  {
+    "q": "2. Lee el siguiente texto:<br><br><em>\"Los árboles absorben dióxido de carbono durante la fotosíntesis, liberan oxígeno y contribuyen a regular las condiciones ambientales. También proporcionan refugio y alimento a diversas especies\".</em><br><br>¿Cuál de las siguientes opciones constituye el mejor resumen?",
+    "opts": [
+      "Los árboles contribuyen al equilibrio ambiental y favorecen la vida de otras especies.",
+      "Los árboles son los organismos más importantes del planeta y deben protegerse.",
+      "La fotosíntesis es un proceso que ocurre exclusivamente durante el día.",
+      "Los árboles son útiles porque algunas personas disfrutan de su sombra."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La opción correcta recupera las ideas principales del texto sin incorporar opiniones ni afirmaciones ajenas al contenido original."
+  },
+  {
+    "q": "3. ¿Qué característica distingue principalmente a la paráfrasis?",
+    "opts": [
+      "La eliminación de todas las ideas secundarias de un texto.",
+      "La reproducción exacta de las palabras del autor.",
+      "La presentación de una valoración crítica sobre el contenido.",
+      "La reformulación de una idea mediante palabras propias sin modificar su sentido."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La paráfrasis consiste en expresar con palabras propias el contenido de un texto, conservando su significado, sin reproducir necesariamente las palabras originales."
+  },
+  {
+    "q": "4. Texto original:<br><br><em>\"La lectura frecuente favorece el desarrollo del vocabulario y fortalece la comprensión de textos\".</em><br><br>¿Cuál de las siguientes opciones constituye una paráfrasis adecuada?",
+    "opts": [
+      "La lectura es la actividad más importante para cualquier estudiante.",
+      "Leer habitualmente ayuda a ampliar el vocabulario y mejora la capacidad para comprender lo escrito.",
+      "La lectura frecuente favorece el desarrollo del vocabulario y fortalece la comprensión de textos.",
+      "Las personas que no leen presentan necesariamente dificultades de aprendizaje."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La opción correcta reformula el contenido mediante expresiones diferentes, sin alterar las ideas del texto original ni incorporar afirmaciones adicionales."
+  },
+  {
+    "q": "5. ¿Cuál de las siguientes características corresponde a una cita textual?",
+    "opts": [
+      "La interpretación personal de las ideas de un autor.",
+      "La síntesis de los aspectos esenciales de un documento.",
+      "La reproducción exacta de un fragmento de una fuente, con su correspondiente referencia.",
+      "La modificación de las palabras originales para facilitar su comprensión."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La cita textual reproduce literalmente las palabras de una fuente. Debe identificarse como tal y acompañarse de los datos necesarios para reconocer su procedencia."
+  },
+  {
+    "q": "6. Observa la siguiente ficha:<br><br><strong>Ficha de trabajo</strong><br>Tema: Importancia de la lectura<br>Fuente: López, Ana. <em>Lectura y aprendizaje</em>. México, 2021, p. 42.<br><br><em>\"La lectura constante permite desarrollar habilidades de comprensión y ampliar el conocimiento del mundo\".</em><br><br>¿A qué tipo de ficha de trabajo corresponde?",
+    "opts": [
+      "Ficha de comentario.",
+      "Ficha de resumen.",
+      "Ficha de paráfrasis.",
+      "Ficha de cita textual."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La ficha reproduce literalmente un fragmento de la fuente, señalado mediante comillas. Por ello corresponde a una ficha de cita textual."
+  },
+  {
+    "q": "7. ¿Cuál es la finalidad principal de un comentario dentro de una investigación documental?",
+    "opts": [
+      "Expresar una interpretación, valoración o reflexión fundamentada sobre la información consultada.",
+      "Copiar literalmente los fragmentos más extensos de una fuente.",
+      "Registrar exclusivamente los datos editoriales de un libro.",
+      "Reducir el texto original a sus ideas principales sin valorarlas."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El comentario permite analizar, interpretar o valorar la información obtenida. A diferencia del resumen y la paráfrasis, incorpora la reflexión del investigador."
+  },
+  {
+    "q": "8. Observa la siguiente ficha:<br><br>Tema: Contaminación ambiental<br>Fuente: Martínez, Luis. <em>Problemas ambientales</em>. México, 2020, p. 65.<br><br>El autor explica que la contaminación del aire afecta la salud de la población. Considero que este problema requiere mayor participación ciudadana, pues las acciones individuales también pueden contribuir a disminuirlo.<br><br>¿Qué tipo de ficha se presenta?",
+    "opts": [
+      "Ficha bibliográfica.",
+      "Ficha de comentario.",
+      "Ficha de cita textual.",
+      "Ficha hemerográfica."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La ficha incluye una valoración personal mediante la expresión \"Considero que\". Esto permite identificarla como una ficha de comentario."
+  },
+  {
+    "q": "9. ¿Cuál es la función principal de una ficha bibliográfica?",
+    "opts": [
+      "Registrar opiniones personales sobre una investigación.",
+      "Presentar las conclusiones de un trabajo académico.",
+      "Identificar una fuente bibliográfica mediante sus datos esenciales.",
+      "Reproducir exclusivamente fragmentos textuales de un libro."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La ficha bibliográfica permite identificar y localizar una obra mediante datos como autor, título, editorial, lugar y año de publicación."
+  },
+  {
+    "q": "10. ¿Cuál de los siguientes conjuntos de datos corresponde a los elementos habituales de una ficha bibliográfica de un libro?",
+    "opts": [
+      "Autor, título, editorial, lugar y año de publicación.",
+      "Nombre del entrevistado, fecha y duración de la entrevista.",
+      "Tema de investigación, hipótesis y conclusiones personales.",
+      "Nombre del periódico, fecha, sección y número de página."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La ficha bibliográfica registra los datos de identificación de una obra: autor, título, editorial, lugar y año."
+  },
+  {
+    "q": "11. Observa la siguiente ficha:<br><br>García Márquez, Gabriel<br><em>Cien años de soledad</em><br>Buenos Aires: Editorial Sudamericana, 1967.<br><br>¿Qué tipo de ficha se presenta?",
+    "opts": [
+      "Ficha de comentario.",
+      "Ficha de resumen.",
+      "Ficha hemerográfica.",
+      "Ficha bibliográfica."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La ficha presenta los datos de identificación de un libro: autor, título, lugar de publicación, editorial y año."
+  },
+  {
+    "q": "12. ¿Qué tipo de fuente se registra principalmente mediante una ficha hemerográfica?",
+    "opts": [
+      "Una novela publicada como libro.",
+      "Un artículo de periódico o revista.",
+      "Una reflexión personal del investigador.",
+      "Un fragmento copiado literalmente de un ensayo."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "Las fichas hemerográficas registran información de publicaciones periódicas, como periódicos y revistas."
+  },
+  {
+    "q": "13. Observa la siguiente ficha:<br><br>Pérez, Laura<br>\"La importancia de cuidar el agua\"<br><em>Revista Ciencia y Sociedad</em><br>Vol. 12, núm. 3, mayo de 2023, pp. 18-22.<br><br>¿A qué tipo de ficha corresponde?",
+    "opts": [
+      "Ficha de resumen.",
+      "Ficha bibliográfica de libro.",
+      "Ficha hemerográfica.",
+      "Ficha de comentario."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La ficha registra un artículo publicado en una revista, incluyendo datos de volumen, número, fecha y páginas."
+  },
+  {
+    "q": "14. ¿Cuál es la principal diferencia entre una ficha bibliográfica de libro y una ficha hemerográfica?",
+    "opts": [
+      "La bibliográfica identifica libros y la hemerográfica registra publicaciones periódicas o artículos de estas.",
+      "La bibliográfica contiene opiniones personales y la hemerográfica presenta resúmenes.",
+      "La bibliográfica reproduce citas textuales y la hemerográfica interpreta información.",
+      "La bibliográfica se utiliza únicamente en investigaciones científicas y la hemerográfica en trabajos literarios."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La diferencia radica en el soporte: la bibliográfica identifica libros y la hemerográfica registra artículos de revistas o periódicos."
+  },
+  {
+    "q": "15. ¿Cuál es la función principal de las fichas de trabajo?",
+    "opts": [
+      "Registrar únicamente los datos editoriales de una publicación.",
+      "Sustituir la lectura de las fuentes originales.",
+      "Organizar exclusivamente la bibliografía final de una investigación.",
+      "Recopilar y organizar información relevante para desarrollar una investigación."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Las fichas de trabajo permiten reunir y ordenar la información útil extraída de las fuentes consultadas."
+  },
+  {
+    "q": "16. Observa la siguiente ficha:<br><br>Tema: Beneficios del ejercicio<br>Fuente: Ramírez, Sofía. <em>Salud y bienestar</em>. México, 2022, pp. 30-32.<br><br>La actividad física regular favorece la salud cardiovascular, fortalece los músculos y contribuye al bienestar emocional.<br><br>¿Qué tipo de ficha es?",
+    "opts": [
+      "Ficha de comentario.",
+      "Ficha de resumen.",
+      "Ficha de cita textual.",
+      "Ficha hemerográfica."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La ficha sintetiza de manera breve las ideas esenciales de varias páginas sin incorporar opiniones ni texto literal."
+  },
+  {
+    "q": "17. Texto original:<br><br><em>\"El uso excesivo de dispositivos electrónicos antes de dormir puede alterar los hábitos de sueño\".</em><br><br>Observa la siguiente ficha:<br>Tema: Hábitos de sueño<br>Fuente: Torres, Elena. <em>Tecnología y descanso</em>. México, 2021, p. 54.<br><br>Utilizar aparatos electrónicos durante demasiado tiempo antes de acostarse puede modificar los patrones habituales de descanso.<br><br>¿Qué técnica de redacción se utilizó?",
+    "opts": [
+      "Paráfrasis.",
+      "Cita textual.",
+      "Comentario.",
+      "Resumen bibliográfico."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "La información conserva el significado original pero emplea palabras y estructuras diferentes, lo cual define a la paráfrasis."
+  },
+  {
+    "q": "18. ¿Cuál de las siguientes opciones representa una cita textual correctamente identificada?",
+    "opts": [
+      "El autor considera que la educación contribuye al desarrollo social.",
+      "La educación es fundamental porque permite mejorar la sociedad.",
+      "Según López (2020, p. 15), \"La educación constituye una herramienta fundamental para el desarrollo social\".",
+      "Considero que la educación debería recibir mayores recursos económicos."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "La cita textual reproduce las palabras textuales entre comillas e indica su procedencia (autor, año y página)."
+  },
+  {
+    "q": "19. ¿Cuál de las siguientes acciones debe evitarse al elaborar un resumen académico?",
+    "opts": [
+      "Identificar las ideas principales.",
+      "Eliminar información repetitiva.",
+      "Conservar el sentido del texto original.",
+      "Incorporar opiniones personales como si fueran afirmaciones del autor."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "El resumen debe ser rigurosamente fiel al original; mezclar opiniones personales altera su naturaleza."
+  },
+  {
+    "q": "20. Observa la siguiente ficha:<br><br>Tema: Cambio climático<br>Fuente: Hernández, Carlos. <em>Introducción al cambio climático</em>. México, 2022, p. 80.<br><br><em>\"El aumento de la temperatura global modifica los patrones de precipitación y afecta los ecosistemas\".</em><br><br>Esta afirmación permite comprender por qué las alteraciones climáticas pueden afectar actividades humanas como la agricultura.<br><br>¿Qué combinación de técnicas aparece en la ficha?",
+    "opts": [
+      "Resumen y paráfrasis.",
+      "Cita textual y comentario.",
+      "Ficha bibliográfica y hemerográfica.",
+      "Paráfrasis y resumen."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "La primera parte reproduce literalmente un fragmento entre comillas (cita textual) y la segunda emite una reflexión analítica (comentario)."
+  },
+  {
+    "q": "21. ¿Cuál es la finalidad de registrar las fuentes utilizadas en una investigación documental?",
+    "opts": [
+      "Permitir la identificación, localización y verificación de la información consultada.",
+      "Evitar la necesidad de organizar las ideas principales.",
+      "Sustituir el análisis de los documentos originales.",
+      "Garantizar que todas las fuentes expresen la misma opinión."
+    ],
+    "correct": 0,
+    "img": null,
+    "exp": "El registro de fuentes otorga rigor académico, permitiendo verificar los datos y reconocer el crédito de los autores."
+  },
+  {
+    "q": "22. ¿Cuál de las siguientes situaciones constituye un uso inadecuado de la información documental?",
+    "opts": [
+      "Resumir las ideas de una fuente e identificar su procedencia.",
+      "Utilizar una cita textual acompañada de su referencia.",
+      "Elaborar una paráfrasis y reconocer al autor original.",
+      "Presentar las ideas de otro autor como propias sin mencionar la fuente."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "Presentar ideas ajenas como propias sin citar la fuente constituye plagio académico."
+  },
+  {
+    "q": "23. Observa la siguiente ficha:<br><br>Hernández, Patricia<br>\"Nuevas estrategias para el ahorro de energía\"<br><em>El Diario Nacional</em><br>12 de septiembre de 2024, sección Ciencia, p. 8.<br><br>¿Cuál es el dato que permite identificar específicamente la publicación periódica de procedencia?",
+    "opts": [
+      "El nombre de la autora.",
+      "El título del artículo.",
+      "El nombre del periódico.",
+      "El número de página."
+    ],
+    "correct": 2,
+    "img": null,
+    "exp": "\"El Diario Nacional\" es el nombre de la publicación periódica o medio impreso."
+  },
+  {
+    "q": "24. ¿Cuál de las siguientes afirmaciones establece correctamente una diferencia entre resumen y paráfrasis?",
+    "opts": [
+      "El resumen reproduce literalmente las palabras del autor y la paráfrasis expresa opiniones.",
+      "El resumen sintetiza las ideas principales, mientras que la paráfrasis reformula el contenido con palabras propias.",
+      "El resumen se utiliza únicamente en libros y la paráfrasis exclusivamente en periódicos.",
+      "El resumen debe incluir una valoración crítica y la paráfrasis una moraleja."
+    ],
+    "correct": 1,
+    "img": null,
+    "exp": "El resumen condensa un texto extenso en sus ideas nucleares; la paráfrasis reescribe el contenido íntegro o parcial mediante léxico propio sin acortarlo necesariamente."
+  },
+  {
+    "q": "25. Relaciona cada descripción con el tipo de ficha correspondiente:<br>1. Registra autor, título, editorial, lugar y año de publicación de un libro.<br>2. Presenta las ideas principales de un texto de manera breve.<br>3. Reproduce literalmente un fragmento de una fuente.<br>4. Registra un artículo publicado en una revista o periódico.<br>5. Expresa una valoración personal fundamentada sobre la información consultada.<br><br>a) Ficha de cita textual.<br>b) Ficha hemerográfica.<br>c) Ficha de comentario.<br>d) Ficha bibliográfica.<br>e) Ficha de resumen.",
+    "opts": [
+      "1b, 2e, 3d, 4a, 5c.",
+      "1d, 2a, 3e, 4b, 5c.",
+      "1e, 2d, 3a, 4c, 5b.",
+      "1d, 2e, 3a, 4b, 5c."
+    ],
+    "correct": 3,
+    "img": null,
+    "exp": "La relación exacta es: 1 con bibliográfica (d), 2 con resumen (e), 3 con cita textual (a), 4 con hemerográfica (b) y 5 con comentario (c)."
+  }
+];
+
+// =========================================================
+// LÓGICA DEL SISTEMA (SIN CRONÓMETRO)
+// =========================================================
+let currentIndex = 0;
+let studentName = "";
+let studentGroup = "";
+let answers = new Array(questions.length).fill(null);
+let finished = false;
+const letters = ["A", "B", "C", "D"];
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("bannerImage").src = EXAM_BANNER;
+  document.title = "Evaluación — " + EXAM_MATERIA;
+  document.getElementById("examTitleHeading").textContent = "Examen de " + EXAM_MATERIA + " — Tema 10";
+  document.getElementById("examDescription").innerHTML = "Evaluación de la materia de <strong>" + EXAM_MATERIA + "</strong> (Tema: <em>Investigación documental complementaria</em>). Consta de <strong>" + questions.length + " reactivos</strong>. Al finalizar, tu calificación se registrará directamente en el sistema.";
+  document.getElementById("metaMateriaTema").textContent = EXAM_MATERIA + " · Tema 10";
+  document.getElementById("headerMateriaTema").textContent = EXAM_MATERIA;
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('cut', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('selectstart', e => { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) { e.preventDefault(); return false; }
+});
+window.addEventListener('beforeunload', function (e) {
+  if (!finished && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault(); e.returnValue = '¿Seguro que quieres salir del examen?'; return e.returnValue;
+  }
+});
+
+function updateOnlineStatus() {
+  const dot = document.getElementById('netDot');
+  const text = document.getElementById('netText');
+  if (navigator.onLine) { dot.className = 'status-dot'; text.textContent = 'Conectado'; } 
+  else { dot.className = 'status-dot offline'; text.textContent = 'Sin conexión'; }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+function startExam() {
+  const nameInput = document.getElementById('studentNameInput');
+  const groupInput = document.getElementById('studentGroupInput');
+  if (!nameInput.value.trim() || !groupInput.value.trim()) {
+    alert("Por favor completa tu Nombre y Grupo antes de iniciar.");
+    return;
+  }
+  studentName = nameInput.value.trim();
+  studentGroup = groupInput.value.trim();
+
+  document.getElementById('displayName').textContent = studentName;
+  document.getElementById('displayGroup').textContent = studentGroup;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+
+  buildPalette();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  document.getElementById('qCounter').textContent = "Reactivo " + (currentIndex + 1) + " de " + questions.length;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const imgContainer = document.getElementById('qImageContainer');
+  if (q.img) {
+    imgContainer.innerHTML = '<img src="' + q.img + '" alt="Figura del reactivo">';
+    imgContainer.style.display = 'block';
+  } else {
+    imgContainer.innerHTML = '';
+    imgContainer.style.display = 'none';
+  }
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  q.opts.forEach((optText, i) => {
+    const label = document.createElement('label');
+    label.className = answers[currentIndex] === i ? 'selected' : '';
+    label.innerHTML = '<input type="radio" name="opt" value="' + i + '" ' + (answers[currentIndex] === i ? 'checked' : '') + '><span><strong>' + letters[i] + ')</strong> ' + optText + '</span>';
+    label.onclick = () => selectAnswer(i);
+    optWrap.appendChild(label);
+  });
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Último reactivo' : 'Siguiente ▶';
+  document.getElementById('progressBar').style.width = Math.round((answers.filter(a => a !== null).length / questions.length) * 100) + '%';
+  refreshPalette();
+  
+  if (window.MathJax) { MathJax.typesetPromise([document.getElementById('questionCard')]).catch((err) => console.log(err.message)); }
+}
+
+function selectAnswer(i) { answers[currentIndex] = i; renderQuestion(); }
+function goNext() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+function goPrev() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+
+function buildPalette() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = i + 1;
+    btn.onclick = () => { currentIndex = i; renderQuestion(); };
+    btn.id = 'pal-' + i;
+    palette.appendChild(btn);
+  });
+}
+
+function refreshPalette() {
+  questions.forEach((_, i) => {
+    const btn = document.getElementById('pal-' + i);
+    if(btn) {
+      btn.classList.toggle('answered', answers[i] !== null);
+      btn.classList.toggle('current', i === currentIndex);
+    }
+  });
+}
+
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (confirm(unanswered > 0 ? "Tienes " + unanswered + " sin responder. ¿Finalizar?" : "¿Estás seguro de enviar tu evaluación?")) {
+    finishExam();
+  }
+}
+
+function finishExam() {
+  if (finished) return;
+  finished = true;
+
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  let totalCorrect = 0;
+  const reviewData = [];
+
+  questions.forEach((q, i) => { 
+    const userAns = answers[i];
+    const isCorrect = userAns === q.correct;
+    if (isCorrect) totalCorrect++; 
+    reviewData.push({
+      num: i + 1,
+      text: q.q,
+      opts: q.opts,
+      correctIdx: q.correct,
+      userIdx: userAns,
+      isCorrect: isCorrect,
+      exp: q.exp || ""
+    });
+  });
+  
+  const pct = ((totalCorrect / questions.length) * 100).toFixed(1);
+
+  document.getElementById('resultDetails').innerHTML = "<strong>Materia:</strong> " + EXAM_MATERIA + "<br><strong>Tema:</strong> Investigación documental complementaria<br><strong>Alumno:</strong> " + studentName + " | <strong>Grupo:</strong> " + studentGroup;
+  document.getElementById('scoreBig').textContent = totalCorrect + "/" + questions.length + " (" + pct + "%)";
+  document.getElementById('scoreBig').classList.toggle('fail', pct < 60);
+
+  window._reviewData = reviewData;
+  renderReview();
+
+  sendDataToGoogleSheets({
+    fecha: new Date().toLocaleDateString(),
+    materia: EXAM_MATERIA,
+    tema: "Investigación documental complementaria y registro de fuentes",
+    nombre: studentName,
+    grupo: studentGroup,
+    puntajeGeneral: totalCorrect + "/" + questions.length + " (" + pct + "%)"
+  });
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  window._reviewData.forEach(r => {
+    const div = document.createElement('div');
+    let cls = r.userIdx === null ? 'blank' : (r.isCorrect ? 'correct' : 'incorrect');
+    div.className = 'reviewItem ' + cls;
+
+    const correctText = '<strong>' + letters[r.correctIdx] + ')</strong> ' + r.opts[r.correctIdx];
+    const userText = r.userIdx !== null ? '<strong>' + letters[r.userIdx] + ')</strong> ' + r.opts[r.userIdx] : '';
+
+    let answerLine = '';
+    if (r.userIdx === null) {
+      answerLine = '<div class="yourAns">No respondida. Respuesta correcta: <span class="correctAns">' + correctText + '</span></div>';
+    } else if (r.isCorrect) {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="correctAns">' + userText + '</span> ✔</div>';
+    } else {
+      answerLine = '<div class="yourAns">Tu respuesta: <span class="wrongAns">' + userText + '</span> ✘ <br><span style="display:inline-block; margin-top:4px;">Respuesta correcta: <span class="correctAns">' + correctText + '</span></span></div>';
+    }
+
+    const expHtml = r.exp ? '<div class="explanation-box"><strong>💡 Explicación:</strong> ' + r.exp + '</div>' : '';
+
+    div.innerHTML = '<div class="tag">Reactivo ' + r.num + '</div><div style="font-weight:600; margin-top:4px;">' + r.text + '</div>' + answerLine + expHtml;
+    list.appendChild(div);
+  });
+  if (window.MathJax) { MathJax.typesetPromise([list]).catch((err) => console.log(err.message)); }
+}
+
+function toggleReview() {
+  const list = document.getElementById('reviewList');
+  const btn = document.getElementById('reviewToggleBtn');
+  const show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Ocultar revisión detallada' : '🔍 Ver revisión detallada y explicaciones';
+}
+
+function sendDataToGoogleSheets(payload) {
+  const syncEl = document.getElementById('syncStatus');
+  syncEl.textContent = "Sincronizando con Google Sheets...";
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    syncEl.className = "sync-status ok";
+    syncEl.textContent = "Calificación enviada con éxito";
+  })
+  .catch(err => {
+    syncEl.className = "sync-status err";
+    syncEl.textContent = "⚠️ Error al registrar: " + err.message;
+  });
+}
+
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+
+function submitReport() {
+  const comment = document.getElementById('reportComment').value.trim();
+  if (!comment) { alert("Escribe tu observación antes de enviar."); return; }
+  
+  const sendBtn = document.getElementById('btnSendReport');
+  sendBtn.disabled = true;
+  sendBtn.textContent = "Enviando...";
+
+  const payload = {
+    tipo: "reporte_error",
+    fecha: new Date().toLocaleDateString(),
+    examen: EXAM_MATERIA + " — Investigación Documental Complementaria",
+    nombre: studentName || "Anónimo",
+    grupo: studentGroup || "Sin grupo",
+    ubicacion: "Reactivo " + (currentIndex + 1),
+    comentario: comment
+  };
+
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Reporte enviado con éxito.");
+    closeReportModal();
+  })
+  .catch(err => {
+    alert("⚠️ Error: " + err.message);
+  })
+  .finally(() => {
+    sendBtn.disabled = false;
+    sendBtn.textContent = "Enviar reporte";
+  });
+}
+</script>
+</body>
+</html>
